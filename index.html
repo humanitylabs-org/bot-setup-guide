@@ -4,116 +4,87 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bot Setup Guide — Humanity Labs</title>
-  <meta name="description" content="Build your own AI assistant that runs 24/7. OpenClaw + Obsidian + Telegram. Free step-by-step guide by Humanity Labs.">
+  <meta name="description" content="Build your own AI assistant. OpenClaw + Obsidian + Telegram. Free step-by-step guide by Humanity Labs.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' fill='%23111'/><text y='62' font-size='40' font-family='Georgia,serif' fill='%23c59a2e' x='50' text-anchor='middle'>HL</text></svg>">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:'Inter',-apple-system,sans-serif;background:#fff;color:#333;line-height:1.7;font-size:15px}
-    a{color:#b8860b;text-decoration:none}a:hover{text-decoration:underline}
-    strong{color:#111}
+    body{font-family:'Inter',-apple-system,sans-serif;background:#fff;color:#444;line-height:1.8;font-size:15px}
+    a{color:#b8860b}a:hover{text-decoration:underline}
+    strong{color:#222}
     code{background:#f5f3ef;padding:2px 6px;border-radius:3px;font-size:.85em;color:#6b5c3e}
 
-    .w{max-width:700px;margin:0 auto;padding:0 24px}
+    .w{max-width:680px;margin:0 auto;padding:0 24px}
 
-    /* Nav */
     nav{padding:16px 0;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
     .brand{font-size:.7rem;letter-spacing:2px;text-transform:uppercase;color:#999;font-weight:600}
-    .brand a{color:#999}
-    .brand a:hover{color:#b8860b;text-decoration:none}
-    nav .gh{font-size:.75rem;color:#bbb}
-    nav .gh:hover{color:#b8860b;text-decoration:none}
+    .brand a{color:#999;text-decoration:none}.brand a:hover{color:#b8860b}
 
-    /* Hero */
-    .hero{padding:60px 0 40px;border-bottom:1px solid #eee}
-    .hero h1{font-size:clamp(1.8rem,4vw,2.4rem);font-weight:700;color:#111;line-height:1.2;margin-bottom:12px}
-    .hero p{color:#777;font-size:.95rem;max-width:560px}
+    .hero{padding:48px 0 36px;border-bottom:1px solid #eee}
+    .hero h1{font-size:1.8rem;font-weight:700;color:#111;margin-bottom:10px}
+    .hero p{color:#888;font-size:.92rem}
 
     /* Progress */
     .progress-wrap{position:sticky;top:0;z-index:100;background:#fff;padding:10px 0;border-bottom:1px solid #eee}
     .progress-bar{height:4px;background:#f0ede8;border-radius:3px;overflow:hidden}
     .progress-fill{height:100%;width:0%;background:#b8860b;transition:width .3s;border-radius:3px}
-    .progress-text{font-size:.7rem;color:#aaa;margin-top:4px}
+    .progress-text{font-size:.68rem;color:#aaa;margin-top:3px}
 
-    /* Sidebar TOC - desktop only */
-    .layout{display:flex;gap:40px}
-    .main{flex:1;min-width:0}
-    .sidebar{width:180px;flex-shrink:0;position:sticky;top:60px;align-self:flex-start;display:none}
-    @media(min-width:960px){
-      .w{max-width:960px}
-      .sidebar{display:block}
-    }
-    .sidebar a{display:block;padding:4px 0;font-size:.72rem;color:#aaa;line-height:1.5;border-left:2px solid transparent;padding-left:12px}
-    .sidebar a:hover{color:#b8860b;text-decoration:none}
-    .sidebar a.active{color:#b8860b;border-left-color:#b8860b}
-    .sidebar .toc-group{font-size:.6rem;font-weight:600;letter-spacing:2px;text-transform:uppercase;color:#ccc;padding:12px 0 4px 12px}
-    .sidebar .toc-group:first-child{padding-top:0}
+    /* Section tabs */
+    .tabs{display:flex;gap:0;border-bottom:2px solid #eee;margin:32px 0 0;overflow-x:auto;-webkit-overflow-scrolling:touch}
+    .tab{padding:10px 20px;font-size:.78rem;font-weight:600;color:#aaa;cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-2px;white-space:nowrap;transition:all .15s;user-select:none}
+    .tab:hover{color:#666}
+    .tab.active{color:#b8860b;border-bottom-color:#b8860b}
 
-    /* Sections */
-    .part{padding:40px 0 10px;border-bottom:1px solid #f0ede8}
-    .part-label{font-size:.65rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#b8860b;margin-bottom:4px}
-    .part-title{font-size:1.1rem;font-weight:700;color:#111}
+    .panel{display:none;padding:28px 0}
+    .panel.active{display:block}
 
-    .step{padding:20px 0;padding-left:34px;position:relative;border-bottom:1px solid #f8f6f2}
-    .step:last-child{border-bottom:none}
+    /* Section headers */
+    .sh{font-size:1.15rem;font-weight:700;color:#111;margin-bottom:6px;padding-top:4px}
+    .sd{color:#888;font-size:.88rem;margin-bottom:24px}
 
+    /* Steps */
+    .step{margin-bottom:24px;padding-left:32px;position:relative}
     .step input[type="checkbox"]{
-      position:absolute;left:0;top:23px;
+      position:absolute;left:0;top:4px;
       appearance:none;-webkit-appearance:none;
-      width:20px;height:20px;
-      border:2px solid #ddd;border-radius:5px;
-      background:#fff;cursor:pointer;transition:all .15s;
-    }
-    .step input[type="checkbox"]:hover{border-color:#b8860b}
-    .step input[type="checkbox"]:checked{background:#b8860b;border-color:#b8860b}
-    .step input[type="checkbox"]:checked::after{content:'✓';display:block;color:#fff;font-size:13px;font-weight:700;text-align:center;line-height:17px}
+      width:18px;height:18px;border:2px solid #ddd;border-radius:4px;
+      background:#fff;cursor:pointer;transition:all .15s}
+    .step input:hover{border-color:#b8860b}
+    .step input:checked{background:#b8860b;border-color:#b8860b}
+    .step input:checked::after{content:'✓';display:block;color:#fff;font-size:12px;font-weight:700;text-align:center;line-height:15px}
+    .step.done{opacity:.4}
 
-    .step.done .step-title{color:#bbb;text-decoration:line-through}
-    .step.done .step-body{opacity:.35}
+    .step p{margin-bottom:8px;font-size:.9rem}
+    .step p:last-child{margin-bottom:0}
 
-    .step-title{font-size:.95rem;font-weight:600;color:#111;margin-bottom:6px}
-    .step-title a{color:#b8860b}
-    .step-body{color:#666;font-size:.88rem;line-height:1.75}
-    .step-body p{margin-bottom:10px}
-    .step-body p:last-child{margin-bottom:0}
-
-    /* Commands */
+    /* Commands - single copyable block */
     .cmd{
       background:#1e1e2e;color:#cdd6f4;
-      border-radius:8px;padding:14px 18px;margin:10px 0;
-      font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:.8rem;
+      border-radius:8px;padding:16px 18px;margin:12px 0;
+      font-family:'SF Mono',Consolas,monospace;font-size:.8rem;
       overflow-x:auto;white-space:pre-wrap;word-break:break-all;line-height:1.6;
-      cursor:pointer;position:relative;transition:opacity .2s;
-    }
-    .cmd:hover{opacity:.9}
-    .cmd::after{content:'copy';position:absolute;right:10px;top:10px;font-family:'Inter',sans-serif;font-size:.55rem;letter-spacing:1px;text-transform:uppercase;color:#585b70;transition:all .2s}
-    .cmd:hover::after{color:#cdd6f4}
-    .cmd.copied::after{content:'copied ✓';color:#a6e3a1}
+      cursor:pointer;position:relative;transition:opacity .2s}
+    .cmd:hover{opacity:.92}
+    .cmd-copy{position:absolute;right:8px;top:8px;font-family:'Inter',sans-serif;font-size:.55rem;letter-spacing:1px;text-transform:uppercase;color:#585b70;cursor:pointer;padding:2px 6px}
+    .cmd:hover .cmd-copy{color:#cdd6f4}
+    .cmd.copied .cmd-copy{color:#a6e3a1}
 
-    .config{
-      background:#f8f6f2;border:1px solid #ede8df;
-      border-radius:8px;padding:14px 18px;margin:10px 0;
-      font-family:'SF Mono','Fira Code',Consolas,monospace;font-size:.75rem;
-      color:#6b5c3e;overflow-x:auto;white-space:pre;line-height:1.5;
-    }
+    .config{background:#f8f6f2;border:1px solid #ede8df;border-radius:8px;padding:14px 18px;margin:12px 0;font-family:'SF Mono',Consolas,monospace;font-size:.75rem;color:#6b5c3e;overflow-x:auto;white-space:pre;line-height:1.5}
 
     /* Callouts */
-    .tip{background:#f0f7ff;border-left:3px solid #3b82f6;padding:14px 18px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.85rem;color:#555}
-    .tip strong{color:#1d4ed8}
-
-    .warn{background:#fef2f2;border-left:3px solid #ef4444;padding:14px 18px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.85rem;color:#555}
+    .warn{background:#fef2f2;border-left:3px solid #ef4444;padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.85rem;color:#666}
     .warn strong{color:#dc2626}
-
-    .pro{background:#fffbeb;border-left:3px solid #d4a843;padding:14px 18px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.85rem;color:#666}
+    .tip{background:#f0f7ff;border-left:3px solid #3b82f6;padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.85rem;color:#666}
+    .tip strong{color:#1d4ed8}
+    .pro{background:#fffbeb;border-left:3px solid #d4a843;padding:12px 16px;border-radius:0 8px 8px 0;margin:12px 0;font-size:.85rem;color:#666}
     .pro strong{color:#92640d}
-    .pro-label{font-size:.55rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:#b8860b;margin-bottom:4px}
 
-    /* Footer */
-    footer{padding:40px 0;text-align:center}
-    footer p{color:#bbb;font-size:.78rem}
-    footer a{color:#999}
+    footer{padding:40px 0;text-align:center;border-top:1px solid #eee;margin-top:20px}
+    footer p{color:#bbb;font-size:.75rem}
+    footer a{color:#999;text-decoration:none}footer a:hover{color:#b8860b}
 
-    @media(max-width:640px){.w{padding:0 18px}.hero{padding:40px 0 30px}.step{padding:16px 0 16px 30px}}
+    @media(max-width:640px){.w{padding:0 18px}.hero{padding:36px 0 28px}.tab{padding:8px 14px;font-size:.72rem}}
   </style>
 </head>
 <body>
@@ -121,141 +92,92 @@
 
   <nav>
     <div class="brand"><a href="https://humanitylabs.org">Humanity Labs</a></div>
-    <a class="gh" href="https://github.com/humanitylabs-org/oscar-collins-site">GitHub</a>
   </nav>
 
   <section class="hero">
     <h1>Bot Setup Guide</h1>
-    <p>Build a personal AI assistant that runs 24/7, talks to you on Telegram, and syncs everything to Obsidian on all your devices. Check each step as you go. Your progress is saved.</p>
+    <p>Build a personal AI assistant that runs 24/7. Jump to the section you need. Already have OpenClaw? Skip to Obsidian. Already have Obsidian? Skip to Security. Your progress is saved.</p>
   </section>
 
   <div class="progress-wrap">
     <div class="progress-bar"><div class="progress-fill" id="pFill"></div></div>
-    <div class="progress-text"><span id="pCount">0</span> / <span id="pTotal">0</span> complete</div>
+    <div class="progress-text"><span id="pCount">0</span> / <span id="pTotal">0</span></div>
   </div>
 
-  <div class="layout">
+  <div class="tabs" id="tabs">
+    <div class="tab active" data-tab="hardware">Hardware</div>
+    <div class="tab" data-tab="openclaw">OpenClaw</div>
+    <div class="tab" data-tab="obsidian">Obsidian</div>
+    <div class="tab" data-tab="security">Security</div>
+    <div class="tab" data-tab="tips">Tips</div>
+  </div>
 
-  <!-- SIDEBAR TOC -->
-  <aside class="sidebar" id="toc">
-    <div class="toc-group">The Machine</div>
-    <a href="#s1">Computer</a>
-    <a href="#s2">Homebrew</a>
-    <a href="#s3">OpenClaw</a>
-    <div class="toc-group">Communication</div>
-    <a href="#s4">Telegram</a>
-    <a href="#s5">Gmail</a>
-    <a href="#s6">Accounts</a>
-    <div class="toc-group">Knowledge</div>
-    <a href="#s7">Obsidian</a>
-    <a href="#s8">Sync</a>
-    <a href="#s9">Keepalive</a>
-    <a href="#s10">Devices</a>
-    <a href="#s11">Search</a>
-    <div class="toc-group">Security</div>
-    <a href="#s12">Isolation</a>
-    <a href="#s13">Gateway</a>
-    <a href="#s14">SOUL.md</a>
-    <a href="#s15">Tokens</a>
-    <a href="#s16">Remote</a>
-    <div class="toc-group">Go</div>
-    <a href="#s17">Projects</a>
-    <a href="#s18">First task</a>
-    <a href="#s19">Updates</a>
-  </aside>
+  <!-- ==================== HARDWARE ==================== -->
+  <div class="panel active" id="hardware">
+    <div class="sh">Hardware</div>
+    <div class="sd">A computer that stays on 24/7. This is your AI's home.</div>
 
-  <div class="main">
+    <div class="step"><input type="checkbox">
+      <p><strong>Get a dedicated machine.</strong> Best: Mac mini. Also works: spare laptop, Linux box, or cloud VPS. Never use your personal daily computer.</p>
+    </div>
 
-  <!-- PART 1 -->
-  <div class="part" id="s1"><div class="part-label">Part 1</div><div class="part-title">The Machine</div></div>
+    <div class="step"><input type="checkbox">
+      <p><strong>Install Homebrew and prevent sleep.</strong> Open Terminal (Cmd+Space, type "terminal").</p>
+      <div class="cmd"><span class="cmd-copy">copy</span>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+sudo pmset -a sleep 0</div>
+    </div>
 
-  <div class="step" id="s1">
-    <input type="checkbox">
-    <div class="step-title">Get a computer that stays on 24/7</div>
-    <div class="step-body">
-      <p>Best: <strong>Mac mini</strong>. Also works: spare laptop, Linux box, or cloud VPS. Must never fully sleep.</p>
-      <div class="cmd">sudo pmset -a sleep 0</div>
+    <div class="step"><input type="checkbox">
+      <p><strong>Create a Gmail for the AI.</strong> Do it on your phone (easier verification). Log in on the machine. This is a throwaway identity, never your personal email.</p>
     </div>
   </div>
 
-  <div class="step" id="s2">
-    <input type="checkbox">
-    <div class="step-title">Install Homebrew</div>
-    <div class="step-body">
-      <p>Open Terminal (Cmd+Space, type "terminal"). Paste this:</p>
-      <div class="cmd">/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</div>
-      <p>It asks for your password. Letters won't show as you type. Normal.</p>
-    </div>
-  </div>
+  <!-- ==================== OPENCLAW ==================== -->
+  <div class="panel" id="openclaw">
+    <div class="sh">OpenClaw</div>
+    <div class="sd">The software that runs your AI. Gives it tools, memory, and chat access.</div>
 
-  <div class="step" id="s3">
-    <input type="checkbox">
-    <div class="step-title">Install <a href="https://openclaw.ai">OpenClaw</a></div>
-    <div class="step-body">
-      <p>This runs your AI. Gives it tools, memory, files, and chat access.</p>
-      <div class="cmd">brew install openclaw
+    <div class="step"><input type="checkbox">
+      <p><strong>Install and start OpenClaw.</strong></p>
+      <div class="cmd"><span class="cmd-copy">copy</span>brew install openclaw
 openclaw gateway install
 openclaw gateway start</div>
-      <p>Runs in the background, survives reboots.</p>
+      <p>Runs in background, survives reboots.</p>
     </div>
+
+    <div class="step"><input type="checkbox">
+      <p><strong>Connect Telegram.</strong> Follow the <a href="https://docs.openclaw.ai">OpenClaw Telegram guide</a>. Once connected, message it. It replies like a friend. Also works with Signal, Discord, Slack, iMessage.</p>
+    </div>
+
+    <div class="step"><input type="checkbox">
+      <p><strong>Let it create accounts.</strong> Tell your AI (via Telegram) to sign up for GitHub, Vercel, Supabase, or whatever you need using its Gmail. Optional: give it a <a href="https://privacy.com">Privacy.com</a> virtual card ($20/month limit).</p>
+    </div>
+
+    <div class="step"><input type="checkbox">
+      <p><strong>Share your projects.</strong> GitHub: add as collaborator. Vercel: invite to team. Supabase: add to org. Google Docs: share with its Gmail.</p>
+    </div>
+
+    <div class="tip"><strong>You can stop here.</strong> You now have a working AI assistant on Telegram. Everything below makes it better.</div>
   </div>
 
-  <!-- PART 2 -->
-  <div class="part"><div class="part-label">Part 2</div><div class="part-title">Communication</div></div>
+  <!-- ==================== OBSIDIAN ==================== -->
+  <div class="panel" id="obsidian">
+    <div class="sh">Obsidian</div>
+    <div class="sd">See everything your AI writes, on every device, beautifully formatted. End-to-end encrypted sync.</div>
 
-  <div class="step" id="s4">
-    <input type="checkbox">
-    <div class="step-title">Connect Telegram</div>
-    <div class="step-body">
-      <p>Follow the <a href="https://docs.openclaw.ai">OpenClaw Telegram guide</a>. Once connected, message it. It replies like a friend.</p>
+    <div class="step"><input type="checkbox">
+      <p><strong>Install Obsidian and open the workspace.</strong></p>
+      <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask obsidian</div>
+      <p>Open Obsidian > "Open folder as vault" > press Cmd+Shift+G > type <code>~/.openclaw/workspace</code></p>
     </div>
-  </div>
 
-  <div class="step" id="s5">
-    <input type="checkbox">
-    <div class="step-title">Create a Gmail for the AI</div>
-    <div class="step-body">
-      <p>Make a new Gmail <strong>on your phone</strong> (easier for verification). Log into it on the AI's machine.</p>
-      <div class="warn"><strong>Never use your personal Gmail.</strong> This is a throwaway identity.</div>
+    <div class="step"><input type="checkbox">
+      <p><strong>Enable Obsidian Sync.</strong> Settings > Core plugins > Sync > on. Log in, create a remote vault. Add <code>Code</code> to Excluded folders. Keep defaults (Markdown only).</p>
+      <div class="warn"><strong>Don't enable "Sync all file types."</strong> Code repos will overwhelm your sync.</div>
     </div>
-  </div>
 
-  <div class="step" id="s6">
-    <input type="checkbox">
-    <div class="step-title">Let it create accounts</div>
-    <div class="step-body">
-      <p>Tell your AI to sign up for <strong>GitHub</strong>, <strong>Vercel</strong>, <strong>Supabase</strong>, or whatever you need. Optional: <a href="https://privacy.com">Privacy.com</a> virtual card ($20 limit) for purchases.</p>
-    </div>
-  </div>
-
-  <!-- PART 3 -->
-  <div class="part"><div class="part-label">Part 3</div><div class="part-title">Knowledge Layer</div></div>
-
-  <div class="step" id="s7">
-    <input type="checkbox">
-    <div class="step-title">Install <a href="https://obsidian.md">Obsidian</a></div>
-    <div class="step-body">
-      <p>See everything your AI writes, beautifully formatted, on any device.</p>
-      <div class="cmd">brew install --cask obsidian</div>
-      <p>Open it. Click "Open folder as vault." Press Cmd+Shift+G and type:</p>
-      <div class="cmd">~/.openclaw/workspace</div>
-    </div>
-  </div>
-
-  <div class="step" id="s8">
-    <input type="checkbox">
-    <div class="step-title">Enable Obsidian Sync</div>
-    <div class="step-body">
-      <p>$4/month, end-to-end encrypted. Settings > Core plugins > Sync > on. Create a remote vault. Add <code>Code</code> to Excluded folders.</p>
-      <div class="warn"><strong>Don't enable "Sync all file types."</strong> Markdown-only is correct.</div>
-    </div>
-  </div>
-
-  <div class="step" id="s9">
-    <input type="checkbox">
-    <div class="step-title">Keep Obsidian running forever</div>
-    <div class="step-body">
-      <p>Save as <code>~/Library/LaunchAgents/md.obsidian.keepalive.plist</code>:</p>
+    <div class="step"><input type="checkbox">
+      <p><strong>Keep Obsidian alive and connect devices.</strong> Save as <code>~/Library/LaunchAgents/md.obsidian.keepalive.plist</code>:</p>
       <div class="config">&lt;?xml version=&quot;1.0&quot; encoding=&quot;UTF-8&quot;?&gt;
 &lt;!DOCTYPE plist PUBLIC &quot;-//Apple//DTD PLIST 1.0//EN&quot;
   &quot;http://www.apple.com/DTDs/PropertyList-1.0.dtd&quot;&gt;
@@ -268,137 +190,100 @@ openclaw gateway start</div>
     &lt;key&gt;StartInterval&lt;/key&gt;&lt;integer&gt;300&lt;/integer&gt;
 &lt;/dict&gt;
 &lt;/plist&gt;</div>
-      <div class="cmd">launchctl load ~/Library/LaunchAgents/md.obsidian.keepalive.plist</div>
+      <div class="cmd"><span class="cmd-copy">copy</span>launchctl load ~/Library/LaunchAgents/md.obsidian.keepalive.plist</div>
+      <p>Then install Obsidian on your phone/laptop, enable Sync, select the remote vault. No extra config on secondary devices.</p>
     </div>
-  </div>
 
-  <div class="step" id="s10">
-    <input type="checkbox">
-    <div class="step-title">Connect your other devices</div>
-    <div class="step-body">
-      <p>Install Obsidian on phone/laptop. Create vault, enable Sync, select the remote vault. No extra config needed.</p>
-    </div>
-  </div>
-
-  <div class="step" id="s11">
-    <input type="checkbox">
-    <div class="step-title">Enable semantic search</div>
-    <div class="step-body">
-      <p>Search every note by meaning, not keywords. Runs locally, zero data sent externally.</p>
-      <div class="cmd">openclaw config set agents.defaults.memorySearch.provider local
+    <div class="step"><input type="checkbox">
+      <p><strong>Enable semantic search.</strong> Every note searchable by meaning, running locally.</p>
+      <div class="cmd"><span class="cmd-copy">copy</span>openclaw config set agents.defaults.memorySearch.provider local
 openclaw config set agents.defaults.memorySearch.fallback none</div>
-      <p>Edit <code>~/.openclaw/openclaw.json</code>, add your folders:</p>
+      <p>Edit <code>~/.openclaw/openclaw.json</code> and add your folders under <code>agents.defaults.memorySearch</code>:</p>
       <div class="config">"extraPaths": ["Contacts", "Lists", "Memos", "Tasks"]</div>
-      <p>Restart the gateway. First run downloads a ~313MB model.</p>
-      <div class="tip"><strong>Don't skip this.</strong> Without it, the AI only searches its own memory. With it, it searches your entire vault.</div>
+      <p>Restart the gateway. First run downloads a ~313MB model, then indexes automatically.</p>
+      <div class="tip"><strong>Don't skip this.</strong> Without it the AI only searches its own memory. With it, your entire vault is searchable by meaning.</div>
     </div>
   </div>
 
-  <!-- PART 4 -->
-  <div class="part"><div class="part-label">Part 4</div><div class="part-title">Security</div></div>
+  <!-- ==================== SECURITY ==================== -->
+  <div class="panel" id="security">
+    <div class="sh">Security</div>
+    <div class="sd">Keep the blast radius small. If everything leaks, you lose a throwaway Gmail and a $20 card.</div>
 
-  <div class="step" id="s12">
-    <input type="checkbox">
-    <div class="step-title">Use a dedicated machine</div>
-    <div class="step-body"><p>Never run on your personal computer. The AI gets its own machine, its own user account.</p></div>
-  </div>
+    <div class="step"><input type="checkbox">
+      <p><strong>Dedicated machine, separate accounts.</strong> The AI gets its own computer, Gmail, GitHub, Vercel, everything. Never share your personal accounts.</p>
+    </div>
 
-  <div class="step" id="s13">
-    <input type="checkbox">
-    <div class="step-title">Keep the gateway local</div>
-    <div class="step-body"><p>Gateway listens on <code>127.0.0.1</code> only. Never expose to the internet. Use <a href="https://tailscale.com">Tailscale</a> (free) for remote access.</p></div>
-  </div>
+    <div class="step"><input type="checkbox">
+      <p><strong>Gateway stays local.</strong> Listens on <code>127.0.0.1</code> only. Never expose to the internet. Use <a href="https://tailscale.com">Tailscale</a> (free) for remote access.</p>
+    </div>
 
-  <div class="step" id="s14">
-    <input type="checkbox">
-    <div class="step-title">Write safety rules in SOUL.md</div>
-    <div class="step-body"><p>No reading outside workspace. No destructive commands. No emails or spending without approval.</p></div>
-  </div>
+    <div class="step"><input type="checkbox">
+      <p><strong>SOUL.md safety rules + scoped tokens.</strong> Top of SOUL.md: no reading outside workspace, no destructive commands, no emails or spending without approval. All API tokens: minimum permissions, short expiration.</p>
+    </div>
 
-  <div class="step" id="s15">
-    <input type="checkbox">
-    <div class="step-title">Use scoped tokens</div>
-    <div class="step-body"><p>Minimum permissions. Short expiration. If the AI's identity leaks, worst case = throwaway Gmail + $20 card.</p></div>
-  </div>
+    <div class="step"><input type="checkbox">
+      <p><strong>Remote screen access.</strong> For CAPTCHAs and card fields (~5% of tasks). Mac: Screen Sharing. Anywhere: Tailscale + VNC.</p>
+    </div>
 
-  <div class="step" id="s16">
-    <input type="checkbox">
-    <div class="step-title">Set up remote screen access</div>
-    <div class="step-body"><p>For CAPTCHAs and card fields (~5% of the time). <strong>Mac:</strong> Screen Sharing. <strong>Anywhere:</strong> Tailscale + VNC.</p></div>
-  </div>
-
-  <!-- PART 5 -->
-  <div class="part"><div class="part-label">Part 5</div><div class="part-title">Go</div></div>
-
-  <div class="step" id="s17">
-    <input type="checkbox">
-    <div class="step-title">Share your projects</div>
-    <div class="step-body"><p><strong>GitHub:</strong> add as collaborator. <strong>Vercel:</strong> invite to team. <strong>Supabase:</strong> add to org. <strong>Docs:</strong> share with its Gmail.</p></div>
-  </div>
-
-  <div class="step" id="s18">
-    <input type="checkbox">
-    <div class="step-title">Give it a real task</div>
-    <div class="step-body"><p>Don't configure for a week. Ask it to build something now. You learn by doing.</p></div>
-  </div>
-
-  <div class="step" id="s19">
-    <input type="checkbox">
-    <div class="step-title">Update regularly</div>
-    <div class="step-body">
-      <div class="cmd">openclaw update</div>
-      <p>Run weekly.</p>
+    <div class="warn">
+      <p><strong>Prompt injection is unsolved.</strong> Malicious content could trick your AI. <strong>The LLM provider sees your data.</strong> Don't feed it secrets. <strong>Skills can be malicious.</strong> Only install what you've reviewed.</p>
     </div>
   </div>
 
-  <!-- PRO TIPS -->
-  <div class="part"><div class="part-label">Bonus</div><div class="part-title">Pro Tips</div></div>
+  <!-- ==================== TIPS ==================== -->
+  <div class="panel" id="tips">
+    <div class="sh">Pro Tips</div>
+    <div class="sd">Not required. Just useful things we've learned.</div>
 
-  <div class="pro">
-    <div class="pro-label">Pro Tip</div>
-    <p><strong>Keep folders one level deep.</strong> Contacts, Lists, Memos, Tasks. Tell your agent how you organize and it will sort files for you.</p>
+    <div class="pro"><strong>Folders one level deep.</strong> Contacts, Lists, Memos, Tasks. Tell your agent your system and it sorts files for you.</div>
+
+    <div class="pro"><strong>Whiteboard.md at vault root.</strong> "W" sorts to the bottom, always easy to find. Scratchpad for quick thoughts and voice dumps.</div>
+
+    <div class="pro"><strong>All code in <code>Code/</code>.</strong> Excluded from Obsidian Sync. Git handles code, Obsidian handles notes.</div>
+
+    <div class="pro"><strong>Give it a real task immediately.</strong> Don't configure for a week. Ask it to build something now.</div>
+
+    <div class="pro"><strong>Update weekly.</strong></div>
+    <div class="cmd"><span class="cmd-copy">copy</span>openclaw update</div>
+
+    <div class="pro"><strong>Tell your agent to read this page.</strong> Once OpenClaw + Telegram are set up, paste this URL into Telegram and say "follow this guide." It can do the Obsidian and search steps for you.</div>
   </div>
-
-  <div class="pro">
-    <div class="pro-label">Pro Tip</div>
-    <p><strong>Create a Whiteboard.md.</strong> At the vault root. "W" sorts to the bottom = always easy to find. Use as a scratchpad.</p>
-  </div>
-
-  <div class="pro">
-    <div class="pro-label">Pro Tip</div>
-    <p><strong>All code in <code>Code/</code>.</strong> Excluded from Obsidian Sync. Git handles code, Obsidian handles notes.</p>
-  </div>
-
-  <!-- RISKS -->
-  <div class="part"><div class="part-label">Important</div><div class="part-title">Known Risks</div></div>
-
-  <div class="warn" style="margin-top:16px;">
-    <p><strong>Prompt injection is unsolved.</strong> Malicious content could trick your AI. That's why it gets throwaway accounts.</p>
-    <p style="margin-top:6px"><strong>The LLM provider sees your data.</strong> Don't feed it truly secret information.</p>
-    <p style="margin-top:6px"><strong>Skills can be malicious.</strong> Only install skills you've reviewed.</p>
-  </div>
-
-  </div><!-- /main -->
-  </div><!-- /layout -->
 
   <footer>
     <p>A free guide by <a href="https://humanitylabs.org">Humanity Labs</a></p>
-    <p style="margin-top:4px">Also: <a href="https://vajra.to">Vajra</a> — signal filter for the internet</p>
+    <p style="margin-top:4px"><a href="https://vajra.to">Vajra</a> — signal filter for the internet</p>
   </footer>
 
 </div>
 
 <script>
-const steps=document.querySelectorAll('.step'),checks=document.querySelectorAll('.step input[type="checkbox"]'),fill=document.getElementById('pFill'),cEl=document.getElementById('pCount'),tEl=document.getElementById('pTotal'),K='bot-setup-v2';
-tEl.textContent=checks.length;
-try{const s=JSON.parse(localStorage.getItem(K)||'[]');s.forEach(i=>{if(checks[i]){checks[i].checked=true;steps[i].classList.add('done')}})}catch(e){}
-function up(){const d=[...checks].filter(c=>c.checked).length;cEl.textContent=d;fill.style.width=(d/checks.length*100)+'%';const ix=[];checks.forEach((c,i)=>{if(c.checked)ix.push(i)});localStorage.setItem(K,JSON.stringify(ix))}
-checks.forEach((cb,i)=>{cb.addEventListener('change',()=>{steps[i].classList.toggle('done',cb.checked);up()})});up();
-document.querySelectorAll('.cmd').forEach(el=>{el.addEventListener('click',()=>{navigator.clipboard.writeText(el.textContent.replace(/copy$|copied ✓$/,'').trim());el.classList.add('copied');setTimeout(()=>el.classList.remove('copied'),1500)})});
-// TOC highlight
-const tocLinks=document.querySelectorAll('.sidebar a');
-const obs=new IntersectionObserver(entries=>{entries.forEach(e=>{if(e.isIntersecting){const id=e.target.id;tocLinks.forEach(a=>{a.classList.toggle('active',a.getAttribute('href')==='#'+id)})}})},{rootMargin:'-80px 0px -60% 0px'});
-document.querySelectorAll('.step[id]').forEach(s=>obs.observe(s));
+// Tabs
+const tabs=document.querySelectorAll('.tab'),panels=document.querySelectorAll('.panel');
+tabs.forEach(t=>{t.addEventListener('click',()=>{
+  tabs.forEach(x=>x.classList.remove('active'));
+  panels.forEach(x=>x.classList.remove('active'));
+  t.classList.add('active');
+  document.getElementById(t.dataset.tab).classList.add('active');
+})});
+
+// Checkboxes
+const allSteps=document.querySelectorAll('.step'),allChecks=document.querySelectorAll('.step input[type="checkbox"]');
+const fill=document.getElementById('pFill'),cEl=document.getElementById('pCount'),tEl=document.getElementById('pTotal'),K='bot-setup-v3';
+tEl.textContent=allChecks.length;
+try{const s=JSON.parse(localStorage.getItem(K)||'[]');s.forEach(i=>{if(allChecks[i]){allChecks[i].checked=true;allSteps[i].classList.add('done')}})}catch(e){}
+function up(){const d=[...allChecks].filter(c=>c.checked).length;cEl.textContent=d;fill.style.width=(d/allChecks.length*100)+'%';const ix=[];allChecks.forEach((c,i)=>{if(c.checked)ix.push(i)});localStorage.setItem(K,JSON.stringify(ix))}
+allChecks.forEach((cb,i)=>{cb.addEventListener('change',()=>{allSteps[i].classList.toggle('done',cb.checked);up()})});up();
+
+// Copy
+document.querySelectorAll('.cmd').forEach(el=>{el.addEventListener('click',e=>{
+  if(e.target.classList.contains('cmd-copy')){}
+  const text=el.textContent.replace(/^copy/,'').trim();
+  navigator.clipboard.writeText(text);
+  el.classList.add('copied');
+  const cp=el.querySelector('.cmd-copy');if(cp)cp.textContent='copied ✓';
+  setTimeout(()=>{el.classList.remove('copied');if(cp)cp.textContent='copy'},1500);
+})});
 </script>
 </body>
 </html>
