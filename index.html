@@ -5,60 +5,55 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Bot Setup Guide — Humanity Labs</title>
   <meta name="description" content="Build your own AI assistant. OpenClaw + Obsidian + Telegram. Free step-by-step guide by Humanity Labs.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23111'/><text y='66' font-size='44' font-family='system-ui' fill='%23fff' x='50' text-anchor='middle' font-weight='700'>B</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23111'/><text y='66' font-size='44' font-family='system-ui' fill='%23d4a843' x='50' text-anchor='middle' font-weight='700'>HL</text></svg>">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:wght@400;600&display=swap" rel="stylesheet">
   <style>
     :root{
-      --bg:#fff;--bg-subtle:#f9fafb;--bg-muted:#f3f4f6;
-      --border:#e5e7eb;--border-light:#f0f0f0;
-      --text:#111827;--text-secondary:#6b7280;--text-tertiary:#9ca3af;
-      --accent:#111827;--accent-light:#374151;
+      --bg:#fff;--bg-subtle:#fafaf9;--bg-muted:#f5f4f1;
+      --border:#e8e6e1;--border-light:#f0ede8;
+      --text:#1a1a1a;--text-secondary:#6b6660;--text-tertiary:#a39e96;
+      --gold:#d4a843;--gold-light:#f5eddb;--gold-dim:rgba(212,168,67,.12);
       --green:#10b981;--green-bg:#ecfdf5;
       --blue:#3b82f6;--blue-bg:#eff6ff;
       --red:#ef4444;--red-bg:#fef2f2;
-      --amber:#f59e0b;--amber-bg:#fffbeb;
-      --radius:12px;--radius-sm:8px;--radius-lg:16px;
+      --radius:12px;--radius-sm:8px;
     }
     *{margin:0;padding:0;box-sizing:border-box}
     html{-webkit-text-size-adjust:100%;touch-action:pan-y}
     body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);line-height:1.7;font-size:15px;overflow-x:hidden;-webkit-font-smoothing:antialiased}
-    a{color:var(--accent);text-decoration:underline;text-decoration-color:var(--border);text-underline-offset:2px}
-    a:hover{text-decoration-color:var(--accent)}
+    a{color:var(--text);text-decoration:underline;text-decoration-color:var(--gold);text-underline-offset:2px}
+    a:hover{text-decoration-color:var(--text)}
     strong{color:var(--text);font-weight:600}
     code{background:var(--bg-muted);padding:2px 6px;border-radius:4px;font-size:.84em;font-family:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace}
 
-    /* LAYOUT */
     .app{display:flex;min-height:100vh}
 
     /* SIDEBAR */
     .sidebar{
       width:240px;flex-shrink:0;
-      background:var(--bg);border-right:1px solid var(--border-light);
+      background:var(--bg-subtle);border-right:1px solid var(--border-light);
       position:fixed;top:0;left:0;bottom:0;
-      display:flex;flex-direction:column;overflow-y:auto;
-      z-index:40;
+      display:flex;flex-direction:column;overflow-y:auto;z-index:40;
     }
-    .sidebar-header{
-      padding:24px 20px 20px;
-      border-bottom:1px solid var(--border-light);
+    .sidebar-header{padding:28px 20px 24px;border-bottom:1px solid var(--border-light)}
+    .sidebar-logo{
+      font-family:'Playfair Display',Georgia,serif;
+      font-size:12px;letter-spacing:3px;text-transform:uppercase;
+      color:var(--gold);font-weight:600;
     }
-    .sidebar-logo{font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-tertiary);font-weight:600}
     .sidebar-logo a{color:inherit;text-decoration:none}
-    .sidebar-logo a:hover{color:var(--text-secondary)}
-    .sidebar-title{font-size:14px;font-weight:700;color:var(--text);margin-top:6px}
 
-    .nav-items{padding:12px 8px;flex:1}
+    .nav-items{padding:16px 10px;flex:1}
 
     .nav-item{
       display:flex;align-items:center;gap:10px;
       padding:9px 12px;cursor:pointer;
       color:var(--text-secondary);font-size:13.5px;font-weight:500;
       border-radius:var(--radius-sm);
-      transition:all .15s ease;
-      margin-bottom:2px;
+      transition:all .15s ease;margin-bottom:2px;
     }
-    .nav-item:hover{background:var(--bg-subtle);color:var(--text)}
-    .nav-item.active{background:var(--bg-muted);color:var(--text);font-weight:600}
+    .nav-item:hover{background:var(--bg-muted);color:var(--text)}
+    .nav-item.active{background:var(--gold-dim);color:var(--text);font-weight:600}
 
     .nav-icon{width:18px;height:18px;display:flex;align-items:center;justify-content:center}
     .nav-icon svg{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
@@ -66,13 +61,13 @@
     .nav-progress{
       width:18px;height:18px;border-radius:50%;
       margin-left:auto;position:relative;
-      background:conic-gradient(var(--green) var(--pct,0%), var(--bg-muted) var(--pct,0%));
+      background:conic-gradient(var(--gold) var(--pct,0%), var(--bg-muted) var(--pct,0%));
       display:flex;align-items:center;justify-content:center;
       transition:all .3s ease;
     }
-    .nav-progress-inner{width:12px;height:12px;border-radius:50%;background:var(--bg);transition:background .15s}
-    .nav-item.active .nav-progress-inner{background:var(--bg-muted)}
-    .nav-progress.complete{background:var(--green)}
+    .nav-progress-inner{width:12px;height:12px;border-radius:50%;background:var(--bg-subtle);transition:background .15s}
+    .nav-item.active .nav-progress-inner{background:transparent;background:var(--gold-light)}
+    .nav-progress.complete{background:var(--gold)}
     .nav-progress.complete .nav-progress-inner{display:none}
     .nav-progress.complete::after{content:'';width:6px;height:3px;border-left:1.5px solid #fff;border-bottom:1.5px solid #fff;transform:rotate(-45deg);margin-top:-1px}
 
@@ -80,19 +75,22 @@
     .content{flex:1;margin-left:240px;min-height:100vh;display:flex;flex-direction:column}
 
     .content-header{
-      padding:32px 48px 28px;
+      padding:40px 48px 32px;
       border-bottom:1px solid var(--border-light);
       background:var(--bg);
     }
-    .content-header h1{font-size:24px;font-weight:700;color:var(--text);letter-spacing:-.3px}
-    .content-header p{color:var(--text-secondary);font-size:14px;margin-top:6px;max-width:none;line-height:1.6}
+    .content-header h1{font-family:'Playfair Display',Georgia,serif;font-size:28px;font-weight:600;color:var(--text);letter-spacing:-.3px}
+    .content-header p{color:var(--text-secondary);font-size:14px;margin-top:8px;line-height:1.6}
 
     .panel-wrap{padding:32px 48px 100px;max-width:none;flex:1}
 
     .panel{display:none}
     .panel.active{display:block}
 
-    .section-label{font-size:11px;letter-spacing:1px;text-transform:uppercase;color:var(--text-tertiary);font-weight:600;margin-bottom:16px}
+    .section-label{
+      font-size:11px;letter-spacing:1.5px;text-transform:uppercase;
+      color:var(--gold);font-weight:600;margin-bottom:20px;
+    }
 
     /* STEPS */
     .step{
@@ -109,8 +107,8 @@
       width:18px;height:18px;border:1.5px solid var(--border);border-radius:5px;
       background:var(--bg);cursor:pointer;transition:all .15s ease;
     }
-    .step input:hover{border-color:var(--text-secondary)}
-    .step input:checked{background:var(--text);border-color:var(--text)}
+    .step input:hover{border-color:var(--gold)}
+    .step input:checked{background:var(--gold);border-color:var(--gold)}
     .step input:checked::after{content:'';display:block;width:5px;height:8px;border:solid #fff;border-width:0 1.5px 1.5px 0;transform:rotate(45deg);margin:2px auto 0}
     .step.done{opacity:.4}
     .step.done:hover{opacity:.6}
@@ -137,11 +135,15 @@
     .callout strong{font-weight:600}
     .warn{background:var(--red-bg);border-left:3px solid var(--red)}.warn strong{color:var(--red)}
     .tip{background:var(--blue-bg);border-left:3px solid var(--blue)}.tip strong{color:var(--blue)}
-    .pro{background:var(--bg-subtle);border-left:3px solid var(--border);padding:16px 20px;margin:16px 0;font-size:14px;line-height:1.7;color:var(--text-secondary)}
+    .pro{background:var(--bg-subtle);border-left:3px solid var(--gold);padding:16px 20px;margin:16px 0;font-size:14px;line-height:1.7;color:var(--text-secondary)}
     .pro strong{color:var(--text)}
 
-    footer{padding:32px 48px;border-top:1px solid var(--border-light);color:var(--text-tertiary);font-size:12px}
-    footer a{color:var(--text-tertiary);text-decoration:none}footer a:hover{color:var(--text-secondary)}
+    footer{
+      padding:32px 48px;border-top:1px solid var(--border-light);
+      color:var(--text-tertiary);font-size:12px;
+    }
+    footer a{color:var(--text-tertiary);text-decoration:none}footer a:hover{color:var(--gold)}
+    footer .separator{display:inline-block;width:1px;height:10px;background:var(--border);margin:0 10px;vertical-align:middle}
 
     /* MOBILE */
     .mobile-header{display:none}
@@ -153,16 +155,19 @@
       .content-header{display:none}
 
       .mobile-header{
-        display:flex;align-items:center;justify-content:space-between;
+        display:flex;align-items:center;
         padding:14px 20px;background:rgba(255,255,255,.85);
         -webkit-backdrop-filter:blur(20px) saturate(180%);
         backdrop-filter:blur(20px) saturate(180%);
         border-bottom:1px solid rgba(0,0,0,.06);
         position:sticky;top:0;z-index:50;
       }
-      .mobile-header-text .brand{font-size:10px;letter-spacing:1.2px;text-transform:uppercase;color:var(--text-tertiary);font-weight:600}
-      .mobile-header-text .brand a{color:inherit;text-decoration:none}
-      .mobile-header-text h1{font-size:16px;font-weight:700;color:var(--text);margin-top:1px}
+      .mobile-header h1{
+        font-family:'Playfair Display',Georgia,serif;
+        font-size:16px;font-weight:600;color:var(--text);
+      }
+      .mobile-header .dot{display:inline-block;width:4px;height:4px;border-radius:50%;background:var(--gold);margin:0 10px;vertical-align:middle}
+      .mobile-header .hl{font-size:10px;letter-spacing:1.5px;text-transform:uppercase;color:var(--text-tertiary);font-weight:600}
 
       .panel-wrap{padding:20px 16px 110px}
       .step{padding:16px 16px 16px 46px;border-radius:var(--radius)}
@@ -176,8 +181,7 @@
         backdrop-filter:blur(24px) saturate(200%);
         border-top:1px solid rgba(0,0,0,.06);
         padding:8px 4px calc(8px + env(safe-area-inset-bottom));
-        z-index:100;
-        gap:2px;
+        z-index:100;gap:2px;
       }
       .btab{
         flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;
@@ -187,11 +191,11 @@
         transition:color .15s;border-radius:var(--radius-sm);
       }
       .btab:active{background:rgba(0,0,0,.04)}
-      .btab.active{color:var(--text)}
+      .btab.active{color:var(--gold)}
       .btab-icon{width:22px;height:22px;display:flex;align-items:center;justify-content:center}
       .btab-icon svg{width:20px;height:20px;stroke:currentColor;fill:none;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}
       .btab-progress{width:20px;height:2px;border-radius:1px;background:var(--bg-muted);margin-top:1px;overflow:hidden}
-      .btab-progress-fill{height:100%;background:var(--green);border-radius:1px;transition:width .3s ease}
+      .btab-progress-fill{height:100%;background:var(--gold);border-radius:1px;transition:width .3s ease}
     }
   </style>
 </head>
@@ -200,8 +204,7 @@
 
   <aside class="sidebar">
     <div class="sidebar-header">
-      <div class="sidebar-logo"><a href="https://botsetupguide.com">Humanity Labs</a></div>
-      <div class="sidebar-title">Bot Setup Guide</div>
+      <div class="sidebar-logo"><a href="https://humanitylabs.org">Humanity Labs</a></div>
     </div>
     <div class="nav-items">
       <div class="nav-item active" data-tab="hardware">
@@ -219,6 +222,11 @@
         Obsidian
         <div class="nav-progress" id="np-obsidian"><div class="nav-progress-inner"></div></div>
       </div>
+      <div class="nav-item" data-tab="tailscale">
+        <span class="nav-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/></svg></span>
+        Tailscale
+        <div class="nav-progress" id="np-tailscale"><div class="nav-progress-inner"></div></div>
+      </div>
       <div class="nav-item" data-tab="security">
         <span class="nav-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
         Security
@@ -234,10 +242,9 @@
   <div class="content">
 
     <div class="mobile-header">
-      <div class="mobile-header-text">
-        <div class="brand"><a href="https://botsetupguide.com">Humanity Labs</a></div>
-        <h1>Bot Setup Guide</h1>
-      </div>
+      <h1>Bot Setup Guide</h1>
+      <span class="dot"></span>
+      <span class="hl">Humanity Labs</span>
     </div>
 
     <div class="content-header">
@@ -288,7 +295,7 @@
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Install and start OpenClaw</div>
-        <p>Open Terminal on the AI's computer (press <strong>Command + Space</strong>, type "terminal", press Enter). Paste this entire block and press Enter:</p>
+        <p>Open Terminal on the AI's computer (press <strong>Command + Space</strong>, type "terminal", press Enter). Paste this line and press Enter:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>curl -fsSL https://openclaw.ai/install.sh | bash</div>
         <p>This downloads and runs the official OpenClaw installer. It installs OpenClaw, registers it as a background service (so it starts automatically when the computer boots), and starts it right now. Once running, it stays running even if you close Terminal or restart the computer.</p>
         <p>If you already have Homebrew installed, you can also install with <code>brew install openclaw</code> followed by <code>openclaw gateway install && openclaw gateway start</code>.</p>
@@ -376,7 +383,7 @@ launchctl load ~/Library/LaunchAgents/md.obsidian.keepalive.plist</div>
       <div class="step"><input type="checkbox">
         <div class="step-title">Enable semantic search</div>
         <p>By default, your AI can only search its own daily log files. Semantic search lets it search through <strong>all</strong> your notes by meaning, not just exact keywords. For example, you could ask "what restaurant did James recommend?" and it would find the answer even if the word "restaurant" never appears in the note — because it understands that "that Italian place on 5th street" is a restaurant.</p>
-        <p>Everything runs locally on your machine. No data is sent to any external service.</p>
+        <p>Everything runs locally on your machine using a small AI model (~313MB). No data is sent to any external service.</p>
         <p>Open Terminal on the AI's computer (Command + Space, type "terminal", press Enter) and paste these two commands:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>openclaw config set agents.defaults.memorySearch.provider local
 openclaw config set agents.defaults.memorySearch.fallback none</div>
@@ -387,8 +394,56 @@ openclaw config set agents.defaults.memorySearch.fallback none</div>
         <p>Replace those folder names with whatever folders you've created in your vault. Save the file (Command + S) and close it.</p>
         <p>Finally, restart OpenClaw so it picks up the changes. Paste this in Terminal:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>openclaw gateway restart</div>
-        <p>The first time semantic search runs, it downloads a small AI model (~313MB) and builds an index of all your notes. This takes 2-5 minutes depending on your internet speed and how many notes you have. After that, searches are instant.</p>
+        <p>The first time semantic search runs, it downloads the embedding model and builds an index of all your notes. This takes 2-5 minutes depending on your internet speed and how many notes you have. After that, searches are instant.</p>
         <div class="callout tip"><strong>This is the most impactful step in this section.</strong> Without semantic search, the AI can only look through its own daily logs. With it, the AI can find information across everything you've ever written — contacts, meeting notes, lists, ideas, anything in your vault.</div>
+      </div>
+    </div>
+
+    <!-- ==================== TAILSCALE ==================== -->
+    <div class="panel" id="tailscale">
+      <div class="section-label">Tailscale</div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">What Tailscale does and why you need it</div>
+        <p><a href="https://tailscale.com">Tailscale</a> is a free app that creates a private, encrypted network between your devices — no matter where they are in the world. Once installed, your phone, laptop, and the AI's computer can all see each other as if they were on the same Wi-Fi network, even if one is at home and the other is in a different country.</p>
+        <p>This matters because your AI's computer is probably tucked in a corner or at a different location. Without Tailscale, you'd need to be on the same local network to access it. With Tailscale, you can view the AI's screen, access the OpenClaw dashboard, and troubleshoot issues from anywhere.</p>
+        <p>Tailscale is free for personal use (up to 100 devices) and takes about 3 minutes to set up.</p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Install Tailscale on the AI's computer</div>
+        <p>Open Terminal on the AI's computer (Command + Space, type "terminal", press Enter) and paste:</p>
+        <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask tailscale</div>
+        <p>Once installed, open Tailscale from your Applications folder (or Command + Space, type "tailscale"). A small icon will appear in your menu bar (top right of the screen). Click it and sign in with your Google, Microsoft, or GitHub account.</p>
+        <p>After signing in, the AI's computer gets a Tailscale IP address (something like <code>100.x.x.x</code>). You can see this in the Tailscale menu bar dropdown. Write it down — you'll use it to connect from other devices.</p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Install Tailscale on your phone and laptop</div>
+        <p><strong>Phone:</strong> Download Tailscale from the <a href="https://apps.apple.com/app/tailscale/id1470499037">App Store</a> or <a href="https://play.google.com/store/apps/details?id=com.tailscale.ipn">Play Store</a>. Sign in with the <strong>same account</strong> you used on the AI's computer.</p>
+        <p><strong>Laptop/Desktop:</strong> Download from <a href="https://tailscale.com/download">tailscale.com/download</a>. Sign in with the same account.</p>
+        <p>Once all devices are signed in, they can reach each other using their Tailscale IP addresses. You can verify by opening a web browser on your phone and typing the AI's Tailscale IP — if you see a connection, it's working.</p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Access the OpenClaw dashboard remotely</div>
+        <p>OpenClaw has a built-in web dashboard called the Control UI. It lets you see your AI's status, chat history, configuration, and logs from any web browser.</p>
+        <p>First, configure OpenClaw to allow connections from your Tailscale network. Open Terminal on the AI's computer and paste:</p>
+        <div class="cmd"><span class="cmd-copy">copy</span>openclaw config set gateway.controlUI.enabled true
+openclaw gateway restart</div>
+        <p>Now, from any device on your Tailscale network, open a web browser and go to:</p>
+        <div class="config">http://[AI's Tailscale IP]:18789</div>
+        <p>Replace <code>[AI's Tailscale IP]</code> with the actual IP address (e.g., <code>http://100.79.229.90:18789</code>). You should see the OpenClaw Control UI with your AI's status, recent conversations, and settings.</p>
+        <div class="callout tip"><strong>Bookmark this on your phone.</strong> The dashboard is useful for quick health checks when you're away from home — you can see if the AI is running, check recent messages, and restart services if needed.</div>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Enable remote screen access</div>
+        <p>About 5% of the time, the AI will hit something it can't handle on its own: a CAPTCHA puzzle, a credit card form, or a browser security check. When that happens, you need to see and control its screen.</p>
+        <p>On the AI's computer: go to <strong>System Settings → General → Sharing</strong> → turn on <strong>Screen Sharing</strong>. This enables VNC (a remote desktop protocol) on the machine.</p>
+        <p>From your Mac: open Finder → in the menu bar click <strong>Go → Connect to Server</strong> → type <code>vnc://[AI's Tailscale IP]</code> and click Connect. You'll see the AI's desktop as if you were sitting in front of it. You can click, type, and interact with everything.</p>
+        <p>From your phone: download a VNC app like <strong>Screens</strong> (iOS) or <strong>bVNC</strong> (Android), and connect using the Tailscale IP address.</p>
+        <div class="callout tip"><strong>This works from anywhere in the world.</strong> Because both devices are on Tailscale, the connection is encrypted and works regardless of whether you're at home, at a coffee shop, or in another country. No port forwarding or network configuration needed.</div>
       </div>
     </div>
 
@@ -405,7 +460,7 @@ openclaw config set agents.defaults.memorySearch.fallback none</div>
       <div class="step"><input type="checkbox">
         <div class="step-title">Gateway stays local</div>
         <p>The OpenClaw gateway (the background service running on the AI's computer) only listens on <code>127.0.0.1</code>, which is the computer's way of talking to itself. This means only software running on the same machine can communicate with the gateway. No one on the internet can reach it.</p>
-        <p><strong>Never change this setting.</strong> If you need to access the AI's computer remotely (from your laptop or phone), use <a href="https://tailscale.com">Tailscale</a> (free for personal use). Tailscale creates a private, encrypted tunnel between your devices without opening any ports to the internet. Install it on both machines, log in with the same account, and they can see each other securely.</p>
+        <p><strong>Never expose this to the public internet.</strong> If you need remote access, use Tailscale (covered in the Tailscale section). Tailscale creates a private tunnel without opening any ports to the outside world.</p>
       </div>
 
       <div class="step"><input type="checkbox">
@@ -419,13 +474,6 @@ openclaw config set agents.defaults.memorySearch.fallback none</div>
         <div class="step-title">Use scoped tokens with expiration dates</div>
         <p>When the AI creates API tokens (passwords that let it access services like GitHub or Vercel programmatically), always choose the minimum permissions needed. If the AI only needs to read code, don't give it write access. Set tokens to expire after 90 days so they don't last forever if forgotten.</p>
         <p>Your AI can help with this. Send it a message like: <em>"Review your current API tokens and tell me which ones have excessive permissions or no expiration date."</em></p>
-      </div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Set up remote screen access</div>
-        <p>About 5% of the time, the AI will hit something it can't handle on its own: a CAPTCHA puzzle, a credit card form, or a browser security check. When that happens, you need to see its screen.</p>
-        <p><strong>Mac to Mac (same network):</strong> On the AI's computer, go to System Settings → General → Sharing → turn on <strong>Screen Sharing</strong>. From your Mac, open Finder → in the menu bar click Go → Network. You'll see the AI's computer listed. Double-click it to connect.</p>
-        <p><strong>From anywhere (different network):</strong> Install <a href="https://tailscale.com">Tailscale</a> on both machines. Once connected, you can use any VNC app (like the built-in Screen Sharing app on Mac) to connect to the AI's Tailscale IP address. This works from anywhere in the world as if you were on the same local network.</p>
       </div>
 
       <div class="callout warn">
@@ -452,10 +500,12 @@ openclaw config set agents.defaults.memorySearch.fallback none</div>
       <p style="font-size:13.5px;color:var(--text-secondary);margin-top:8px;">OpenClaw ships new features and security patches frequently. Staying on the latest version means fewer bugs and better capabilities. You can also just ask your AI to update itself — send it "run openclaw update" on Telegram.</p>
     </div>
 
-    </div><!-- /panel-wrap -->
+    </div>
 
     <footer>
-      <p>A free guide by <a href="https://botsetupguide.com">Humanity Labs</a> · Creators of <a href="https://vajra.to">Vajra</a></p>
+      <a href="https://humanitylabs.org">Humanity Labs</a>
+      <span class="separator"></span>
+      Creators of <a href="https://vajra.to">Vajra</a>
     </footer>
   </div>
 
@@ -477,6 +527,11 @@ openclaw config set agents.defaults.memorySearch.fallback none</div>
     <span class="btab-icon"><svg viewBox="0 0 24 24"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><line x1="12" y1="22" x2="12" y2="15.5"/><polyline points="22 8.5 12 15.5 2 8.5"/></svg></span>
     Obsidian
     <div class="btab-progress"><div class="btab-progress-fill" id="bp-obsidian"></div></div>
+  </div>
+  <div class="btab" data-tab="tailscale">
+    <span class="btab-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="5" r="2"/><circle cx="5" cy="12" r="2"/><circle cx="19" cy="12" r="2"/><circle cx="12" cy="19" r="2"/><line x1="12" y1="7" x2="12" y2="17"/><line x1="7" y1="12" x2="17" y2="12"/></svg></span>
+    Tailscale
+    <div class="btab-progress"><div class="btab-progress-fill" id="bp-tailscale"></div></div>
   </div>
   <div class="btab" data-tab="security">
     <span class="btab-icon"><svg viewBox="0 0 24 24"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></span>
@@ -500,13 +555,13 @@ function switchTab(tab){
 }
 navItems.forEach(n=>n.addEventListener('click',()=>switchTab(n.dataset.tab)));
 
-const K='bot-setup-v6';
+const K='bot-setup-v7';
 const allChecks=[...document.querySelectorAll('.step input[type="checkbox"]')];
 const allSteps=[...document.querySelectorAll('.step')];
 
 try{const s=JSON.parse(localStorage.getItem(K)||'[]');s.forEach(i=>{if(allChecks[i]){allChecks[i].checked=true;allSteps[i].classList.add('done')}})}catch(e){}
 
-const trackedSections=['hardware','openclaw','obsidian','security'];
+const trackedSections=['hardware','openclaw','obsidian','tailscale','security'];
 
 function getSectionChecks(tabId){
   const panel=document.getElementById(tabId);
