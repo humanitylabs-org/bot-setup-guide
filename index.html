@@ -89,6 +89,31 @@
       line-height: 1.5;
     }
 
+    /* Pro Tips */
+    .pro-tip {
+      background: rgba(212, 168, 67, 0.04);
+      border: 1px solid rgba(212, 168, 67, 0.12);
+      border-left: 3px solid #d4a843;
+      padding: 20px 24px;
+      border-radius: 6px;
+      margin: 16px 0;
+    }
+
+    .pro-tip-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #d4a843;
+      margin-bottom: 8px;
+    }
+
+    .pro-tip p {
+      color: #999;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
     /* About */
     .about {
       padding: 40px 0 60px;
@@ -613,8 +638,14 @@
 
             <p><strong>Connect from your other devices:</strong> Install Obsidian on your phone/laptop. Create a new vault, enable Sync, log in, select the remote vault. Done. No exclusions needed on secondary devices. Changes sync in seconds.</p>
 
-            <div class="tip">
-              <strong>About folder organization:</strong> Your AI isn't opinionated about how you organize your notes. But you should be. Keep things one folder deep: Contacts, Lists, Memos, Tasks, whatever makes sense to you. Don't nest folders three levels deep because nobody ever finds anything in there. The most important thing: tell your agent how you want to be organized. It can reorganize your notes, move files to the right folders, and keep everything clean. Just tell it your system.
+            <div class="pro-tip">
+              <div class="pro-tip-label">Pro Tip</div>
+              <p><strong>Folder structure.</strong> Keep notes one folder deep: Contacts, Lists, Memos, Tasks, whatever makes sense to you. Don't nest three levels deep because nobody ever finds anything in there. Tell your agent how you want to be organized and it will reorganize your notes for you, move files to the right folders, and keep everything clean.</p>
+            </div>
+
+            <div class="pro-tip">
+              <div class="pro-tip-label">Pro Tip</div>
+              <p><strong>Create a "Whiteboard.md" file.</strong> Keep it at the root of your vault. It starts with "W" so it naturally sits at the bottom of your file list, always easy to find. Use it as a scratchpad for quick thoughts, voice transcription dumps, or anything you want your agent to see immediately. Think of it as your vault's homepage.</p>
             </div>
           </div>
         </div>
