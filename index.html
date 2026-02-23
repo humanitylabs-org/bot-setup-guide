@@ -450,22 +450,26 @@ systemctl enable syncthing && systemctl start syncthing</div>
       </div>
 
       <div class="step"><input type="checkbox">
-        <div class="step-title">Install the OpenClaw plugin</div>
-        <p>Obsidian → Settings → Community Plugins → Browse → search "OpenClaw" → Install → Enable.</p>
-        <p>Not listed yet? Install manually:</p>
-        <div class="cmd"><span class="cmd-copy">copy</span>cd ~/.openclaw/workspace/.obsidian/plugins
-mkdir -p openclaw && cd openclaw
-curl -L -o main.js https://github.com/oscarhenrycollins/obsidianclaw/releases/latest/download/main.js
-curl -L -o manifest.json https://github.com/oscarhenrycollins/obsidianclaw/releases/latest/download/manifest.json
-curl -L -o styles.css https://github.com/oscarhenrycollins/obsidianclaw/releases/latest/download/styles.css</div>
+        <div class="step-title">Install the OpenClaw plugin (via BRAT)</div>
+        <p>The plugin is pending community approval. Install via BRAT on <strong>every device</strong> (desktop + mobile):</p>
+        <p>1. Obsidian → Settings → Community Plugins → Browse → search "<strong>BRAT</strong>" → Install → Enable</p>
+        <p>2. BRAT Settings → <strong>Add Beta Plugin</strong> → enter: <code>oscarhenrycollins/obsidianclaw</code></p>
+        <p>BRAT auto-updates when new releases are published. Works on desktop and mobile.</p>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Connect the plugin</div>
-        <p>Gateway URL: <code>ws://127.0.0.1:18789</code> (local) or <code>ws://[Tailscale IP]:18789</code> (remote).</p>
-        <p>Approve the device:</p>
+        <p>The setup wizard opens automatically. Enter your Tailscale gateway URL and auth token:</p>
+        <p>Gateway URL: <code>ws://[Tailscale IP]:18789</code> — get your IP with <code>tailscale ip -4</code></p>
+        <p>Auth Token: from <code>~/.openclaw/openclaw.json</code> → <code>gateway.auth.token</code></p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Approve device pairing</div>
+        <p>Each new device generates a unique keypair and requests pairing. Approve from the OpenClaw dashboard (<code>http://[Tailscale IP]:18789/</code>) or via CLI:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>openclaw devices list
 openclaw devices approve &lt;requestId&gt;</div>
+        <p>Pair once per device — the keypair syncs across reinstalls via Obsidian Sync.</p>
       </div>
 
       <div class="step"><input type="checkbox">
