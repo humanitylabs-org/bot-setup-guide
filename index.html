@@ -25,7 +25,6 @@
     strong{color:var(--text);font-weight:600}
     code{background:var(--bg-muted);padding:2px 6px;border-radius:4px;font-size:.84em;font-family:'SF Mono',SFMono-Regular,Consolas,'Liberation Mono',Menlo,monospace}
 
-    /* DESKTOP LAYOUT */
     .app{display:flex;min-height:100vh}
 
     .sidebar{
@@ -93,11 +92,17 @@
     .tip{background:var(--blue-bg);border-left:3px solid var(--blue)}.tip strong{color:var(--blue)}
     .gold-tip{background:var(--gold-light);border-left:3px solid var(--gold)}.gold-tip strong{color:#92640d}
 
+    .branch{background:var(--bg-subtle);border:2px solid var(--border);border-radius:var(--radius);padding:20px;margin:20px 0}
+    .branch-title{font-size:14px;font-weight:700;color:var(--text);margin-bottom:4px}
+    .branch-desc{font-size:13px;color:var(--text-secondary);margin-bottom:12px}
+    .branch-label{display:inline-block;font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;padding:3px 8px;border-radius:4px;margin-bottom:10px}
+    .branch-label.default{background:var(--gold-light);color:#92640d}
+    .branch-label.alt{background:var(--blue-bg);color:var(--blue)}
+
     footer{padding:32px 48px;border-top:1px solid var(--border-light);color:var(--text-tertiary);font-size:12px}
     footer a{color:var(--text-tertiary);text-decoration:none}footer a:hover{color:var(--gold)}
     footer .sep{display:inline-block;width:1px;height:10px;background:var(--border);margin:0 10px;vertical-align:middle}
 
-    /* MOBILE */
     .mobile-header{display:none}
     .bottom-bar{display:none}
 
@@ -194,7 +199,7 @@
 
     <div class="content-header">
       <h1>Bot Setup Guide</h1>
-      <p>Build a personal AI that runs 24/7 on your own machine. Each phase unlocks a new capability. Check off steps as you go — progress saves automatically.</p>
+      <p>Build a personal AI that runs 24/7 on your own hardware. Each phase unlocks a new capability. Check off steps as you go.</p>
     </div>
 
     <div class="panel-wrap">
@@ -205,57 +210,73 @@
       <div class="section-desc">Get a dedicated machine running with OpenClaw and remote access. After this, the AI is alive but you haven't talked to it yet.</div>
 
       <div class="step"><input type="checkbox">
-        <div class="step-title">Get a dedicated computer</div>
-        <p>Your AI needs its own machine that never turns off. The best option is a <strong>Mac mini</strong> — it's small (about the size of a sandwich), silent, and uses very little electricity ($2-3/month). A spare laptop with the lid closed also works. If you don't have spare hardware, you can rent a cloud server (VPS) from Hetzner or DigitalOcean for $5-10/month.</p>
-        <p>This should <strong>not</strong> be the computer you use every day. Your AI gets its own machine so it can run 24/7 without interrupting your work.</p>
+        <div class="step-title">Get a dedicated machine</div>
+        <p>Your AI needs its own machine that never turns off. Two good options:</p>
+        <p><strong>Mac mini or spare laptop</strong> (recommended): Small, silent, low power ($2-3/month electricity). A Mac mini is ideal. A spare laptop with the lid closed also works. This should <strong>not</strong> be the computer you use every day.</p>
+        <p><strong>VPS (cloud server)</strong>: Rent one from <a href="https://hetzner.com">Hetzner</a> or <a href="https://digitalocean.com">DigitalOcean</a> for $5-10/month. Good if you don't have spare hardware or want it running in a datacenter. SSH access required.</p>
       </div>
 
       <div class="step"><input type="checkbox">
-        <div class="step-title">Install Homebrew</div>
-        <p><strong>First, open Terminal.</strong> Terminal is an app on your Mac that lets you type commands directly to the computer. To open it: press the <strong>Command key</strong> (⌘) and the <strong>Space bar</strong> at the same time. A search bar called Spotlight appears. Type <strong>terminal</strong> and press Enter. A window with a blinking cursor opens — this is Terminal.</p>
-        <p>Copy the line below (click to copy), go to Terminal, paste with <strong>Command + V</strong>, and press Enter.</p>
+        <div class="step-title">Open a terminal</div>
+        <p><strong>Mac mini / laptop:</strong> Press <strong>Command</strong> (&#8984;) + <strong>Space</strong> to open Spotlight. Type <strong>terminal</strong> and press Enter. A window with a blinking cursor opens.</p>
+        <p><strong>VPS:</strong> From your personal computer, open Terminal and connect via SSH:</p>
+        <div class="cmd"><span class="cmd-copy">copy</span>ssh root@your-vps-ip</div>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Install prerequisites</div>
+        <p><strong>Mac:</strong> Install Homebrew (a package manager). Copy this line, paste into Terminal, press Enter:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</div>
-        <p>It asks for your Mac password. When you type it, <strong>nothing appears on screen</strong> — no dots, no stars. That's normal. Type it and press Enter. Wait 2-5 minutes until you see a new blinking cursor.</p>
+        <p>It asks for your Mac password. When you type it, <strong>nothing appears on screen</strong>. That's normal. Type it and press Enter. Wait 2-5 minutes.</p>
+        <p><strong>VPS (Ubuntu/Debian):</strong> Update packages:</p>
+        <div class="cmd"><span class="cmd-copy">copy</span>apt update && apt upgrade -y</div>
       </div>
 
       <div class="step"><input type="checkbox">
-        <div class="step-title">Prevent the computer from sleeping</div>
-        <p>Your AI can't work if the machine sleeps. Open Terminal and paste:</p>
+        <div class="step-title">Prevent sleeping (Mac only)</div>
+        <p>Your AI can't work if the machine sleeps:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>sudo pmset -a sleep 0</div>
-        <p><code>sudo</code> means "do this with administrator permission." Password prompt works the same (invisible typing).</p>
-        <p>Also: <strong>System Settings → Displays → Advanced</strong> → turn off "Automatically adjust brightness." For laptops: <strong>System Settings → Battery → Options</strong> → "Prevent automatic sleeping on power adapter."</p>
+        <p>Also: <strong>System Settings → Displays → Advanced</strong> → turn off "Automatically adjust brightness." For laptops: <strong>Battery → Options</strong> → "Prevent automatic sleeping on power adapter."</p>
+        <div class="callout tip"><strong>VPS users:</strong> Skip this step. Cloud servers don't sleep.</div>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Create a Gmail account for the AI</div>
-        <p>Your AI needs its own email to sign up for services. Go to <a href="https://accounts.google.com/signup">Gmail signup</a> <strong>on your phone</strong> (easier for Google's phone verification). Pick any name — it's a throwaway identity.</p>
-        <p>Then on the AI's computer, open a browser, go to <a href="https://gmail.com">gmail.com</a>, log in with the new account, and leave it logged in.</p>
+        <p>Your AI needs its own email for signing up to services. Go to <a href="https://accounts.google.com/signup">Gmail signup</a> <strong>on your phone</strong> (easier for phone verification). Pick any name.</p>
         <div class="callout warn"><strong>Never use your personal Gmail.</strong> The AI's accounts are completely separate. If something goes wrong, only a throwaway email is at risk.</div>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Install OpenClaw</div>
-        <p>Open Terminal and paste:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>curl -fsSL https://openclaw.ai/install.sh | bash</div>
-        <p>This installs OpenClaw, registers it as a background service (auto-starts on boot), and starts it immediately. It keeps running even if you close Terminal or restart.</p>
-        <p>Alternative if you have Homebrew: <code>brew install openclaw</code> then <code>openclaw gateway install && openclaw gateway start</code>.</p>
+        <p>This installs OpenClaw, registers it as a background service (auto-starts on boot), and starts it immediately.</p>
+        <p><strong>Mac alternative:</strong> <code>brew install openclaw</code> then <code>openclaw gateway install && openclaw gateway start</code>.</p>
       </div>
 
       <div class="step"><input type="checkbox">
-        <div class="step-title">Install Tailscale for remote access</div>
-        <p><a href="https://tailscale.com">Tailscale</a> (free) creates a private encrypted network between your devices, no matter where they are. You'll use it to access the AI's screen and dashboard from your phone or laptop — even from another country.</p>
+        <div class="step-title">Install Tailscale</div>
+        <p><a href="https://tailscale.com">Tailscale</a> (free) creates a private encrypted network between all your devices, no matter where they are. You'll use it for remote access and file syncing.</p>
+        <p><strong>Mac:</strong></p>
         <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask tailscale</div>
-        <p>Open Tailscale from Applications. Click the menu bar icon (top right) and sign in with Google, Microsoft, or GitHub. The machine gets a Tailscale IP (like <code>100.x.x.x</code>) — write it down.</p>
+        <p>Open Tailscale from Applications. Click the menu bar icon and sign in. Note the Tailscale IP (like <code>100.x.x.x</code>).</p>
+        <p><strong>VPS (Linux):</strong></p>
+        <div class="cmd"><span class="cmd-copy">copy</span>curl -fsSL https://tailscale.com/install.sh | sh
+sudo tailscale up</div>
+        <p>Follow the auth URL it prints. Note the Tailscale IP.</p>
         <p>Then install Tailscale on your phone (<a href="https://apps.apple.com/app/tailscale/id1470499037">App Store</a> / <a href="https://play.google.com/store/apps/details?id=com.tailscale.ipn">Play Store</a>) and laptop (<a href="https://tailscale.com/download">tailscale.com/download</a>). Sign in with the <strong>same account</strong> on each.</p>
-        <div class="callout gold-tip"><strong>Enable screen sharing now.</strong> On the AI's computer: <strong>System Settings → General → Sharing</strong> → turn on <strong>Screen Sharing</strong>. From your Mac: Finder → Go → Connect to Server → <code>vnc://[Tailscale IP]</code>. From your phone: use a VNC app like Screens (iOS) or bVNC (Android). You'll need this when the AI hits CAPTCHAs or browser issues.</div>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Enable the OpenClaw dashboard</div>
-        <p>OpenClaw has a web dashboard for checking status, viewing conversations, and managing settings.</p>
         <div class="cmd"><span class="cmd-copy">copy</span>openclaw config set gateway.controlUI.enabled true
 openclaw gateway restart</div>
-        <p>From any device on your Tailscale network, open a browser and go to <code>http://[Tailscale IP]:18789</code>. Bookmark it on your phone for quick health checks.</p>
+        <p>From any device on your Tailscale network, open <code>http://[Tailscale IP]:18789</code>. Bookmark it.</p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Enable screen sharing (Mac only)</div>
+        <p><strong>System Settings → General → Sharing</strong> → turn on <strong>Screen Sharing</strong>. Access from another Mac: Finder → Go → Connect to Server → <code>vnc://[Tailscale IP]</code>. From phone: use a VNC app. Useful for CAPTCHAs and browser issues.</p>
+        <div class="callout tip"><strong>VPS users:</strong> You already have SSH access. No screen sharing needed since there's no GUI.</div>
       </div>
 
       <div class="callout gold-tip"><strong>The machine is ready.</strong> OpenClaw is running, Tailscale gives you remote access, and the dashboard lets you monitor everything. Next: connect a messaging app so you can talk to it.</div>
@@ -268,24 +289,24 @@ openclaw gateway restart</div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Connect Telegram</div>
-        <p>Telegram is a free messaging app. This is how you'll talk to your AI — you send a message, it replies in the same chat, like texting a friend.</p>
-        <p>Install it on your phone from the <a href="https://apps.apple.com/app/telegram-messenger/id686449807">App Store</a> or <a href="https://play.google.com/store/apps/details?id=org.telegram.messenger">Play Store</a>. Then follow the <a href="https://docs.openclaw.ai">OpenClaw Telegram setup guide</a> (~5 minutes — you create a "bot" in Telegram and paste a token into OpenClaw).</p>
+        <p>Telegram is a free messaging app. This is how you'll talk to your AI -- like texting a friend who happens to be an AI.</p>
+        <p>Install it on your phone from the <a href="https://apps.apple.com/app/telegram-messenger/id686449807">App Store</a> or <a href="https://play.google.com/store/apps/details?id=org.telegram.messenger">Play Store</a>. Then follow the <a href="https://docs.openclaw.ai">OpenClaw Telegram setup guide</a> (~5 minutes -- you create a "bot" in Telegram and paste a token into OpenClaw).</p>
         <div class="callout tip"><strong>Other options:</strong> OpenClaw also works with Signal, Discord, Slack, WhatsApp, and iMessage. Telegram is the easiest to start with.</div>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Send your first message</div>
         <p>Open Telegram and message your AI: <em>"Hello, are you there?"</em></p>
-        <p>It should reply within seconds. If not, check the dashboard (Setup phase) for errors. Common fix: <code>openclaw gateway restart</code> in Terminal.</p>
+        <p>It should reply within seconds. If not, check the dashboard for errors. Common fix: <code>openclaw gateway restart</code>.</p>
         <div class="callout gold-tip"><strong>Give it a real task right away.</strong> Don't spend a week configuring. Ask something real: "Build me a personal website." "Research hotels in Kyoto for April." "Summarize this PDF." You learn by using it, not by tweaking settings.</div>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Let the AI create its own accounts</div>
-        <p>Tell the AI to sign up for developer services. Send it:</p>
+        <p>Tell the AI to sign up for developer services:</p>
         <p><em>"Sign up for GitHub, Vercel, and Supabase using your Gmail account."</em></p>
-        <p>It opens a browser, goes to each site, and handles registration. Help with CAPTCHAs via remote screen access from Setup.</p>
-        <p>For small purchases (like a $11/year domain), create a free virtual card at <a href="https://privacy.com">Privacy.com</a> with a $20/month limit. You type the card number yourself.</p>
+        <p>It opens a browser, goes to each site, and handles registration. Help with CAPTCHAs via screen sharing (Mac) or paste verification codes (VPS).</p>
+        <p>For small purchases (like a $11/year domain), create a free virtual card at <a href="https://privacy.com">Privacy.com</a> with a $20/month limit.</p>
       </div>
 
       <div class="step"><input type="checkbox">
@@ -297,32 +318,51 @@ openclaw gateway restart</div>
         <p><strong>Google Docs:</strong> Share → Enter the AI's Gmail.</p>
       </div>
 
-      <div class="callout gold-tip"><strong>You now have a fully working AI assistant.</strong> It can write code, deploy websites, manage databases, search the web, and research anything. Everything after this makes the experience better — none of it is required.</div>
+      <div class="callout gold-tip"><strong>You now have a fully working AI assistant.</strong> It can write code, deploy websites, manage databases, search the web, and research anything. Everything after this makes the experience better -- none of it is required.</div>
+
+      <div class="callout tip"><strong>Your bot can finish the rest.</strong> Send your bot this message: <em>"Read botsetupguide.com and set up Sync and Security for me. Ask me questions if you need input."</em> The remaining phases are written so your AI can read and execute them directly. You can also continue manually below.</div>
     </div>
 
     <!-- ==================== SYNC ==================== -->
     <div class="panel" id="sync">
       <div class="section-label">Sync</div>
-      <div class="section-desc">See everything your AI writes on all your devices. Encrypted, beautiful, searchable by meaning.</div>
+      <div class="section-desc">See everything your AI writes on all your devices. Two paths depending on your setup.</div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install Obsidian on the AI's computer</div>
-        <p><a href="https://obsidian.md">Obsidian</a> is a free app that makes Markdown files (your AI's native format) look beautiful. Open Terminal and paste:</p>
-        <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask obsidian</div>
-        <p>Open Obsidian (Command + Space, type "obsidian"). Click <strong>"Open folder as vault."</strong> Press <strong>Command + Shift + G</strong>, type <code>~/.openclaw/workspace</code>, click Open. You'll see all the AI's files.</p>
+      <!-- DECISION POINT -->
+      <div class="callout gold-tip">
+        <strong>Which sync method?</strong> Choose based on your situation:
+        <br><br>
+        <strong>Already use Obsidian Sync?</strong> Keep using it. It works great and syncs plugin settings too. Follow "Path A" below.
+        <br><br>
+        <strong>Starting fresh, or on a VPS?</strong> Use Syncthing (free, peer-to-peer, trustless). Follow "Path B" below. This is the default recommendation.
+        <br><br>
+        <strong>VPS users:</strong> You must use Path B. Obsidian Sync requires the desktop app running with a GUI, which a headless VPS can't do.
+      </div>
+
+      <!-- PATH A: OBSIDIAN SYNC -->
+      <div class="branch">
+        <span class="branch-label alt">Path A</span>
+        <div class="branch-title">Obsidian Sync (if you already have it)</div>
+        <div class="branch-desc">You already pay for Obsidian Sync ($4/month). Keep using it. Skip Path B.</div>
       </div>
 
       <div class="step"><input type="checkbox">
-        <div class="step-title">Enable Obsidian Sync</div>
-        <p>Obsidian Sync ($4/month) encrypts your files end-to-end and syncs across all devices. Not even Obsidian can read your content.</p>
-        <p>In Obsidian: gear icon (⚙️) → <strong>Core plugins</strong> → toggle on <strong>Sync</strong> → click Sync in sidebar → log in → <strong>Create new remote vault</strong>.</p>
-        <p>In Sync settings, find <strong>"Excluded folders"</strong> and add <code>Code</code>. Code repos use Git, not Sync.</p>
+        <div class="step-title">Path A: Install Obsidian on the AI's Mac</div>
+        <p><a href="https://obsidian.md">Obsidian</a> makes Markdown files (your AI's native format) beautiful. On the AI's machine:</p>
+        <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask obsidian</div>
+        <p>Open Obsidian. Click <strong>"Open folder as vault."</strong> Press <strong>Command + Shift + G</strong>, type <code>~/.openclaw/workspace</code>, click Open.</p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Path A: Enable Obsidian Sync</div>
+        <p>In Obsidian: gear icon → <strong>Core plugins</strong> → toggle on <strong>Sync</strong> → click Sync → log in → <strong>Create new remote vault</strong>.</p>
+        <p>In Sync settings, add <code>Code</code> to <strong>"Excluded folders"</strong>. Code repos use Git, not Sync.</p>
         <div class="callout warn"><strong>Leave "Sync all file types" off.</strong> Default (Markdown only) is correct. Code projects have thousands of build files that would overwhelm storage.</div>
       </div>
 
       <div class="step"><input type="checkbox">
-        <div class="step-title">Keep Obsidian running forever</div>
-        <p>Obsidian only syncs while open. Auto-launch and self-restart it:</p>
+        <div class="step-title">Path A: Keep Obsidian running forever</div>
+        <p>Obsidian only syncs while open. Auto-launch and self-restart:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>cat > ~/Library/LaunchAgents/md.obsidian.keepalive.plist << 'PLIST'
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
@@ -337,19 +377,111 @@ openclaw gateway restart</div>
 </plist>
 PLIST
 launchctl load ~/Library/LaunchAgents/md.obsidian.keepalive.plist</div>
-        <p>Launches on boot, restarts every 5 minutes if closed.</p>
       </div>
 
       <div class="step"><input type="checkbox">
-        <div class="step-title">Connect your phone and laptop</div>
-        <p><strong>Phone:</strong> <a href="https://apps.apple.com/us/app/obsidian-connected-notes/id1557175442">App Store</a> or <a href="https://play.google.com/store/apps/details?id=md.obsidian">Play Store</a>. <strong>Laptop:</strong> <a href="https://obsidian.md/download">obsidian.md/download</a>.</p>
+        <div class="step-title">Path A: Connect your phone and laptop</div>
+        <p>Install Obsidian on your phone (<a href="https://apps.apple.com/us/app/obsidian-connected-notes/id1557175442">App Store</a> / <a href="https://play.google.com/store/apps/details?id=md.obsidian">Play Store</a>) and laptop (<a href="https://obsidian.md/download">obsidian.md/download</a>).</p>
         <p>On each device: new vault → Settings → Sync → same account → select the remote vault. Everything the AI writes appears on your phone within seconds.</p>
-        <div class="callout gold-tip"><strong>Create a Whiteboard.md at the vault root.</strong> "W" sorts to the bottom, always easy to find. Shared scratchpad: paste links, jot thoughts, dump ideas. Say "check my whiteboard" and the AI knows what you mean.</div>
+        <div class="callout gold-tip"><strong>Bonus:</strong> Obsidian Sync also syncs plugin data. Install the OpenClaw plugin on one device and it appears on all of them -- including the encryption keys. Pair once, works everywhere.</div>
+      </div>
+
+      <!-- PATH B: SYNCTHING -->
+      <div class="branch">
+        <span class="branch-label default">Path B — Recommended</span>
+        <div class="branch-title">Syncthing over Tailscale (free, trustless)</div>
+        <div class="branch-desc">Peer-to-peer file sync. No server, no subscription, no one sees your data. Works with Mac mini, laptop, and VPS. Tailscale (from Setup phase) handles the networking.</div>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Path B: Install Syncthing on the AI's machine</div>
+        <p><strong>Mac:</strong></p>
+        <div class="cmd"><span class="cmd-copy">copy</span>brew install syncthing
+brew services start syncthing</div>
+        <p><strong>VPS (Ubuntu/Debian):</strong></p>
+        <div class="cmd"><span class="cmd-copy">copy</span>apt install -y syncthing
+# Create a systemd service to run Syncthing as root (or your user)
+cat > /etc/systemd/system/syncthing.service << 'EOF'
+[Unit]
+Description=Syncthing
+After=network.target
+
+[Service]
+ExecStart=/usr/bin/syncthing serve --no-browser --no-restart
+Restart=on-failure
+User=root
+
+[Install]
+WantedBy=multi-user.target
+EOF
+systemctl enable syncthing && systemctl start syncthing</div>
+        <p>Syncthing's web UI runs at <code>http://127.0.0.1:8384</code>. Access it via Tailscale: <code>http://[Tailscale IP]:8384</code>.</p>
+        <div class="callout warn"><strong>VPS security:</strong> By default Syncthing only listens on localhost. If you access the web UI over Tailscale, set a username and password in Settings → GUI.</div>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Path B: Install Syncthing on your devices</div>
+        <p><strong>Mac/PC:</strong> <a href="https://syncthing.net/downloads/">syncthing.net/downloads</a> or <code>brew install syncthing</code>.</p>
+        <p><strong>iPhone:</strong> <a href="https://apps.apple.com/app/m%C3%B6bius-sync/id1539203216">Mobius Sync</a> (App Store, $6 one-time). The only iOS Syncthing client.</p>
+        <p><strong>Android:</strong> <a href="https://play.google.com/store/apps/details?id=com.nutomic.syncthingandroid">Syncthing</a> (free on Play Store).</p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Path B: Connect the devices</div>
+        <p>On the AI's machine, open Syncthing web UI (<code>http://[Tailscale IP]:8384</code>). Note the <strong>Device ID</strong> shown under Actions → Show ID.</p>
+        <p>On your device's Syncthing: <strong>Add Remote Device</strong> → paste the AI machine's Device ID. Syncthing will find it over Tailscale automatically.</p>
+        <p>Accept the pairing request on both sides.</p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Path B: Share the workspace folder</div>
+        <p>On the AI's machine Syncthing UI: <strong>Add Folder</strong>:</p>
+        <p><strong>Folder Path:</strong> <code>~/.openclaw/workspace</code> (Mac) or <code>/root/.openclaw/workspace</code> (VPS)</p>
+        <p><strong>Folder Label:</strong> <code>workspace</code></p>
+        <p>Under the <strong>Sharing</strong> tab, check the box for your device.</p>
+        <p>On your device, accept the folder share. Set the local path to wherever you want the files (your Obsidian vault location works great).</p>
+        <div class="callout tip"><strong>Ignore patterns:</strong> In the folder settings, add these to <strong>Ignore Patterns</strong> to skip code repos and build artifacts:<br><code>Code</code><br><code>.obsidian</code><br><code>node_modules</code></div>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Path B: Install Obsidian and open the synced folder</div>
+        <p>Install <a href="https://obsidian.md">Obsidian</a> (free) on your phone and laptop. Open the synced workspace folder as a vault. Your AI's notes, memories, and files appear beautifully rendered -- and update in real time.</p>
+      </div>
+
+      <!-- SHARED STEPS (BOTH PATHS) -->
+      <div class="branch">
+        <span class="branch-label default">Both Paths</span>
+        <div class="branch-title">Install the OpenClaw chat plugin</div>
+        <div class="branch-desc">Chat with your AI directly inside Obsidian. Works the same regardless of which sync path you chose.</div>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Install the OpenClaw plugin</div>
+        <p>In Obsidian: Settings → Community Plugins → Browse → search <strong>"OpenClaw"</strong> → Install → Enable.</p>
+        <p>If the plugin isn't in the directory yet, install manually:</p>
+        <div class="cmd"><span class="cmd-copy">copy</span># From the AI's machine (or any machine with git):
+cd ~/.openclaw/workspace/.obsidian/plugins
+mkdir -p openclaw && cd openclaw
+curl -L -o main.js https://github.com/oscarhenrycollins/obsidianclaw/releases/latest/download/main.js
+curl -L -o manifest.json https://github.com/oscarhenrycollins/obsidianclaw/releases/latest/download/manifest.json
+curl -L -o styles.css https://github.com/oscarhenrycollins/obsidianclaw/releases/latest/download/styles.css</div>
+        <p>Then in Obsidian: Settings → Community Plugins → reload → enable "OpenClaw".</p>
+      </div>
+
+      <div class="step"><input type="checkbox">
+        <div class="step-title">Connect the plugin to your gateway</div>
+        <p>The setup wizard appears on first launch. Enter your gateway URL:</p>
+        <p><strong>Same machine:</strong> <code>ws://127.0.0.1:18789</code></p>
+        <p><strong>Over Tailscale:</strong> <code>ws://[Tailscale IP]:18789</code></p>
+        <p>First connection triggers device pairing. On the AI's machine:</p>
+        <div class="cmd"><span class="cmd-copy">copy</span>openclaw devices list
+openclaw devices approve &lt;requestId&gt;</div>
+        <div class="callout gold-tip"><strong>Three layers of security.</strong> Tailscale encrypts the network. The auth token verifies your identity. Ed25519 device fingerprinting prevents unauthorized devices. Your private key never leaves your machine.</div>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Enable semantic search</div>
-        <p>Lets your AI search <strong>all</strong> notes by meaning, not keywords. "What restaurant did James recommend?" works even if "restaurant" never appears. Runs locally — no data sent anywhere.</p>
+        <p>Search all notes by meaning, not keywords. "What restaurant did James recommend?" works even if "restaurant" never appears. Runs locally -- no data sent anywhere.</p>
         <div class="cmd"><span class="cmd-copy">copy</span>openclaw config set agents.defaults.memorySearch.provider local
 openclaw config set agents.defaults.memorySearch.fallback none</div>
         <p>Tell it which folders to search. Open the config:</p>
@@ -359,21 +491,10 @@ openclaw config set agents.defaults.memorySearch.fallback none</div>
         <p>Save, close, restart:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>openclaw gateway restart</div>
         <p>First run downloads a model (~313MB) and indexes notes (2-5 min). After that, instant.</p>
-        <div class="callout gold-tip"><strong>Keep folders one level deep.</strong> Contacts, Lists, Memos, Tasks — every note directly in one folder. If you can't find it by filename, rename it. Tell the AI your system and it files things correctly.</div>
       </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install ObsidianClaw (chat from Obsidian)</div>
-        <p>Skip Telegram entirely — chat with your AI from a sidebar in Obsidian. In Obsidian: Settings → Community Plugins → Browse → search <strong>"OpenClaw"</strong> → Install → Enable.</p>
-        <p>The setup wizard walks you through connecting. Same-machine: <code>ws://127.0.0.1:18789</code>. Cross-device (Tailscale): <code>ws://100.x.x.x:18789</code>.</p>
-        <p>First connection triggers device pairing. On the gateway machine:</p>
-        <div class="cmd"><span class="cmd-copy">copy</span>openclaw devices list
-openclaw devices approve &lt;requestId&gt;</div>
-        <div class="callout gold-tip"><strong>Three layers of security.</strong> Tailscale encrypts the network, the auth token verifies your identity, and Ed25519 device fingerprinting prevents unauthorized devices. Your private key never leaves your machine.</div>
-      </div>
-
-      <div class="callout gold-tip"><strong>Put all code in Code/.</strong> Every repo, project, and skill. Excluded from Obsidian Sync — code uses Git, notes use Sync. Tell the AI: "Always clone into Code/."</div>
-      <div class="callout tip"><strong>Let the AI finish its own setup.</strong> Paste this page's URL into Telegram and say "follow this guide." It can complete the remaining steps itself.</div>
+      <div class="callout gold-tip"><strong>Put all code in Code/.</strong> Every repo, project, and skill. Excluded from syncing (both Obsidian Sync and Syncthing). Code uses Git, notes use sync. Tell the AI: "Always clone into Code/."</div>
+      <div class="callout gold-tip"><strong>Create a Whiteboard.md at the vault root.</strong> Shared scratchpad: paste links, jot thoughts, dump ideas. Say "check my whiteboard" and the AI knows what you mean.</div>
     </div>
 
     <!-- ==================== SECURITY ==================== -->
@@ -383,17 +504,18 @@ openclaw devices approve &lt;requestId&gt;</div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Dedicated machine, separate accounts</div>
-        <p>The AI should never run on your personal computer or be logged into your personal accounts. Its own machine, Gmail, GitHub, everything. If compromised, the damage is a throwaway Gmail and free-tier accounts — not your personal life.</p>
+        <p>The AI should never run on your personal computer or be logged into your personal accounts. Its own machine, Gmail, GitHub, everything. If compromised, the damage is a throwaway Gmail and free-tier accounts.</p>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Gateway stays local</div>
-        <p>The OpenClaw gateway only listens on <code>127.0.0.1</code> (localhost). No one on the internet can reach it. <strong>Never expose it publicly.</strong> Tailscale handles remote access through a private tunnel.</p>
+        <p>The OpenClaw gateway only listens on <code>127.0.0.1</code> (localhost). No one on the internet can reach it. <strong>Never expose it publicly.</strong> Tailscale handles remote access through a private encrypted tunnel.</p>
+        <div class="callout warn"><strong>VPS users:</strong> Make sure port 18789 is NOT open in your firewall. Tailscale bypasses the firewall safely. Check with: <code>ss -tlnp | grep 18789</code> -- it should show 127.0.0.1, not 0.0.0.0.</div>
       </div>
 
       <div class="step"><input type="checkbox">
         <div class="step-title">Write safety rules</div>
-        <p>Open <code>SOUL.md</code> in your AI's workspace (visible in Obsidian) and add rules:</p>
+        <p>Open <code>SOUL.md</code> in your AI's workspace and add rules:</p>
         <p><em>"Never send emails, make purchases, or post publicly without asking me first. Never access files outside the workspace. Use trash instead of permanent delete."</em></p>
         <p>Like setting expectations with a new employee. Not unbreakable, but significantly reduces unintended actions.</p>
       </div>
@@ -404,14 +526,25 @@ openclaw devices approve &lt;requestId&gt;</div>
       </div>
 
       <div class="step"><input type="checkbox">
+        <div class="step-title">Enable the firewall (VPS)</div>
+        <p>If on a VPS, lock down everything except SSH and Tailscale:</p>
+        <div class="cmd"><span class="cmd-copy">copy</span>ufw default deny incoming
+ufw default allow outgoing
+ufw allow ssh
+ufw allow in on tailscale0
+ufw enable</div>
+        <p>This ensures only Tailscale traffic reaches OpenClaw. Everything else is blocked.</p>
+        <div class="callout tip"><strong>Mac users:</strong> macOS firewall is off by default but Tailscale handles security. Enable it in System Settings → Network → Firewall if you want an extra layer.</div>
+      </div>
+
+      <div class="step"><input type="checkbox">
         <div class="step-title">Keep OpenClaw updated</div>
-        <p>New features and security patches ship frequently. Run weekly:</p>
         <div class="cmd"><span class="cmd-copy">copy</span>openclaw update</div>
-        <p>Or tell the AI: <em>"Run openclaw update."</em></p>
+        <p>Run weekly, or tell the AI: <em>"Run openclaw update."</em></p>
       </div>
 
       <div class="callout warn">
-        <p><strong>What's still risky:</strong> Prompt injection (malicious content tricking the AI) is unsolved industry-wide — that's why throwaway accounts matter. The LLM provider sees your conversations, so don't share passwords or financial data. Only install OpenClaw skills from trusted sources.</p>
+        <p><strong>What's still risky:</strong> Prompt injection (malicious content tricking the AI) is unsolved industry-wide -- that's why throwaway accounts matter. The LLM provider sees your conversations, so don't share passwords or financial data. Only install OpenClaw skills from trusted sources.</p>
       </div>
     </div>
 
@@ -459,7 +592,7 @@ function switchTab(tab){
 }
 allNav.forEach(n=>n.addEventListener('click',()=>switchTab(n.dataset.tab)));
 
-const K='bot-setup-v11';
+const K='bot-setup-v12';
 const allChecks=[...document.querySelectorAll('.step input[type="checkbox"]')];
 const allSteps=[...document.querySelectorAll('.step')];
 try{const s=JSON.parse(localStorage.getItem(K)||'[]');s.forEach(i=>{if(allChecks[i]){allChecks[i].checked=true;allSteps[i].classList.add('done')}})}catch(e){}
@@ -476,10 +609,8 @@ function updateProgress(){
   trackedSections.forEach(id=>{
     const s=getSectionChecks(id);
     const pct=s.total?Math.round(s.done/s.total*100):0;
-    // sidebar
     const np=document.getElementById('np-'+id);
     if(np){np.style.setProperty('--pct',pct+'%');np.classList.toggle('complete',pct===100)}
-    // mobile
     const bp=document.getElementById('bp-'+id);
     if(bp)bp.style.width=pct+'%';
   });
