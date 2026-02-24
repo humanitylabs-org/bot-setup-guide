@@ -120,6 +120,9 @@
     .note { padding: 14px 16px; border-radius: 8px; margin: 14px 0; font-size: 14px; line-height: 1.7; background: var(--border-light); color: var(--body) }
 
     .done-banner { padding: 20px; background: var(--green-bg); border-radius: var(--radius); margin: 32px 0; text-align: center; font-size: 16px; font-weight: 500; color: var(--text) }
+    .step-divider { font-size: 13px; font-weight: 600; color: var(--dim); text-transform: uppercase; letter-spacing: 1px; margin: 24px 0 16px; }
+    .step.next-step { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); animation: step-glow 2s ease-in-out infinite; }
+    @keyframes step-glow { 0%,100%{box-shadow:0 0 0 3px var(--accent-bg)}50%{box-shadow:0 0 0 6px rgba(184,146,42,.15)} }
 
     footer { padding: 32px 0; border-top: 1px solid var(--border-light); text-align: center; font-size: 12px; color: var(--dim) }
     footer a { color: var(--dim) } footer a:hover { color: var(--accent) }
@@ -249,49 +252,66 @@ openclaw gateway restart</div>
   <div class="phase-header">
     <div class="phase-num">Phase 3</div>
     <div class="phase-title">See what it does</div>
-    <div class="phase-desc">Watch your bot think, read files, and work — in a sidebar on any device.</div>
+    <div class="phase-desc">You'll install an app called <strong>Obsidian</strong> so you can watch your bot think and chat with it right on your screen — phone, laptop, anywhere.</div>
   </div>
 
   <div class="bot-banner">
-    <h3>🤖 Your bot can do most of this for you</h3>
-    <p>You have a working bot now. Instead of doing the steps below manually, just send this to your bot:</p>
-    <div class="bot-cmd" onclick="copyBotMsg(this)">Read https://botsetupguide.com and help me set up Phase 3. I want Obsidian + ObsidianClaw + Obsidian Sync on all my devices. Walk me through it step by step.</div>
-    <p style="margin-top:10px;font-size:13px;color:#92400e">Your bot will read this page and guide you through each step. If you prefer to do it yourself, keep scrolling.</p>
+    <h3>🤖 Let your bot do most of this</h3>
+    <p>You can talk to your bot on Telegram right now. Send it this message and it will walk you through everything:</p>
+    <div class="bot-cmd" onclick="copyBotMsg(this)">Help me set up Phase 3 from botsetupguide.com. I want to: 1) Install Obsidian on all my devices (phone, laptop, and your machine), 2) Set up Obsidian Sync so files stay in sync everywhere, 3) Install the ObsidianClaw plugin so I can chat with you in a sidebar. Walk me through it step by step and ask me what device I'm setting up first.</div>
+    <p style="margin-top:10px;font-size:13px;color:#92400e;">Stuck or bot not responding? Scroll down and follow the manual steps.</p>
   </div>
 
-  <div class="step human">
-    <span class="step-badge you">You do this</span>
-    <div class="step-title">Install Obsidian on your devices</div>
-    <p>Download <a href="https://obsidian.md">Obsidian</a> (free) on every device: laptop, phone, tablet.</p>
-  </div>
+  <div class="step-divider">Or do it yourself — 3 goals:</div>
 
-  <div class="step human">
-    <span class="step-badge you">You do this</span>
-    <div class="step-title">Install Obsidian on the bot's machine</div>
-    <p><strong>Mac:</strong> <code>brew install --cask obsidian</code></p>
-    <p>Open Obsidian → "Open folder as vault" → <strong>Cmd+Shift+G</strong> → <code>~/.openclaw/workspace</code></p>
-    <p><strong>Cloud server:</strong> Tell your bot: <em>"Install Obsidian headlessly on this machine and open my workspace as a vault."</em></p>
+  <div class="step">
+    <div class="step-title">🎯 Goal 1 — Install Obsidian on 3 places</div>
+    <p>Obsidian is a free note app. Your bot's files live in it. You need it on three places:</p>
+    <p><strong>📱 Your phone:</strong> <a href="https://apps.apple.com/app/obsidian-connected-notes/id1557175442">iPhone App Store</a> or <a href="https://play.google.com/store/apps/details?id=md.obsidian">Google Play</a></p>
+    <p><strong>💻 Your laptop:</strong> <a href="https://obsidian.md/download">obsidian.md/download</a></p>
+    <p><strong>🤖 The bot's machine</strong> (wherever OpenClaw is running):</p>
+    <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask obsidian</div>
+    <p>Open Obsidian → "Open folder as vault" → press <strong>Cmd+Shift+G</strong> → type <code>~/.openclaw/workspace</code> → Open.</p>
+    <div class="note">Cloud server with no screen? Just tell your bot on Telegram: <em>"Install Obsidian on your machine and open ~/.openclaw/workspace as a vault."</em></div>
   </div>
 
   <div class="step">
-    <span class="step-badge bot">Tell your bot</span>
-    <div class="step-title">Turn on Obsidian Sync</div>
-    <p><a href="https://obsidian.md/sync">Obsidian Sync</a> ($4/mo) keeps everything in sync, encrypted end-to-end.</p>
-    <p>On the bot's machine: Settings → Sync → sign in → create a vault.</p>
-    <p>On other devices: same account → select the vault.</p>
-    <div class="note"><strong>Power users:</strong> <a href="https://syncthing.net">Syncthing</a> (free, open-source) also works. No native iOS client though.</div>
+    <div class="step-title">🎯 Goal 2 — Tailscale on all 3 devices</div>
+    <p>Tailscale is what lets your devices talk to each other privately. You already installed it on the bot's machine in Phase 1 — now add it everywhere else:</p>
+    <p><strong>📱 Your phone + 💻 laptop:</strong> <a href="https://tailscale.com/download">tailscale.com/download</a> → sign in with the <strong>same account</strong> you used on the bot's machine.</p>
+    <p>Once all three are on Tailscale with the same account, they can all see each other. Check: the Tailscale app on your phone should list the bot's machine.</p>
   </div>
 
-  <div class="step human">
-    <span class="step-badge you">You do this</span>
-    <div class="step-title">Install the ObsidianClaw plugin</div>
-    <p>On every device with Obsidian:</p>
-    <p>1. Settings → Community Plugins → Browse → <strong>"BRAT"</strong> → Install → Enable</p>
-    <p>2. BRAT → Add Beta Plugin → <code>oscarhenrycollins/obsidianclaw</code></p>
-    <p>A setup wizard walks you through connecting. <a href="https://obsidianclaw.ai">More info →</a></p>
+  <div class="step">
+    <div class="step-title">🎯 Goal 3 — Sync files with Obsidian Sync</div>
+    <p><a href="https://obsidian.md/sync">Obsidian Sync</a> ($4/mo) keeps all your notes — and your bot's notes — in sync across every device automatically.</p>
+    <p><strong>On the bot's machine:</strong> Obsidian → Settings → Core plugins → Sync → turn on → sign in → "Create new remote vault"</p>
+    <p><strong>On your phone and laptop:</strong> Obsidian → Settings → Sync → sign in (same account) → pick the vault you just made</p>
+    <p>Done. Notes sync in seconds. ✅</p>
+    <div class="note"><strong>Free option:</strong> <a href="https://syncthing.net">Syncthing</a> also works (open source, peer-to-peer) but has no native iPhone app. Obsidian Sync is simpler.</div>
   </div>
 
-  <div class="done-banner">🎉 Done. Personal AI, running 24/7, synced everywhere, visible in real time.</div>
+  <div class="step">
+    <div class="step-title">🔌 Install the ObsidianClaw plugin (on every device)</div>
+    <p>This is what puts the chat window inside Obsidian. Do this on your phone, laptop, and the bot's machine:</p>
+    <p><strong>Step 1:</strong> Obsidian → Settings → Community Plugins → turn off Safe Mode → Browse → search <strong>BRAT</strong> → Install → Enable</p>
+    <p><strong>Step 2:</strong> Settings → BRAT → "Add Beta Plugin" → paste this → click Add:</p>
+    <div class="cmd"><span class="cmd-copy">copy</span>oscarhenrycollins/obsidianclaw</div>
+    <div class="note"><strong>Why BRAT?</strong> Our plugin is waiting to be approved in the official Obsidian store. BRAT is a trusted tool for installing approved-but-not-listed plugins. Once we're approved, you won't need BRAT anymore.</div>
+  </div>
+
+  <div class="step next-step">
+    <div class="step-title">⚡ Run the setup wizard</div>
+    <p>Once the plugin installs, a setup wizard opens automatically. It will ask for two things:</p>
+    <p><strong>Gateway URL:</strong> <code>ws://[bot's Tailscale IP]:18789</code> — find the IP in your Tailscale app</p>
+    <p><strong>Auth token:</strong> run this on the bot's machine to find it:</p>
+    <div class="cmd"><span class="cmd-copy">copy</span>cat ~/.openclaw/openclaw.json | grep token</div>
+    <p>The wizard tests the connection and guides you through approving this device. If anything goes wrong, run this on the bot's machine:</p>
+    <div class="cmd"><span class="cmd-copy">copy</span>openclaw doctor --fix && openclaw gateway restart</div>
+    <p>Or tell your bot on Telegram: <em>"My ObsidianClaw plugin can't connect. Help me fix it."</em></p>
+  </div>
+
+  <div class="done-banner">🎉 Done. Chat with your bot in the Obsidian sidebar, on every device, synced in real time.</div>
 </section>
 
 </div>
