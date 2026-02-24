@@ -2,512 +2,345 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Bot Setup Guide — Humanity Labs</title>
   <meta name="description" content="Build your own AI assistant in under an hour. Free step-by-step guide by Humanity Labs.">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23111'/><text y='66' font-size='44' font-family='system-ui' fill='%23d4a843' x='50' text-anchor='middle' font-weight='700'>HL</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
   <style>
     :root {
-      --bg: #faf9f7; --card: #fff; --muted: #f3f2ef;
-      --border: #e5e2dc; --border-light: #eeebe6;
-      --text: #2c2825; --body: #524e48; --dim: #8a847c;
-      --accent: #b8922a; --accent-bg: rgba(184,146,42,.10); --accent-strong: rgba(184,146,42,.18);
-      --radius: 12px;
-      --serif: 'Source Serif 4', Georgia, serif;
+      --bg: #fafafa; --card: #fff;
+      --border: #e5e5e5; --border-light: #f0f0f0;
+      --text: #1a1a1a; --body: #444; --dim: #888;
+      --accent: #b8922a; --accent-bg: rgba(184,146,42,.08);
+      --green: #16a34a; --green-bg: rgba(22,163,74,.06);
+      --radius: 10px;
       --sans: 'Inter', -apple-system, sans-serif;
     }
     * { margin: 0; padding: 0; box-sizing: border-box }
-    html { scroll-behavior: smooth; -webkit-text-size-adjust: 100% }
-    body { font-family: var(--serif); background: var(--bg); color: var(--body); line-height: 1.85; font-size: 18px; -webkit-font-smoothing: antialiased; overflow-x: hidden }
-    a { color: var(--text); text-decoration-color: var(--accent); text-underline-offset: 3px }
-    strong { color: var(--text); font-weight: 600 }
-    code { background: var(--muted); padding: 2px 6px; border-radius: 4px; font-size: .82em; font-family: 'SF Mono', Consolas, monospace }
+    body { font-family: var(--sans); background: var(--bg); color: var(--body); line-height: 1.8; font-size: 16px; -webkit-font-smoothing: antialiased }
+    a { color: var(--accent); text-decoration: none } a:hover { text-decoration: underline }
+    strong { color: var(--text) }
+    code { background: #f0f0f0; padding: 2px 7px; border-radius: 4px; font-size: .85em; font-family: 'SF Mono', Consolas, monospace }
 
-    /* Layout */
-    .app { display: flex; min-height: 100vh }
-    .sidebar {
-      width: 240px; flex-shrink: 0; position: fixed; top: 0; left: 0; bottom: 0;
-      background: var(--bg); border-right: 1px solid var(--border-light);
-      display: flex; flex-direction: column; z-index: 40;
+    .container { max-width: 960px; margin: 0 auto; padding: 0 24px }
+    @media (min-width: 1200px) { .container { max-width: 1080px } }
+
+    /* Header */
+    header { padding: 20px 0; border-bottom: 1px solid var(--border-light) }
+    header .container { display: flex; justify-content: space-between; align-items: center }
+    .logo { font-size: 13px; font-weight: 700; color: var(--text); letter-spacing: -.02em }
+    .logo span { color: var(--dim); font-weight: 400 }
+    header nav a { font-size: 13px; color: var(--dim); margin-left: 20px } header nav a:hover { color: var(--text); text-decoration: none }
+
+    /* Hero */
+    .hero { padding: 64px 0 48px; text-align: center }
+    .hero h1 { font-size: 36px; font-weight: 700; color: var(--text); letter-spacing: -.03em; margin-bottom: 12px }
+    .hero p { font-size: 18px; color: var(--dim); max-width: 600px; margin: 0 auto 32px; line-height: 1.6 }
+
+    /* Questionnaire */
+    .quiz { max-width: 540px; margin: 0 auto 48px; text-align: center }
+    .quiz-q { font-size: 18px; font-weight: 600; color: var(--text); margin-bottom: 16px }
+    .quiz-options { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap }
+    .quiz-btn {
+      padding: 12px 28px; border-radius: var(--radius);
+      border: 1.5px solid var(--border); background: var(--card);
+      font-size: 15px; font-weight: 500; color: var(--body);
+      cursor: pointer; transition: all .15s;
     }
-    .sidebar-header { padding: 28px 20px 24px; border-bottom: 1px solid var(--border-light) }
-    .sidebar-logo { font-family: var(--sans); font-size: 10px; letter-spacing: 2px; text-transform: uppercase; color: var(--dim); font-weight: 600 }
-    .sidebar-logo a { color: inherit; text-decoration: none }
-    .sidebar-logo a:hover { color: var(--accent) }
-    .sidebar-title { font-family: var(--serif); font-size: 17px; font-weight: 600; color: var(--text); margin-top: 6px; cursor: pointer }
-    .sidebar-title:hover { color: var(--accent) }
-    .nav-items { padding: 16px 12px }
-    .nav-item {
-      display: flex; align-items: center; gap: 10px;
-      padding: 10px 12px; cursor: pointer;
-      font-family: var(--sans); font-size: 13px; font-weight: 500; color: var(--dim);
-      border-radius: 8px; transition: all .15s; margin-bottom: 2px;
+    .quiz-btn:hover { border-color: var(--accent); color: var(--text) }
+    .quiz-btn.selected { border-color: var(--accent); background: var(--accent-bg); color: var(--text); font-weight: 600 }
+    .quiz-result {
+      margin-top: 20px; padding: 16px 20px; border-radius: var(--radius);
+      background: var(--green-bg); border: 1px solid rgba(22,163,74,.15);
+      font-size: 15px; color: var(--text); display: none; line-height: 1.6;
     }
-    .nav-item:hover { background: var(--muted); color: var(--text) }
-    .nav-item.active { background: var(--accent-strong); color: var(--text); font-weight: 600 }
-    .nav-dot { width: 6px; height: 6px; border-radius: 50%; background: var(--border); flex-shrink: 0; transition: all .15s }
-    .nav-item.active .nav-dot { background: var(--accent); width: 8px; height: 8px }
+    .quiz-result.visible { display: block }
+    .quiz-result a { font-weight: 600 }
 
-    .content { flex: 1; margin-left: 240px; min-height: 100vh }
-    .panel-wrap { padding: 48px 56px 120px; max-width: 820px; width: 100% }
-    .panel { display: none } .panel.active { display: block }
+    /* Phases */
+    .phase { padding: 48px 0; border-top: 1px solid var(--border-light) }
+    .phase-header { margin-bottom: 32px }
+    .phase-num { font-size: 12px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 4px }
+    .phase-title { font-size: 28px; font-weight: 700; color: var(--text); letter-spacing: -.02em; margin-bottom: 8px }
+    .phase-desc { font-size: 16px; color: var(--dim); max-width: 640px; line-height: 1.7 }
 
-    /* Typography */
-    .phase-label { font-family: var(--sans); font-size: 11px; letter-spacing: 1.5px; text-transform: uppercase; color: var(--accent); font-weight: 600; margin-bottom: 8px }
-    .phase-title { font-family: var(--serif); font-size: 26px; font-weight: 600; color: var(--text); margin-bottom: 8px; line-height: 1.3 }
-    .phase-desc { font-size: 16px; color: var(--dim); margin-bottom: 24px; line-height: 1.6 }
+    .step { margin-bottom: 24px; padding: 24px; background: var(--card); border: 1px solid var(--border-light); border-radius: var(--radius) }
+    .step-title { font-size: 16px; font-weight: 600; color: var(--text); margin-bottom: 10px }
+    .step p { margin-bottom: 10px } .step p:last-child { margin-bottom: 0 }
 
-    /* Steps */
-    .step { margin-bottom: 18px; padding: 20px 20px 20px 48px; position: relative; background: var(--card); border: 1px solid var(--border-light); border-radius: var(--radius) }
-    .step input[type="checkbox"] {
-      position: absolute; left: 18px; top: 22px;
-      appearance: none; -webkit-appearance: none;
-      width: 16px; height: 16px; border: 1.5px solid var(--border); border-radius: 4px;
-      background: var(--card); cursor: pointer; transition: all .15s;
-    }
-    .step input:checked { background: var(--accent); border-color: var(--accent) }
-    .step input:checked::after { content: ''; display: block; width: 4px; height: 7px; border: solid #fff; border-width: 0 1.5px 1.5px 0; transform: rotate(45deg); margin: 2px auto 0 }
-    .step.done { opacity: .3 }
-    .step-title { font-family: var(--sans); font-size: 14px; font-weight: 600; color: var(--text); margin-bottom: 8px }
-    .step p { margin-bottom: 8px; font-size: 16px }
-    .step p:last-child { margin-bottom: 0 }
-
-    /* Commands */
     .cmd {
-      background: #1e1e2e; color: #ddd; border-radius: 8px;
-      padding: 14px 16px; margin: 12px 0;
+      background: #1e1e2e; color: #ccc; border-radius: 8px;
+      padding: 14px 16px; margin: 12px 0; cursor: pointer;
       font-family: 'SF Mono', Consolas, monospace; font-size: 13px;
       white-space: pre-wrap; word-break: break-all; line-height: 1.7;
-      cursor: pointer; position: relative;
+      position: relative;
     }
-    .cmd-copy { position: absolute; right: 8px; top: 8px; font-family: var(--sans); font-size: 9px; letter-spacing: .5px; text-transform: uppercase; color: rgba(255,255,255,.2) }
+    .cmd-copy { position: absolute; right: 8px; top: 8px; font-size: 10px; color: rgba(255,255,255,.2); font-weight: 600 }
     .cmd:hover .cmd-copy { color: rgba(255,255,255,.4) }
     .cmd.copied .cmd-copy { color: #6a6 }
-    .config { background: var(--muted); border: 1px solid var(--border-light); border-radius: 8px; padding: 12px 16px; margin: 12px 0; font-family: 'SF Mono', Consolas, monospace; font-size: 12px; color: var(--dim); white-space: pre; line-height: 1.6 }
 
-    /* Notes */
-    .note { padding: 14px 16px; border-radius: 8px; margin: 16px 0; font-size: 14px; line-height: 1.7; background: var(--muted); border-left: 3px solid var(--border); color: var(--body) }
-    .note strong { color: var(--text) }
-    .note.warn { border-left-color: #c44; background: #fdf5f4 }
-    .note.warn strong { color: #a33 }
+    .note { padding: 14px 16px; border-radius: 8px; margin: 14px 0; font-size: 14px; line-height: 1.7; background: var(--accent-bg); color: var(--body) }
 
-    /* Done banner */
-    .done-banner { padding: 16px; background: var(--accent-bg); border-radius: var(--radius); margin: 24px 0; text-align: center; font-family: var(--sans); font-size: 14px; color: var(--text) }
-    .next-btn { display: inline-block; margin-top: 8px; padding: 8px 20px; background: var(--accent); color: #fff; border: none; border-radius: 8px; font-family: var(--sans); font-size: 13px; font-weight: 600; cursor: pointer; text-decoration: none }
-    .next-btn:hover { opacity: .9; text-decoration: none }
+    .done-banner { padding: 20px; background: var(--green-bg); border-radius: var(--radius); margin: 32px 0; text-align: center; font-size: 16px; font-weight: 500; color: var(--text) }
 
-    /* Overview hero */
-    .overview-hero { text-align: center; padding: 48px 0 36px }
-    .overview-icon { font-size: 48px; margin-bottom: 16px }
-    .overview-hero h1 { font-family: var(--serif); font-size: 28px; font-weight: 600; color: var(--text); margin-bottom: 4px }
-    .overview-hero .overview-by { font-family: var(--sans); font-size: 13px; color: var(--dim); margin-bottom: 16px }
-    .overview-hero .overview-by a { color: var(--accent); text-decoration: none; font-weight: 500 }
-    .overview-hero .overview-by a:hover { text-decoration: underline }
-    .overview-hero p { font-size: 16px; color: var(--body); max-width: 480px; margin: 0 auto; line-height: 1.7 }
+    .tools { margin: 24px 0; display: flex; flex-wrap: wrap; gap: 8px }
+    .tool-tag { padding: 6px 14px; border-radius: 20px; font-size: 13px; background: var(--border-light); color: var(--body) }
+    .tool-tag a { color: inherit }
 
-    .overview-cards { display: flex; flex-direction: column; gap: 12px; margin: 32px 0 }
-    .overview-card {
-      display: flex; align-items: center; gap: 16px;
-      padding: 20px; background: var(--card); border: 1px solid var(--border-light);
-      border-radius: var(--radius); cursor: pointer; transition: all .15s;
-    }
-    .overview-card:hover { border-color: var(--accent) }
-    .overview-card-icon { font-size: 28px; flex-shrink: 0 }
-    .overview-card h3 { font-family: var(--sans); font-size: 15px; font-weight: 600; color: var(--text); margin-bottom: 2px }
-    .overview-card p { font-size: 14px; color: var(--dim); margin: 0; line-height: 1.5 }
+    footer { padding: 32px 0; border-top: 1px solid var(--border-light); text-align: center; font-size: 12px; color: var(--dim) }
+    footer a { color: var(--dim) } footer a:hover { color: var(--accent) }
 
-    .overview-needs { margin-top: 28px; text-align: center; font-family: var(--sans); font-size: 14px; color: var(--dim); line-height: 1.6 }
-
-    footer { padding: 32px 56px; border-top: 1px solid var(--border-light); color: var(--dim); font-family: var(--sans); font-size: 11px }
-    footer a { color: var(--dim); text-decoration: none } footer a:hover { color: var(--accent) }
-
-    /* Mobile */
-    .mobile-header { display: none }
-    .mobile-nav { display: none }
-    @media (max-width: 768px) {
-      .sidebar { display: none }
-      .content { margin-left: 0; width: 100%; max-width: 100vw; overflow-x: hidden }
-
-      .mobile-header {
-        display: flex; align-items: center; justify-content: space-between;
-        padding: 14px 16px;
-        background: rgba(250,249,247,.85);
-        -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(0,0,0,.04);
-        position: sticky; top: 0; z-index: 101;
-      }
-      .mobile-brand { font-family: var(--serif); font-size: 15px; font-weight: 600; color: var(--text); cursor: pointer; padding: 4px 0 }
-      .mobile-by { font-family: var(--sans); font-size: 11px; color: var(--dim); padding: 4px 0 }
-      .mobile-by a { color: var(--accent); text-decoration: none; font-weight: 500 }
-
-      .mobile-nav {
-        display: flex; gap: 0;
-        position: sticky; top: 49px; z-index: 100;
-        background: rgba(250,249,247,.85);
-        -webkit-backdrop-filter: blur(20px); backdrop-filter: blur(20px);
-        border-bottom: 1px solid rgba(0,0,0,.06);
-      }
-      .pill {
-        flex: 1; text-align: center;
-        padding: 10px 0; cursor: pointer;
-        font-family: var(--sans); font-size: 11px; font-weight: 500;
-        color: var(--dim); transition: all .15s;
-        border-bottom: 2px solid transparent;
-      }
-      .pill.active {
-        color: var(--accent); font-weight: 700;
-        border-bottom-color: var(--accent);
-      }
-
-      .panel-wrap { padding: 24px 16px 60px; width: 100%; max-width: 100vw; overflow-x: hidden }
-      .step { padding: 16px 14px 16px 42px }
-      .step input { left: 14px; top: 18px }
-      .step p, .note { overflow-wrap: break-word; word-break: break-word }
-      .cmd { font-size: 12px; padding: 12px 14px; word-break: break-all; max-width: 100%; overflow-x: auto }
-      .config { font-size: 11px; max-width: 100%; overflow-x: auto }
-      code { word-break: break-all }
-      .phase-title { font-size: 22px }
-      footer { padding: 24px 16px }
-      .overview-hero { padding: 32px 0 24px }
-      .overview-hero h1 { font-size: 24px }
-      .overview-card { padding: 16px }
+    @media (max-width: 640px) {
+      .hero h1 { font-size: 28px }
+      .phase-title { font-size: 24px }
+      .step { padding: 18px 16px }
     }
   </style>
 </head>
 <body>
-<div class="app">
-  <aside class="sidebar">
-    <div class="sidebar-header">
-      <div class="sidebar-logo"><a href="https://humanitylabs.org">Humanity Labs</a></div>
-      <div class="sidebar-title" data-tab="overview">Bot Setup Guide</div>
-    </div>
-    <div class="nav-items">
-      <div class="nav-item" data-tab="alive"><span class="nav-dot"></span> 1. Bring It to Life</div>
-      <div class="nav-item" data-tab="talk"><span class="nav-dot"></span> 2. Talk to It</div>
-      <div class="nav-item" data-tab="see"><span class="nav-dot"></span> 3. See What It Does</div>
-    </div>
-  </aside>
 
-  <div class="content">
-    <div class="mobile-header">
-      <div class="mobile-brand" data-tab="overview">Bot Setup Guide</div>
-      <div class="mobile-by"><a href="https://humanitylabs.org">Humanity Labs</a></div>
-    </div>
-    <nav class="mobile-nav">
-      <div class="pill" data-tab="alive">1. Life</div>
-      <div class="pill" data-tab="talk">2. Talk</div>
-      <div class="pill" data-tab="see">3. See</div>
+<header>
+  <div class="container">
+    <div class="logo">Bot Setup Guide <span>by Humanity Labs</span></div>
+    <nav>
+      <a href="https://openclaw.ai">OpenClaw</a>
+      <a href="https://obsidianclaw.ai">ObsidianClaw</a>
     </nav>
+  </div>
+</header>
 
-    <div class="panel-wrap">
+<div class="container">
 
-    <!-- OVERVIEW -->
-    <div class="panel active" id="overview">
-      <div class="overview-hero">
-        <div class="overview-icon">🤖</div>
-        <h1>Build Your Own AI Assistant</h1>
-        <div class="overview-by">by <a href="https://humanitylabs.org">Humanity Labs</a></div>
-        <p>A personal AI that runs 24/7 on your own hardware. It reads your files, runs code, searches the web, and remembers everything. Three steps from zero to a working assistant.</p>
-      </div>
+<section class="hero">
+  <h1>Build your own AI assistant</h1>
+  <p>A personal AI that runs 24/7 on your own hardware. It reads your files, runs code, searches the web, and remembers everything.</p>
+  <div class="tools">
+    <span class="tool-tag"><a href="https://openclaw.ai">OpenClaw</a> (free)</span>
+    <span class="tool-tag"><a href="https://tailscale.com">Tailscale</a> (free)</span>
+    <span class="tool-tag"><a href="https://telegram.org">Telegram</a> (free)</span>
+    <span class="tool-tag"><a href="https://obsidian.md">Obsidian</a> (free)</span>
+    <span class="tool-tag"><a href="https://obsidian.md/sync">Obsidian Sync</a> ($4/mo)</span>
+    <span class="tool-tag"><a href="https://obsidianclaw.ai">ObsidianClaw</a> (free)</span>
+  </div>
+</section>
 
-      <div class="overview-cards">
-        <div class="overview-card" data-tab="alive">
-          <div class="overview-card-icon">⚡</div>
-          <div>
-            <h3>1. Bring it to life</h3>
-            <p>Install <strong>OpenClaw</strong> (the AI brain) and <strong>Tailscale</strong> (secure networking) on a machine that stays on. ~30 min.</p>
-          </div>
-        </div>
-        <div class="overview-card" data-tab="talk">
-          <div class="overview-card-icon">💬</div>
-          <div>
-            <h3>2. Talk to it</h3>
-            <p>Connect <strong>Telegram</strong> and have your first conversation from your phone. ~10 min.</p>
-          </div>
-        </div>
-        <div class="overview-card" data-tab="see">
-          <div class="overview-card-icon">👀</div>
-          <div>
-            <h3>3. See what it does</h3>
-            <p>Install <strong>Obsidian</strong> + the <strong>ObsidianClaw plugin</strong>. Watch your bot think, read files, and work — live in a sidebar on any device. Use <strong>Obsidian Sync</strong> to keep everything in sync. ~15 min.</p>
-          </div>
-        </div>
-      </div>
+<!-- Questionnaire -->
+<section class="quiz" id="quiz">
+  <div class="quiz-q" id="quizQ">Do you have OpenClaw installed and running?</div>
+  <div class="quiz-options" id="quizOpts">
+    <button class="quiz-btn" onclick="quizAnswer('no-openclaw')">No, I'm starting fresh</button>
+    <button class="quiz-btn" onclick="quizAnswer('has-openclaw')">Yes, it's running</button>
+  </div>
+  <div class="quiz-result" id="quizResult"></div>
+</section>
 
-      <div class="overview-needs">
-        <strong>What you need:</strong> A spare Mac, old laptop, or $5/mo cloud server. A phone. About an hour.<br>
-        <strong>Software used:</strong> <a href="https://openclaw.ai">OpenClaw</a> (free) · <a href="https://tailscale.com">Tailscale</a> (free) · <a href="https://telegram.org">Telegram</a> (free) · <a href="https://obsidian.md">Obsidian</a> (free) · <a href="https://obsidian.md/sync">Obsidian Sync</a> ($4/mo) · <a href="https://obsidianclaw.ai">ObsidianClaw</a> (free)
-      </div>
-    </div>
+<!-- PHASE 1 -->
+<section class="phase" id="phase1">
+  <div class="phase-header">
+    <div class="phase-num">Phase 1</div>
+    <div class="phase-title">Bring it to life</div>
+    <div class="phase-desc">Your bot needs a computer to live on. It runs 24/7, so use a dedicated machine — not your daily driver.</div>
+  </div>
 
-    <!-- 1. BRING IT TO LIFE -->
-    <div class="panel" id="alive">
-      <div class="phase-label">Step 1</div>
-      <div class="phase-title">Bring it to life</div>
-      <div class="phase-desc">Your bot needs a computer to live on. It runs 24/7, so use a dedicated machine — not your daily driver.</div>
+  <div class="step">
+    <div class="step-title">Pick a machine</div>
+    <p><strong>Mac mini, spare laptop, or Raspberry Pi</strong> — silent, low power, always on. Close the lid and forget about it.</p>
+    <p><strong>No spare hardware?</strong> Rent a cloud server from <a href="https://hetzner.com">Hetzner</a> or <a href="https://digitalocean.com">DigitalOcean</a> for $5-10/month.</p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Pick a machine</div>
-        <p><strong>Mac mini or spare laptop</strong> — silent, low power, always on. Close the lid and forget about it.</p>
-        <p><strong>No spare hardware?</strong> Rent a cloud server from <a href="https://hetzner.com">Hetzner</a> or <a href="https://digitalocean.com">DigitalOcean</a> for $5-10/month.</p>
-      </div>
+  <div class="step">
+    <div class="step-title">Open a terminal</div>
+    <p><strong>Mac:</strong> Press <strong>Command + Space</strong>, type <strong>Terminal</strong>, press Enter.</p>
+    <p><strong>Cloud server:</strong> <code>ssh root@your-server-ip</code></p>
+    <p>This is how you'll talk to your machine directly. Everything below is typed here.</p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Open a terminal</div>
-        <p><strong>Mac:</strong> Press <strong>Command + Space</strong>, type <strong>Terminal</strong>, press Enter. This is how you'll talk to your machine.</p>
-        <p><strong>Cloud server:</strong> <code>ssh root@your-server-ip</code></p>
-      </div>
+  <div class="step">
+    <div class="step-title">Install Homebrew (Mac only)</div>
+    <p>Homebrew installs other tools for you. Paste this and press Enter:</p>
+    <div class="cmd"><span class="cmd-copy">copy</span>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</div>
+    <p>It asks for your password. Nothing shows when you type — that's normal. Takes 2-5 minutes.</p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install Homebrew (Mac only)</div>
-        <p>Homebrew is a tool that installs other tools. Paste this and press Enter:</p>
-        <div class="cmd"><span class="cmd-copy">copy</span>/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"</div>
-        <p>It asks for your password. Nothing shows when you type — that's normal. Wait 2-5 minutes.</p>
-      </div>
+  <div class="step">
+    <div class="step-title">Keep it awake (Mac only)</div>
+    <div class="cmd"><span class="cmd-copy">copy</span>sudo pmset -a sleep 0</div>
+    <p>Prevents the machine from sleeping. Your bot needs to be awake to work.</p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Keep it awake (Mac only)</div>
-        <div class="cmd"><span class="cmd-copy">copy</span>sudo pmset -a sleep 0</div>
-        <p>Prevents the machine from sleeping. Your bot needs to be awake to work.</p>
-      </div>
+  <div class="step">
+    <div class="step-title">Install OpenClaw</div>
+    <p>This is the brain. One command:</p>
+    <div class="cmd"><span class="cmd-copy">copy</span>curl -fsSL https://openclaw.ai/install.sh | bash</div>
+    <p>It installs, starts on boot automatically, and begins running immediately.</p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install OpenClaw</div>
-        <p>This is the brain. One command installs everything:</p>
-        <div class="cmd"><span class="cmd-copy">copy</span>curl -fsSL https://openclaw.ai/install.sh | bash</div>
-        <p>It installs, registers itself to start on boot, and starts running immediately.</p>
-      </div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install Tailscale</div>
-        <p><a href="https://tailscale.com">Tailscale</a> creates an encrypted private network between all your devices. Free for personal use.</p>
-        <p><strong>Mac:</strong></p>
-        <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask tailscale</div>
-        <p><strong>Cloud server:</strong></p>
-        <div class="cmd"><span class="cmd-copy">copy</span>curl -fsSL https://tailscale.com/install.sh | sh
+  <div class="step">
+    <div class="step-title">Install Tailscale</div>
+    <p><a href="https://tailscale.com">Tailscale</a> creates a private encrypted network between all your devices. Free for personal use.</p>
+    <p><strong>Mac:</strong></p>
+    <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask tailscale</div>
+    <p><strong>Cloud server:</strong></p>
+    <div class="cmd"><span class="cmd-copy">copy</span>curl -fsSL https://tailscale.com/install.sh | sh
 sudo tailscale up</div>
-        <p>Sign in and note the IP address it shows (<code>100.x.x.x</code>). You'll need this later.</p>
-        <p><strong>Also install Tailscale on your phone and laptop</strong> — same account.</p>
-      </div>
+    <p>Sign in and note the IP it shows (<code>100.x.x.x</code>). You'll need this later.</p>
+    <p><strong>Also install Tailscale on your phone and laptop</strong> — same account. <a href="https://tailscale.com/download">Download here.</a></p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Connect OpenClaw to Tailscale</div>
-        <div class="cmd"><span class="cmd-copy">copy</span>openclaw config set gateway.bind tailnet
+  <div class="step">
+    <div class="step-title">Connect OpenClaw to Tailscale</div>
+    <div class="cmd"><span class="cmd-copy">copy</span>openclaw config set gateway.bind tailnet
 openclaw gateway restart</div>
-        <p>Now your bot is accessible from any device on your Tailscale network.</p>
-      </div>
+    <p>Your bot is now accessible from any device on your Tailscale network.</p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Open the dashboard</div>
-        <p>From any device on your Tailscale network, open a browser and go to:</p>
-        <p><code>http://[your Tailscale IP]:18789</code></p>
-        <p>You should see the OpenClaw dashboard. Bookmark it.</p>
-      </div>
+  <div class="step">
+    <div class="step-title">Check the dashboard</div>
+    <p>From any device on your Tailscale network, open a browser:</p>
+    <p><code>http://[your Tailscale IP]:18789</code></p>
+    <p>You should see the OpenClaw dashboard. Bookmark it.</p>
+  </div>
 
-      <div class="done-banner">
-        ✅ Your bot is alive and running 24/7.
-        <br><a class="next-btn" onclick="switchTab('talk')">Next: Talk to it →</a>
-      </div>
-    </div>
+  <div class="done-banner">✅ Your bot is alive. <a href="#phase2" style="color:var(--accent);font-weight:600">Next: talk to it →</a></div>
+</section>
 
-    <!-- 2. TALK TO IT -->
-    <div class="panel" id="talk">
-      <div class="phase-label">Step 2</div>
-      <div class="phase-title">Talk to it</div>
-      <div class="phase-desc">Your bot is running. Now give it a way to hear you. We'll use Telegram — it works on every device and takes 10 minutes.</div>
+<!-- PHASE 2 -->
+<section class="phase" id="phase2">
+  <div class="phase-header">
+    <div class="phase-num">Phase 2</div>
+    <div class="phase-title">Talk to it</div>
+    <div class="phase-desc">Give your bot a way to hear you. Telegram works on every device and takes 10 minutes.</div>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install Telegram</div>
-        <p>Download Telegram on your phone: <a href="https://apps.apple.com/app/telegram-messenger/id686449807">iPhone</a> · <a href="https://play.google.com/store/apps/details?id=org.telegram.messenger">Android</a></p>
-        <p>If you already have Telegram, skip this.</p>
-      </div>
+  <div class="step">
+    <div class="step-title">Install Telegram</div>
+    <p>Download on your phone: <a href="https://apps.apple.com/app/telegram-messenger/id686449807">iPhone</a> · <a href="https://play.google.com/store/apps/details?id=org.telegram.messenger">Android</a></p>
+    <p>Already have it? Skip this.</p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Create a Telegram bot</div>
-        <p>Follow the <a href="https://docs.openclaw.ai/guides/telegram">OpenClaw Telegram guide</a>. Short version: message <a href="https://t.me/BotFather">@BotFather</a> on Telegram, create a bot, copy the token, paste it into OpenClaw.</p>
-        <p>Takes about 5 minutes.</p>
-      </div>
+  <div class="step">
+    <div class="step-title">Create a Telegram bot</div>
+    <p>Follow the <a href="https://docs.openclaw.ai/guides/telegram">OpenClaw Telegram guide</a>. Short version:</p>
+    <p>1. Message <a href="https://t.me/BotFather">@BotFather</a> on Telegram → create a bot → copy the token</p>
+    <p>2. Paste the token into OpenClaw's config</p>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Send your first message</div>
-        <p>Open the bot chat in Telegram and type: <em>"Hey, are you there?"</em></p>
-        <p>It should reply within a few seconds. You now have an AI assistant in your pocket.</p>
-        <div class="note"><strong>Not responding?</strong> Check the dashboard for errors. Usually fixed with: <code>openclaw gateway restart</code></div>
-      </div>
+  <div class="step">
+    <div class="step-title">Send your first message</div>
+    <p>Open the bot chat in Telegram and say: <em>"Hey, are you there?"</em></p>
+    <p>It should reply in a few seconds. You now have an AI assistant in your pocket.</p>
+    <div class="note"><strong>Not responding?</strong> Check the dashboard for errors. Usually: <code>openclaw gateway restart</code></div>
+  </div>
 
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Set the ground rules</div>
-        <p>Tell your bot: <em>"Never send emails, make purchases, or post anything publicly without asking me first."</em></p>
-        <p>It remembers. You can always change these boundaries later.</p>
-      </div>
+  <div class="done-banner">✅ You can talk to your bot from anywhere. <a href="#phase3" style="color:var(--accent);font-weight:600">Next: see what it does →</a></div>
+</section>
 
-      <div class="done-banner">
-        ✅ You have a working AI assistant you can talk to from anywhere.
-        <br><a class="next-btn" onclick="switchTab('see')">Next: See what it does →</a>
-      </div>
+<!-- PHASE 3 -->
+<section class="phase" id="phase3">
+  <div class="phase-header">
+    <div class="phase-num">Phase 3</div>
+    <div class="phase-title">See what it does</div>
+    <div class="phase-desc">Your bot writes notes, reads files, and keeps a memory. Let's make that visible — you'll watch it work in a sidebar on any device. <a href="https://obsidianclaw.ai">Learn more at obsidianclaw.ai →</a></div>
+  </div>
 
-      <div class="note"><strong>Want to skip ahead?</strong> Just tell your bot: <em>"Read botsetupguide.com and do Step 3 for me."</em> It can set up the rest itself.</div>
-    </div>
+  <div class="step">
+    <div class="step-title">Install Obsidian everywhere</div>
+    <p><a href="https://obsidian.md">Obsidian</a> is a free note-taking app. Your bot's workspace is just a folder of Markdown files — Obsidian makes them beautiful.</p>
+    <p>Install on <strong>every device</strong>: laptop, phone, tablet, and the bot's machine.</p>
+  </div>
 
-    <!-- 3. SEE WHAT IT DOES -->
-    <div class="panel" id="see">
-      <div class="phase-label">Step 3</div>
-      <div class="phase-title">See what it does</div>
-      <div class="phase-desc">Your bot writes notes, reads files, and keeps a memory. Right now that all happens invisibly. Let's fix that — you'll watch it work and chat with it in a sidebar, on any device.</div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install Obsidian on your devices</div>
-        <p><a href="https://obsidian.md">Obsidian</a> is a free note-taking app. Your bot's workspace is just a folder of files — Obsidian makes them beautiful and searchable.</p>
-        <p>Install it on <strong>every device</strong> you want to use: laptop, phone, tablet.</p>
-      </div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install Obsidian on the bot's machine</div>
-        <p><strong>Mac / desktop:</strong></p>
-        <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask obsidian</div>
-        <p>Open Obsidian → "Open folder as vault" → press <strong>Cmd+Shift+G</strong> and type <code>~/.openclaw/workspace</code></p>
-        <p><strong>Cloud server (headless):</strong></p>
-        <div class="cmd"><span class="cmd-copy">copy</span># Install Obsidian AppImage
+  <div class="step">
+    <div class="step-title">Open the workspace as a vault</div>
+    <p><strong>Mac / desktop:</strong></p>
+    <div class="cmd"><span class="cmd-copy">copy</span>brew install --cask obsidian</div>
+    <p>Open Obsidian → "Open folder as vault" → <strong>Cmd+Shift+G</strong> → type <code>~/.openclaw/workspace</code></p>
+    <p><strong>Cloud server (headless):</strong></p>
+    <div class="cmd"><span class="cmd-copy">copy</span># Install virtual display + Obsidian
+sudo apt install -y xvfb x11vnc
 wget https://github.com/obsidianmd/obsidian-releases/releases/latest/download/Obsidian-1.8.9.AppImage
 chmod +x Obsidian-*.AppImage
 
-# Install virtual display + VNC for one-time setup
-sudo apt install -y xvfb x11vnc
-
-# Start Obsidian headlessly
+# Start headlessly
 export DISPLAY=:99
 Xvfb :99 -screen 0 1280x720x24 &
 ./Obsidian-*.AppImage --no-sandbox &
-
-# Start VNC so you can log in once
 x11vnc -display :99 -forever -nopw &</div>
-        <p>Connect to the VNC (<code>your-server-ip:5900</code>) using any VNC viewer. Log into Obsidian, open <code>~/.openclaw/workspace</code> as vault, then disconnect. You won't need VNC again.</p>
-      </div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Turn on Obsidian Sync</div>
-        <p><a href="https://obsidian.md/sync">Obsidian Sync</a> ($4/mo) keeps everything in sync across all your devices, encrypted end-to-end. It's the simplest option and works natively on every platform including phones.</p>
-        <p><strong>On the bot's machine:</strong> Settings → Core plugins → Sync → sign in → create a remote vault.</p>
-        <p><strong>On your other devices:</strong> Open Obsidian → Sync → same account → select the vault.</p>
-        <p>Now when your bot writes a note, it appears on your phone seconds later. When you edit a file on your laptop, the bot sees it immediately.</p>
-        <div class="note"><strong>Power users:</strong> <a href="https://syncthing.net">Syncthing</a> (free, open-source, peer-to-peer) also works great. More setup, but no subscription. Note: Syncthing has no native iOS client — <a href="https://www.mobiussync.com">Mobius Sync</a> ($5) is the only option on iPhone.</div>
-      </div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Keep Obsidian running on the bot's machine</div>
-        <p>Obsidian needs to stay open so Sync keeps working.</p>
-        <p><strong>Mac:</strong></p>
-        <div class="cmd"><span class="cmd-copy">copy</span>cat > ~/Library/LaunchAgents/md.obsidian.keepalive.plist << 'PLIST'
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key><string>md.obsidian.keepalive</string>
-    <key>ProgramArguments</key>
-    <array><string>open</string><string>-a</string><string>Obsidian</string></array>
-    <key>RunAtLoad</key><true/>
-    <key>StartInterval</key><integer>300</integer>
-</dict>
-</plist>
-PLIST
-launchctl load ~/Library/LaunchAgents/md.obsidian.keepalive.plist</div>
-        <p><strong>Cloud server:</strong></p>
-        <div class="cmd"><span class="cmd-copy">copy</span># Create a systemd service to keep Obsidian running
-sudo tee /etc/systemd/system/obsidian.service << 'EOF'
-[Unit]
-Description=Obsidian (headless)
-After=network.target
-
-[Service]
-Type=simple
-User=YOUR_USERNAME
-Environment=DISPLAY=:99
-ExecStartPre=/usr/bin/Xvfb :99 -screen 0 1280x720x24
-ExecStart=/path/to/Obsidian.AppImage --no-sandbox
-Restart=always
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-sudo systemctl enable --now obsidian</div>
-      </div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Install the ObsidianClaw plugin</div>
-        <p>This puts a <strong>chat sidebar</strong> inside Obsidian — talk to your bot, see it think, watch it read and write files in real time.</p>
-        <p>On <strong>every device</strong> with Obsidian:</p>
-        <p>1. Settings → Community Plugins → Browse → search <strong>"BRAT"</strong> → Install → Enable</p>
-        <p>2. Settings → BRAT → Add Beta Plugin → paste: <code>oscarhenrycollins/obsidianclaw</code></p>
-        <div class="note"><strong>What's BRAT?</strong> A trusted plugin that installs beta plugins from GitHub. ObsidianClaw is pending approval in the official store — BRAT gives you early access. Once approved, you can switch to the store version.</div>
-      </div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Connect the plugin</div>
-        <p>A setup wizard opens automatically with 4 steps:</p>
-        <p><strong>1. Prerequisites</strong> — confirms you have OpenClaw + Tailscale ready</p>
-        <p><strong>2. Connect</strong> — enter your gateway URL (<code>ws://[Tailscale IP]:18789</code>) and auth token. The wizard tests the connection before continuing.</p>
-        <p><strong>3. Pair device</strong> — generates a unique security keypair for this device. You'll need to approve it from your dashboard or tell your bot: <em>"Approve my new device."</em></p>
-        <p><strong>4. Done</strong> — you're connected!</p>
-        <div class="note"><strong>Where's the auth token?</strong> On your bot's machine: <code>cat ~/.openclaw/openclaw.json | grep token</code></div>
-      </div>
-
-      <div class="step"><input type="checkbox">
-        <div class="step-title">Start chatting</div>
-        <p>Click the 💬 icon in the sidebar. You can now:</p>
-        <p>• Chat with your bot while looking at its files</p>
-        <p>• Watch tool calls appear in real time (files read, web searches, commands)</p>
-        <p>• Send any note as context: <strong>Cmd/Ctrl+P → "Ask about this note"</strong></p>
-        <p>• Send images by pasting or using the 📎 button</p>
-        <p>• See context usage and switch models from the top bar</p>
-        <p>• Use it on your phone, tablet, and laptop — all synced via Obsidian Sync</p>
-      </div>
-
-      <div class="done-banner">
-        🎉 You're done. Personal AI, running 24/7, synced everywhere, visible in real time.
-      </div>
-    </div>
-
-    </div>
-    <footer>
-      <a href="https://humanitylabs.org">Humanity Labs</a> · <a href="https://obsidianclaw.ai">ObsidianClaw</a> · <a href="https://openclaw.ai">OpenClaw</a> · <a href="https://vajra.to">Vajra</a>
-    </footer>
+    <p>Connect via VNC once (<code>your-server-ip:5900</code>) to log in and open the vault. You won't need VNC again after this.</p>
   </div>
+
+  <div class="step">
+    <div class="step-title">Turn on Obsidian Sync</div>
+    <p><a href="https://obsidian.md/sync">Obsidian Sync</a> ($4/mo) keeps everything in sync across all devices, encrypted end-to-end. It's the simplest path and works natively on every platform.</p>
+    <p><strong>On the bot's machine:</strong> Settings → Sync → sign in → create a remote vault</p>
+    <p><strong>On your other devices:</strong> Obsidian → Sync → same account → select the vault</p>
+    <p>When your bot writes a note, it appears on your phone seconds later.</p>
+    <div class="note"><strong>Free alternative:</strong> <a href="https://syncthing.net">Syncthing</a> (open-source, peer-to-peer) works too. More setup, no subscription. Note: no native iOS client.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-title">Install the ObsidianClaw plugin</div>
+    <p>This puts a <strong>chat sidebar</strong> inside Obsidian. On every device:</p>
+    <p>1. Settings → Community Plugins → Browse → search <strong>"BRAT"</strong> → Install → Enable</p>
+    <p>2. Settings → BRAT → Add Beta Plugin → paste: <code>oscarhenrycollins/obsidianclaw</code></p>
+    <div class="note"><strong>What's BRAT?</strong> A trusted plugin that installs betas from GitHub. ObsidianClaw is pending in the official store — BRAT gives you early access.</div>
+  </div>
+
+  <div class="step">
+    <div class="step-title">Connect the plugin</div>
+    <p>A setup wizard walks you through it:</p>
+    <p>1. Enter your gateway URL: <code>ws://[Tailscale IP]:18789</code></p>
+    <p>2. Enter your auth token (from <code>~/.openclaw/openclaw.json</code>)</p>
+    <p>3. Approve the device pairing from your dashboard</p>
+    <p>That's it. Click the 💬 icon in the sidebar to start chatting.</p>
+  </div>
+
+  <div class="done-banner">🎉 Done. Personal AI, running 24/7, synced everywhere, visible in real time.</div>
+</section>
+
 </div>
 
+<footer>
+  <a href="https://humanitylabs.org">Humanity Labs</a> · <a href="https://obsidianclaw.ai">ObsidianClaw</a> · <a href="https://openclaw.ai">OpenClaw</a>
+</footer>
+
 <script>
-const panels=document.querySelectorAll('.panel');
-function switchTab(t){
-  document.querySelectorAll('.nav-item').forEach(n=>n.classList.toggle('active',n.dataset.tab===t));
-  document.querySelectorAll('.pill').forEach(n=>n.classList.toggle('active',n.dataset.tab===t));
-  panels.forEach(p=>p.classList.toggle('active',p.id===t));
-  window.scrollTo(0,0);
-}
+// Questionnaire
+function quizAnswer(a) {
+  document.querySelectorAll('.quiz-btn').forEach(b => b.classList.remove('selected'));
+  event.target.classList.add('selected');
+  const q = document.getElementById('quizQ');
+  const opts = document.getElementById('quizOpts');
+  const res = document.getElementById('quizResult');
 
-document.querySelectorAll('.nav-item,.pill,.overview-card,.sidebar-title,.mobile-brand').forEach(el=>{
-  if(el.dataset.tab) el.addEventListener('click',()=>switchTab(el.dataset.tab));
-});
-
-// Checkbox persistence
-const K='bot-setup-v16';
-const allChecks=[...document.querySelectorAll('.step input[type="checkbox"]')];
-const allSteps=[...document.querySelectorAll('.step')];
-try{const s=JSON.parse(localStorage.getItem(K)||'[]');s.forEach(i=>{if(allChecks[i]){allChecks[i].checked=true;allSteps[i].classList.add('done')}})}catch(e){}
-function save(){
-  const ix=[];allChecks.forEach((c,i)=>{if(c.checked)ix.push(i)});
-  localStorage.setItem(K,JSON.stringify(ix));
+  if (a === 'no-openclaw') {
+    res.innerHTML = '👉 Start at <a href="#phase1">Phase 1: Bring it to life</a>. Takes about 30 minutes.';
+    res.classList.add('visible');
+  } else if (a === 'has-openclaw') {
+    // Ask follow-up
+    q.textContent = 'Can you talk to it? (Telegram, Signal, or any chat channel)';
+    opts.innerHTML = '<button class="quiz-btn" onclick="quizAnswer(\'no-chat\')">Not yet</button><button class="quiz-btn" onclick="quizAnswer(\'has-chat\')">Yes, I can chat with it</button>';
+    res.classList.remove('visible');
+  } else if (a === 'no-chat') {
+    res.innerHTML = '👉 Start at <a href="#phase2">Phase 2: Talk to it</a>. Takes about 10 minutes.';
+    res.classList.add('visible');
+  } else if (a === 'has-chat') {
+    res.innerHTML = '🎉 Nice! You\'re ready for <a href="#phase3">Phase 3: See what it does</a> — install Obsidian + the <a href="https://obsidianclaw.ai">ObsidianClaw plugin</a> to get a chat sidebar and file sync. Takes about 15 minutes.';
+    res.classList.add('visible');
+  }
 }
-allChecks.forEach((cb,i)=>{cb.addEventListener('change',()=>{allSteps[i].classList.toggle('done',cb.checked);save()})});
 
 // Copy commands
-document.querySelectorAll('.cmd').forEach(el=>{el.addEventListener('click',()=>{
-  const t=el.textContent.replace(/^copy/,'').trim();
-  navigator.clipboard.writeText(t);
-  el.classList.add('copied');
-  const c=el.querySelector('.cmd-copy');if(c)c.textContent='copied ✓';
-  setTimeout(()=>{el.classList.remove('copied');if(c)c.textContent='copy'},1500);
-})});
+document.querySelectorAll('.cmd').forEach(el => {
+  el.addEventListener('click', () => {
+    const t = el.textContent.replace(/^copy/, '').trim();
+    navigator.clipboard.writeText(t);
+    el.classList.add('copied');
+    const c = el.querySelector('.cmd-copy'); if (c) c.textContent = 'copied ✓';
+    setTimeout(() => { el.classList.remove('copied'); if (c) c.textContent = 'copy' }, 1500);
+  });
+});
 </script>
+
 </body>
 </html>
