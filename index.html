@@ -3,480 +3,498 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Bot Setup Guide — Humanity Labs</title>
-  <meta name="description" content="Build your own AI assistant in under an hour. Step-by-step guide by Humanity Labs.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='20' fill='%23111'/><text y='66' font-size='44' font-family='system-ui' fill='%23d4a843' x='50' text-anchor='middle' font-weight='700'>HL</text></svg>">
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <title>Set up your AI assistant — Bot Setup Guide</title>
+  <meta name="description" content="Get your own 24/7 AI assistant in 10 minutes. No technical experience needed.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='70' font-size='70'>🤖</text></svg>">
   <style>
-    :root {
-      --bg: #fafafa; --card: #fff;
-      --border: #e5e5e5; --border-light: #f0f0f0;
-      --text: #1a1a1a; --body: #444; --dim: #888;
-      --accent: #b8922a; --accent-bg: rgba(184,146,42,.08); --accent-border: rgba(184,146,42,.3);
-      --green: #16a34a; --green-bg: rgba(22,163,74,.07);
-      --blue: #2563eb; --red: #dc2626;
-      --radius: 12px;
-      --sans: 'Inter', -apple-system, sans-serif;
+    * { margin:0; padding:0; box-sizing:border-box }
+    body { font-family: -apple-system, system-ui, sans-serif; background: #fafafa; color: #333; line-height: 1.6; font-size: 17px }
+    a { color: #0066cc; text-decoration: none } a:hover { text-decoration: underline }
+    strong { color: #111 }
+
+    .container { max-width: 640px; margin: 0 auto; padding: 40px 20px }
+    
+    header { text-align: center; margin-bottom: 50px }
+    header h1 { font-size: 32px; font-weight: 700; color: #111; margin-bottom: 10px }
+    header p { font-size: 19px; color: #666 }
+
+    .step { background: #fff; border-radius: 16px; padding: 32px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.08) }
+    .step-num { display: inline-block; width: 32px; height: 32px; background: #0066cc; color: #fff; border-radius: 50%; text-align: center; line-height: 32px; font-weight: 700; font-size: 15px; margin-bottom: 12px }
+    .step h2 { font-size: 22px; font-weight: 600; color: #111; margin-bottom: 12px }
+    .step p { margin-bottom: 12px; color: #555 }
+    .step p:last-child { margin-bottom: 0 }
+
+    .choices { display: flex; flex-direction: column; gap: 12px; margin-top: 16px }
+    .choice { background: #f5f5f5; border: 2px solid #e5e5e5; border-radius: 12px; padding: 20px; cursor: pointer; transition: all 0.2s }
+    .choice:hover { border-color: #0066cc; background: #f0f7ff }
+    .choice.selected { border-color: #0066cc; background: #e6f2ff }
+    .choice h3 { font-size: 18px; font-weight: 600; color: #111; margin-bottom: 6px }
+    .choice p { font-size: 15px; color: #666; margin: 0 }
+
+    .input-group { margin-top: 16px }
+    .input-group label { display: block; font-weight: 600; color: #111; margin-bottom: 8px; font-size: 15px }
+    .input-group .help { font-size: 14px; color: #666; margin-bottom: 8px }
+    .input-group .help a { color: #0066cc }
+    .input-group input, .input-group select { width: 100%; padding: 12px; border: 2px solid #e5e5e5; border-radius: 8px; font-size: 16px; font-family: inherit }
+    .input-group input:focus, .input-group select:focus { outline: none; border-color: #0066cc }
+
+    .cmd-box { background: #1a1a1a; border-radius: 10px; padding: 16px; margin: 16px 0; position: relative }
+    .cmd-box code { display: block; color: #a5d6ff; font-size: 14px; font-family: 'SF Mono', Consolas, monospace; white-space: pre-wrap; word-break: break-all; line-height: 1.5 }
+    .cmd-box .copy-btn { position: absolute; top: 12px; right: 12px; background: rgba(255,255,255,0.1); color: #fff; border: none; padding: 6px 12px; border-radius: 6px; font-size: 12px; cursor: pointer; font-family: inherit }
+    .cmd-box .copy-btn:hover { background: rgba(255,255,255,0.2) }
+
+    .note { background: #fff8e6; border-left: 4px solid: #ffcc00; padding: 16px; border-radius: 8px; margin: 16px 0; font-size: 15px }
+    .note.green { background: #e6f7ed; border-left-color: #00cc66 }
+
+    button { background: #0066cc; color: #fff; border: none; padding: 14px 28px; border-radius: 10px; font-size: 16px; font-weight: 600; cursor: pointer; font-family: inherit; transition: background 0.2s }
+    button:hover { background: #0052a3 }
+    button:disabled { opacity: 0.5; cursor: not-allowed }
+    button.secondary { background: #f5f5f5; color: #333 }
+    button.secondary:hover { background: #e5e5e5 }
+
+    .hidden { display: none !important }
+    
+    .progress { width: 100%; height: 4px; background: #e5e5e5; border-radius: 2px; margin-bottom: 40px; overflow: hidden }
+    .progress-bar { height: 100%; background: #0066cc; width: 0%; transition: width 0.3s }
+
+    footer { text-align: center; padding: 40px 20px; color: #999; font-size: 14px }
+    footer a { color: #999 }
+
+    @media (max-width: 640px) {
+      header h1 { font-size: 26px }
+      header p { font-size: 17px }
+      .step { padding: 24px }
     }
-    * { margin: 0; padding: 0; box-sizing: border-box }
-    body { font-family: var(--sans); background: var(--bg); color: var(--body); line-height: 1.75; font-size: 16px; -webkit-font-smoothing: antialiased }
-    a { color: var(--accent); text-decoration: none } a:hover { text-decoration: underline }
-    strong { color: var(--text) }
-    code { background: #f0f0f0; padding: 2px 7px; border-radius: 4px; font-size: .85em; font-family: 'SF Mono', Consolas, monospace }
-
-    header { padding: 18px 24px; border-bottom: 1px solid var(--border-light); display: flex; justify-content: space-between; align-items: center }
-    .logo { font-size: 13px; font-weight: 700; color: var(--text) }
-    .logo span { color: var(--dim); font-weight: 400 }
-    header nav a { font-size: 13px; color: var(--dim); margin-left: 20px } header nav a:hover { color: var(--text) }
-
-    .wizard { min-height: calc(100vh - 57px); display: flex; flex-direction: column; align-items: center; padding: 40px 24px 80px }
-    .progress { width: 100%; max-width: 580px; margin-bottom: 40px }
-    .progress-track { height: 3px; background: var(--border-light); border-radius: 2px; overflow: hidden }
-    .progress-fill { height: 100%; background: var(--accent); border-radius: 2px; transition: width .4s ease }
-    .progress-label { font-size: 12px; color: var(--dim); margin-top: 8px; text-align: right }
-
-    .step-card { width: 100%; max-width: 580px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 36px 40px; animation: slide-in .25s ease }
-    @keyframes slide-in { from { opacity: 0; transform: translateY(8px) } to { opacity: 1; transform: translateY(0) } }
-    @media (max-width: 640px) { .step-card { padding: 24px 20px } }
-
-    .step-phase { font-size: 11px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase; color: var(--accent); margin-bottom: 6px }
-    .step-title { font-size: 24px; font-weight: 800; color: var(--text); letter-spacing: -.02em; margin-bottom: 10px; line-height: 1.2 }
-    .step-body { font-size: 15px; color: var(--body); line-height: 1.75 }
-    .step-body p { margin-bottom: 12px } .step-body p:last-child { margin-bottom: 0 }
-    .step-body ul { padding-left: 20px; margin-bottom: 12px }
-    .step-body li { margin-bottom: 6px }
-
-    .cmd-box { background: #1e1e2e; border-radius: 8px; padding: 13px 14px; margin: 12px 0; cursor: pointer; display: flex; align-items: center; gap: 10px; transition: opacity .15s }
-    .cmd-box:hover { opacity: .9 }
-    .cmd-box code { flex: 1; font-size: 13px; color: #a5b4fc; background: none; padding: 0; white-space: pre-wrap; word-break: break-all; line-height: 1.6 }
-    .cmd-box-copy { font-size: 10px; font-weight: 700; color: rgba(255,255,255,.25); flex-shrink: 0 }
-    .cmd-box.copied .cmd-box-copy { color: #6ee7b7 }
-
-    .confirm-check { margin: 20px 0 0; padding: 16px; border: 1.5px solid var(--border); border-radius: 10px; cursor: pointer; display: flex; align-items: center; gap: 12px; transition: border-color .15s, background .15s }
-    .confirm-check:hover { border-color: var(--accent); background: var(--accent-bg) }
-    .confirm-check.checked { border-color: var(--green); background: var(--green-bg) }
-    .check-box { width: 20px; height: 20px; border-radius: 5px; border: 2px solid var(--border); flex-shrink: 0; display: flex; align-items: center; justify-content: center; transition: all .15s }
-    .confirm-check.checked .check-box { border-color: var(--green); background: var(--green) }
-    .check-mark { display: none; color: #fff; font-size: 12px; font-weight: 800 }
-    .confirm-check.checked .check-mark { display: block }
-    .check-label { font-size: 14px; color: var(--body) }
-    .confirm-check.checked .check-label { color: var(--text) }
-
-    .note { padding: 12px 14px; border-radius: 8px; background: var(--border-light); font-size: 13px; color: var(--body); margin: 12px 0; line-height: 1.6 }
-    .note.gold { background: var(--accent-bg); border: 1px solid var(--accent-border) }
-
-    .step-nav { display: flex; gap: 10px; margin-top: 28px; align-items: center }
-    .btn { padding: 11px 24px; border-radius: 9px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all .15s; font-family: var(--sans); border: none }
-    .btn-primary { background: var(--accent); color: #fff }
-    .btn-primary:hover { background: #a07d24 }
-    .btn-primary:disabled { opacity: .4; cursor: not-allowed }
-    .btn-secondary { background: var(--border-light); color: var(--body) }
-    .btn-secondary:hover { background: var(--border) }
-    .btn-skip { background: none; color: var(--dim); font-size: 13px; padding: 11px 16px; margin-left: auto }
-    .btn-skip:hover { color: var(--body) }
-
-    /* Form inputs */
-    .key-field { margin: 14px 0 }
-    .key-field label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 4px }
-    .key-field .key-sub { font-size: 12px; color: var(--dim); font-weight: 400; margin-left: 4px }
-    .key-field input { width: 100%; padding: 10px 12px; border: 1.5px solid var(--border); border-radius: 8px; font-size: 14px; font-family: 'SF Mono', Consolas, monospace; background: var(--card); color: var(--text); transition: border-color .15s }
-    .key-field input:focus { outline: none; border-color: var(--accent) }
-    .key-field input::placeholder { color: var(--dim) }
-    .key-field .key-help { font-size: 12px; color: var(--dim); margin-top: 4px }
-    .key-field .key-help a { color: var(--accent) }
-
-    /* Bot config */
-    .bot-card { border: 1.5px solid var(--border); border-radius: 10px; padding: 16px; margin: 12px 0 }
-    .bot-card-header { display: flex; align-items: center; gap: 10px; margin-bottom: 12px }
-    .bot-card-header input { flex: 1; padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 14px; font-family: var(--sans) }
-    .bot-card-header select { padding: 8px 10px; border: 1.5px solid var(--border); border-radius: 6px; font-size: 13px; font-family: var(--sans); background: var(--card) }
-    .bot-remove { font-size: 18px; color: var(--dim); cursor: pointer; padding: 4px 8px; border-radius: 4px } .bot-remove:hover { color: var(--red); background: rgba(220,38,38,.08) }
-    .add-bot-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border: 1.5px dashed var(--border); border-radius: 8px; font-size: 13px; color: var(--dim); cursor: pointer; background: none; font-family: var(--sans); transition: all .15s }
-    .add-bot-btn:hover { border-color: var(--accent); color: var(--accent) }
-
-    /* Generated config */
-    .config-box { background: #1e1e2e; border-radius: 10px; padding: 16px; margin: 16px 0; max-height: 300px; overflow: auto }
-    .config-box pre { font-size: 12px; color: #c4b5fd; line-height: 1.6; white-space: pre-wrap; word-break: break-all; font-family: 'SF Mono', Consolas, monospace }
-
-    footer { text-align: center; padding: 20px; font-size: 12px; color: var(--dim) }
-    footer a { color: var(--dim) } footer a:hover { color: var(--accent) }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">Bot Setup Guide <span>by Humanity Labs</span></div>
-  <nav>
-    <a href="https://openclaw.ai">OpenClaw</a>
-    <a href="https://obsidianclaw.ai">ObsidianClaw</a>
-  </nav>
-</header>
+<div class="container">
+  <header>
+    <h1>Set up your AI assistant</h1>
+    <p>Get your own 24/7 AI in 10 minutes. No tech skills needed.</p>
+  </header>
 
-<div class="wizard">
-  <div class="progress" id="progress">
-    <div class="progress-track"><div class="progress-fill" id="progressFill" style="width:0%"></div></div>
-    <div class="progress-label" id="progressLabel">Getting started</div>
-  </div>
-  <div id="stepContainer"></div>
+  <div class="progress"><div class="progress-bar" id="progressBar"></div></div>
+
+  <div id="app"></div>
 </div>
 
 <footer>
-  <a href="https://humanitylabs.org">Humanity Labs</a> · <a href="https://obsidianclaw.ai">ObsidianClaw</a> · <a href="https://openclaw.ai">OpenClaw</a>
+  Made by <a href="https://humanitylabs.org">Humanity Labs</a> · 
+  <a href="https://obsidianclaw.ai">ObsidianClaw</a> · 
+  <a href="https://openclaw.ai">OpenClaw</a>
 </footer>
 
 <script>
-// ─── State ───────────────────────────────────────────────────────────────────
-
+// State
 const state = {
-  hasOpenclaw: null,
-  keys: { claude1: '', claude2: '', googleai: '', brave: '', elevenlabs: '' },
-  bots: [{ name: 'Assistant', model: 'anthropic/claude-sonnet-4-6' }],
+  step: 0,
+  hostingChoice: null, // 'local' or 'cloud'
+  hostinger: { apiKey: '', plan: 'kvm1', location: 'us-east', hostname: '' },
+  keys: { claude: '', google: '', brave: '' },
+  serverInfo: null, // { url, token, ip }
 };
 
-const models = [
-  { id: 'anthropic/claude-opus-4-6', label: 'Claude Opus 4' },
-  { id: 'anthropic/claude-sonnet-4-6', label: 'Claude Sonnet 4' },
-  { id: 'anthropic/claude-sonnet-4-5', label: 'Claude Sonnet 4.5' },
-  { id: 'google/gemini-2.5-pro', label: 'Gemini 2.5 Pro' },
-  { id: 'google/gemini-2.5-flash', label: 'Gemini 2.5 Flash' },
-];
-
-// ─── Steps ───────────────────────────────────────────────────────────────────
-
+// Steps
 const steps = [
-
-  // 0: Welcome
+  // Step 0: Choose hosting
   {
-    phase: '', title: 'Build your own AI assistant',
-    body: `<p>This guide helps you set up a personal AI that runs 24/7, reads your files, searches the web, and chats from any device.</p>`,
-    choices: [
-      { label: "I need to install OpenClaw", goto: 1 },
-      { label: "OpenClaw is already running", goto: 5 },
-    ]
+    title: 'Where will your assistant live?',
+    render: () => `
+      <p>Your AI needs a computer that stays on 24/7. Pick one:</p>
+      <div class="choices">
+        <div class="choice" onclick="choose('cloud')">
+          <h3>☁️ Cloud server</h3>
+          <p>$2/month · Always on · We'll set it up for you</p>
+        </div>
+        <div class="choice" onclick="choose('local')">
+          <h3>💻 My own computer</h3>
+          <p>Free · Mac, Linux, or Raspberry Pi</p>
+        </div>
+      </div>
+    `
   },
 
-  // 1: API Keys
+  // Step 1a: Cloud - Get Hostinger account
   {
-    phase: 'Setup',
-    title: 'Your API keys',
-    body: `<p>Your bot needs access to AI models and tools. Paste your keys below — they'll be baked into the install command. Nothing leaves your browser.</p>`,
-    custom: 'keys',
-    next: 2
+    if: () => state.hostingChoice === 'cloud',
+    title: 'Create your cloud account',
+    render: () => `
+      <p>We use Hostinger for cloud hosting. They're cheap ($2/month) and reliable.</p>
+      <p style="margin-top:16px"><a href="https://www.hostinger.com?REFERRALCODE=XLSMIGUELN7E" target="_blank" style="display:inline-block;background:#0066cc;color:#fff;padding:12px 24px;border-radius:8px;text-decoration:none;font-weight:600">Create Hostinger Account →</a></p>
+      <div class="note" style="margin-top:16px">You'll need a credit card. Don't worry - you can cancel anytime.</div>
+      <div style="margin-top:24px">
+        <label><input type="checkbox" id="hasAccount"> I created my account</label>
+      </div>
+      <button onclick="nextStep()" id="continueBtn" disabled style="margin-top:16px">Continue →</button>
+    `,
+    onMount: () => {
+      document.getElementById('hasAccount').onchange = (e) => {
+        document.getElementById('continueBtn').disabled = !e.target.checked;
+      };
+    }
   },
 
-  // 2: Configure bots
+  // Step 1b: Cloud - Get API key
   {
-    phase: 'Setup',
-    title: 'Configure your bots',
-    body: `<p>How many AI assistants do you want? Each gets its own personality, memory, and workspace folder.</p>`,
-    custom: 'bots',
-    next: 3
+    if: () => state.hostingChoice === 'cloud',
+    title: 'Get your connection key',
+    render: () => `
+      <p>To set up the server automatically, we need a special "key" from Hostinger.</p>
+      <p style="margin-top:12px"><strong>What's a key?</strong> Think of it like a password that lets our website talk to Hostinger for you.</p>
+      
+      <p style="margin-top:20px"><strong>How to get it:</strong></p>
+      <ol style="margin-left:20px;margin-top:8px">
+        <li style="margin-bottom:8px">Log into your <a href="https://hpanel.hostinger.com" target="_blank">Hostinger account</a></li>
+        <li style="margin-bottom:8px">Click your profile (top right) → <strong>API</strong></li>
+        <li style="margin-bottom:8px">Click <strong>Create API Token</strong></li>
+        <li>Copy the token and paste it below</li>
+      </ol>
+
+      <div class="input-group" style="margin-top:20px">
+        <label>Your Hostinger API key</label>
+        <input type="password" id="apiKeyInput" placeholder="Paste the long text here">
+        <div class="help">🔒 This stays in your browser. We never see it.</div>
+      </div>
+
+      <button onclick="saveApiKey()" style="margin-top:16px">Continue →</button>
+    `
   },
 
-  // 3: Pick a machine
+  // Step 1c: Cloud - Configure server
   {
-    phase: 'Setup',
-    title: 'Pick a machine',
-    body: `
-      <p>Your bot needs a computer that stays on 24/7:</p>
-      <ul>
-        <li><strong>Mac mini or spare laptop</strong> — plug it in, close the lid</li>
-        <li><strong>Cloud server</strong> — Hetzner or DigitalOcean, $5/month</li>
-        <li><strong>Raspberry Pi</strong> — tiny, silent, $35</li>
+    if: () => state.hostingChoice === 'cloud',
+    title: 'Choose your server options',
+    render: () => `
+      <div class="input-group">
+        <label>Plan</label>
+        <select id="planSelect" onchange="state.hostinger.plan = this.value">
+          <option value="kvm1">KVM1 - $1.99/mo (1 CPU, 2GB RAM)</option>
+          <option value="kvm2">KVM2 - $3.99/mo (2 CPU, 4GB RAM)</option>
+        </select>
+        <div class="help">KVM1 is fine for most people.</div>
+      </div>
+
+      <div class="input-group" style="margin-top:16px">
+        <label>Location</label>
+        <select id="locationSelect" onchange="state.hostinger.location = this.value">
+          <option value="us-east">US East</option>
+          <option value="us-west">US West</option>
+          <option value="europe">Europe</option>
+          <option value="asia">Asia</option>
+        </select>
+        <div class="help">Pick the closest one to you.</div>
+      </div>
+
+      <div class="input-group" style="margin-top:16px">
+        <label>Server name</label>
+        <input type="text" id="hostnameInput" placeholder="my-ai-assistant" value="my-ai-assistant" onchange="state.hostinger.hostname = this.value">
+        <div class="help">This is just for you to remember. Use lowercase letters and dashes only.</div>
+      </div>
+
+      <button onclick="createServer()" style="margin-top:24px">Create My Server →</button>
+    `
+  },
+
+  // Step 1d: Cloud - Creating server (loading)
+  {
+    if: () => state.hostingChoice === 'cloud',
+    title: 'Setting up your server...',
+    render: () => `
+      <p>This takes 2-3 minutes. Don't close this page!</p>
+      <div id="serverStatus" style="margin-top:20px;color:#666">
+        <p>⏳ Creating server...</p>
+      </div>
+    `,
+    onMount: () => {
+      // This will be filled in by createServer()
+    }
+  },
+
+  // Step 2: Configure AI models
+  {
+    title: 'Connect your AI model',
+    render: () => `
+      <p>Your assistant needs access to an AI "brain". We use Claude (by Anthropic) - it's the best one.</p>
+      
+      <p style="margin-top:16px"><strong>What's an API key?</strong> It's like a library card that lets your assistant use Claude.</p>
+
+      <p style="margin-top:16px"><strong>How to get it:</strong></p>
+      <ol style="margin-left:20px;margin-top:8px">
+        <li style="margin-bottom:8px">Go to <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a></li>
+        <li style="margin-bottom:8px">Create an account (free to start)</li>
+        <li>Click <strong>Create Key</strong> and copy it</li>
+      </ol>
+
+      <div class="input-group" style="margin-top:20px">
+        <label>Claude API Key</label>
+        <input type="password" id="claudeKeyInput" placeholder="sk-ant-...">
+        <div class="help">🔒 Stays in your browser only</div>
+      </div>
+
+      <details style="margin-top:20px">
+        <summary style="cursor:pointer;color:#0066cc">+ Add optional tools (web search, more AI models)</summary>
+        <div style="margin-top:16px">
+          <div class="input-group">
+            <label>Google AI Key (optional)</label>
+            <input type="password" id="googleKeyInput" placeholder="AIza...">
+            <div class="help">Free at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a></div>
+          </div>
+          <div class="input-group" style="margin-top:16px">
+            <label>Brave Search Key (optional)</label>
+            <input type="password" id="braveKeyInput" placeholder="BSA...">
+            <div class="help">Free at <a href="https://brave.com/search/api" target="_blank">brave.com/search/api</a></div>
+          </div>
+        </div>
+      </details>
+
+      <button onclick="saveKeys()" style="margin-top:24px">Continue →</button>
+    `
+  },
+
+  // Step 3: Local install OR cloud done
+  {
+    if: () => state.hostingChoice === 'local',
+    title: 'Install on your computer',
+    render: () => `
+      <p>Open <strong>Terminal</strong> on your computer:</p>
+      <ul style="margin-left:20px;margin-top:8px">
+        <li><strong>Mac:</strong> Press Cmd+Space, type "Terminal", press Enter</li>
+        <li><strong>Linux:</strong> Press Ctrl+Alt+T</li>
       </ul>
-      <p>Open a <strong>terminal</strong> on that machine. Mac: press <strong>Cmd+Space</strong>, type <strong>Terminal</strong>, Enter. Cloud: <code>ssh root@your-server-ip</code>.</p>
+
+      <p style="margin-top:16px">Copy and paste this command:</p>
+      <div class="cmd-box">
+        <button class="copy-btn" onclick="copyCode(this, 'installCmd')">Copy</button>
+        <code id="installCmd">${generateInstallCommand()}</code>
+      </div>
+
+      <div class="note green" style="margin-top:16px">
+        <strong>What this does:</strong> Downloads OpenClaw, saves your settings, and starts your AI.
+      </div>
+
+      <div style="margin-top:24px">
+        <label><input type="checkbox" id="installed"> I ran the command and it finished</label>
+      </div>
+      <button onclick="nextStep()" id="nextBtn" disabled style="margin-top:16px">Continue →</button>
     `,
-    confirm: 'Terminal is open on my machine',
-    next: 4
+    onMount: () => {
+      document.getElementById('installed').onchange = (e) => {
+        document.getElementById('nextBtn').disabled = !e.target.checked;
+      };
+    }
   },
 
-  // 4: Install command
+  // Step 4: Connect to your assistant
   {
-    phase: 'Setup',
-    title: 'Install OpenClaw',
-    body: `<p>Run this command. It installs OpenClaw, Tailscale Serve, and your configuration in one shot:</p>`,
-    custom: 'install',
-    confirm: 'OpenClaw is installed and running',
-    next: 6
-  },
+    title: 'Connect to your assistant',
+    render: () => `
+      <p>Your AI is running! Here's how to talk to it:</p>
 
-  // 5: Already have OpenClaw — Tailscale Serve
-  {
-    phase: 'Configure',
-    title: 'Set up Tailscale Serve',
-    body: `
-      <p>Tailscale Serve gives your bot a private HTTPS address — no ports to open, no VPN to configure.</p>
-      <p><strong>1. Install Tailscale</strong> (if you haven't):</p>
-    `,
-    cmd: '# Mac:\nbrew install --cask tailscale\n\n# Linux:\ncurl -fsSL https://tailscale.com/install.sh | sh && sudo tailscale up',
-    body2: `<p><strong>2. Configure OpenClaw to use Tailscale Serve:</strong></p>`,
-    cmd2: 'openclaw config set gateway.bind loopback\nopenclaw config set gateway.tailscale.mode serve\nopenclaw gateway restart',
-    body3: `<p>Your bot is now reachable at <code>https://your-machine.tailXXXX.ts.net</code> from any device on your Tailscale network.</p>`,
-    confirm: 'Tailscale Serve is working',
-    next: 6
-  },
+      <div class="note green" style="margin-top:16px">
+        <strong>Your connection info:</strong><br>
+        URL: <code>${state.serverInfo?.url || 'https://your-machine.tail123.ts.net'}</code><br>
+        Token: <code>${state.serverInfo?.token || 'Run: cat ~/.openclaw/openclaw.json | grep token'}</code>
+      </div>
 
-  // 6: Configure bots (for existing users too)
-  {
-    phase: 'Configure',
-    title: 'Configure your bots',
-    body: `<p>Set up your AI assistants. Each gets its own workspace folder (like <code>AGENT-OSCAR</code>), personality, and memory.</p>`,
-    custom: 'bots',
-    next: 7
-  },
+      <div style="margin-top:24px;padding:20px;background:#f9f9f9;border-radius:12px">
+        <h3 style="font-size:18px;margin-bottom:16px">📱 Recommended: Obsidian + plugin</h3>
+        <p>Chat with your AI from your phone, tablet, or laptop - all synced.</p>
+        <ol style="margin-left:20px;margin-top:12px;line-height:1.8">
+          <li>Install <a href="https://obsidian.md/download" target="_blank">Obsidian</a> on all your devices</li>
+          <li>In Obsidian: Settings → Community Plugins → Turn off Safe Mode</li>
+          <li>Browse → Search "BRAT" → Install → Enable</li>
+          <li>Settings → BRAT → "Add Beta Plugin" → Paste: <code style="background:#fff;padding:2px 6px;border-radius:4px">oscarhenrycollins/obsidianclaw</code></li>
+          <li>The setup wizard will open - paste your URL and token</li>
+        </ol>
+        <div class="note" style="margin-top:12px">
+          <strong>Pro tip:</strong> Get <a href="https://obsidian.md/sync" target="_blank">Obsidian Sync</a> ($4/mo) to keep your notes on all devices.
+        </div>
+      </div>
 
-  // 7: Obsidian on server
-  {
-    phase: 'Sync',
-    title: 'Install Obsidian on the server',
-    body: `
-      <p>Obsidian is where your bot's files live. Install it on the bot's machine:</p>
-    `,
-    cmd: '# Mac:\nbrew install --cask obsidian\n\n# Linux: download from obsidian.md/download',
-    body2: `
-      <p>Open Obsidian → <strong>"Open folder as vault"</strong> → select <code>~/.openclaw/workspace</code></p>
-      <p>Your vault will look like this:</p>
-      <div class="config-box"><pre>~/.openclaw/workspace/
-├── AGENT-YOURBOT/     ← bot workspace (one per bot)
-│   ├── SOUL.md
-│   ├── MEMORY.md
-│   └── memory/
-├── Your folders/      ← your personal notes
-└── ...</pre></div>
-    `,
-    confirm: 'Obsidian is open with the vault',
-    next: 8
-  },
+      <div style="margin-top:16px;padding:20px;background:#f9f9f9;border-radius:12px">
+        <h3 style="font-size:18px;margin-bottom:12px">💬 Alternative: Telegram bot</h3>
+        <p>Chat with your AI in Telegram (on your phone or computer).</p>
+        <ol style="margin-left:20px;margin-top:12px;line-height:1.8">
+          <li>Open Telegram and message <a href="https://t.me/botfather" target="_blank">@BotFather</a></li>
+          <li>Send <code>/newbot</code> and follow the instructions</li>
+          <li>Copy the token BotFather gives you</li>
+          <li>Add it to your config: <code>openclaw channels add telegram --bot-token YOUR_TOKEN</code></li>
+        </ol>
+      </div>
 
-  // 8: Obsidian Sync
-  {
-    phase: 'Sync',
-    title: 'Sync to your devices',
-    body: `
-      <p><a href="https://obsidian.md/sync" target="_blank">Obsidian Sync</a> ($4/month) keeps your bot's notes on all your devices in real time.</p>
-      <p><strong>On the server:</strong> Obsidian → Settings → Sync → Enable → Sign in → "Create new remote vault"</p>
-      <p><strong>On your phone + laptop:</strong> Install <a href="https://obsidian.md/download" target="_blank">Obsidian</a> + <a href="https://tailscale.com/download" target="_blank">Tailscale</a>, then: Settings → Sync → Sign in → Connect to your vault</p>
-    `,
-    confirm: 'Notes sync across my devices',
-    next: 9
-  },
+      <div style="margin-top:16px;padding:20px;background:#f9f9f9;border-radius:12px">
+        <h3 style="font-size:18px;margin-bottom:12px">🌐 Alternative: Web browser</h3>
+        <p>Just open the URL above and paste your token. Works anywhere!</p>
+      </div>
 
-  // 9: Install plugin
-  {
-    phase: 'Connect',
-    title: 'Install the chat plugin',
-    body: `
-      <p>On <strong>each device</strong> (phone, laptop, server):</p>
-      <p><strong>1.</strong> Obsidian → Settings → Community Plugins → turn off Safe Mode → Browse → search <strong>BRAT</strong> → Install → Enable</p>
-      <p><strong>2.</strong> Settings → BRAT → "Add Beta Plugin" → paste:</p>
-    `,
-    cmd: 'oscarhenrycollins/obsidianclaw',
-    body2: `<p>→ click "Add Plugin". The setup wizard opens automatically and walks you through connecting to your bot.</p>
-      <p>It needs your <strong>Gateway URL</strong> (shown after Tailscale Serve setup, like <code>https://your-machine.tailXXXX.ts.net</code>) and <strong>auth token</strong>:</p>`,
-    cmd2: 'cat ~/.openclaw/openclaw.json | grep token',
-    confirm: 'Plugin connected — I can see the chat sidebar',
-    next: 10
+      <div style="margin-top:32px;text-align:center">
+        <p style="font-size:20px;font-weight:600">🎉 You're all set!</p>
+        <p style="margin-top:8px;color:#666">Your AI assistant is running 24/7 and ready to help.</p>
+      </div>
+    `
   },
-
-  // 10: Done
-  {
-    phase: '🎉 All done',
-    title: "You're set up",
-    body: `
-      <p>Your personal AI is running 24/7 and accessible from every device.</p>
-      <ul>
-        <li>💬 Chat in the Obsidian sidebar on phone, laptop, anywhere</li>
-        <li>📁 Browse your bot's files, memory, and notes in the vault</li>
-        <li>🔀 Switch between bots with the agent switcher</li>
-        <li>🗣️ Send any note as context: <strong>Cmd+P → "Ask about this note"</strong></li>
-      </ul>
-    `,
-    isDone: true
-  }
 ];
 
-// ─── Wizard engine ─────────────────────────────────────────────────────────
+// Render current step
+function render() {
+  const step = getCurrentStep();
+  if (!step) return;
+  
+  const pct = (state.step / (steps.filter(s => !s.if || s.if()).length - 1)) * 100;
+  document.getElementById('progressBar').style.width = pct + '%';
 
-let current = 0;
+  const html = `
+    <div class="step">
+      <div class="step-num">${state.step + 1}</div>
+      <h2>${step.title}</h2>
+      ${step.render()}
+    </div>
+  `;
+  
+  document.getElementById('app').innerHTML = html;
+  if (step.onMount) step.onMount();
+}
 
-function render(index) {
-  current = index;
-  const step = steps[index];
-  const total = steps.length - 1;
-  const pct = Math.round((index / total) * 100);
-  document.getElementById('progressFill').style.width = pct + '%';
-  document.getElementById('progressLabel').textContent = step.isDone ? 'Complete!' : (step.phase || 'Getting started');
+function getCurrentStep() {
+  const filtered = steps.filter(s => !s.if || s.if());
+  return filtered[state.step];
+}
 
-  const container = document.getElementById('stepContainer');
-  container.innerHTML = '';
-  const card = document.createElement('div');
-  card.className = 'step-card';
+function nextStep() {
+  const filtered = steps.filter(s => !s.if || s.if());
+  if (state.step < filtered.length - 1) {
+    state.step++;
+    render();
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+}
 
-  let html = '';
-  if (step.phase) html += `<div class="step-phase">${step.phase}</div>`;
-  html += `<div class="step-title">${step.title}</div>`;
-  html += `<div class="step-body">${step.body || ''}</div>`;
+function choose(type) {
+  state.hostingChoice = type;
+  nextStep();
+}
 
-  // Choices
-  if (step.choices) {
-    html += `<div style="display:flex;flex-direction:column;gap:10px;margin-top:20px">`;
-    step.choices.forEach((c, i) => {
-      html += `<button class="confirm-check" onclick="goTo(${c.goto})" style="cursor:pointer;text-align:left">
-        <div class="check-box"><span class="check-mark" style="display:block">→</span></div>
-        <span class="check-label">${c.label}</span>
-      </button>`;
+function saveApiKey() {
+  const key = document.getElementById('apiKeyInput').value.trim();
+  if (!key) return alert('Please paste your API key');
+  state.hostinger.apiKey = key;
+  nextStep();
+}
+
+function saveKeys() {
+  const claude = document.getElementById('claudeKeyInput').value.trim();
+  if (!claude) return alert('Please add your Claude API key');
+  state.keys.claude = claude;
+  state.keys.google = document.getElementById('googleKeyInput')?.value.trim() || '';
+  state.keys.brave = document.getElementById('braveKeyInput')?.value.trim() || '';
+  nextStep();
+}
+
+async function createServer() {
+  nextStep(); // Go to loading screen
+  
+  const status = document.getElementById('serverStatus');
+  
+  try {
+    const config = generateConfig();
+    const configB64 = btoa(JSON.stringify(config, null, 2));
+    
+    // Generate post-install script
+    const script = `#!/bin/bash
+set -e
+curl -fsSL https://openclaw.ai/install.sh | bash
+curl -fsSL https://tailscale.com/install.sh | sh
+echo '${configB64}' | base64 -d > ~/.openclaw/openclaw.json
+openclaw config set gateway.bind loopback
+openclaw config set gateway.tailscale.mode serve
+openclaw gateway start
+`;
+
+    status.innerHTML = '<p>⏳ Creating your server...</p>';
+    
+    const planMap = { 'kvm1': 'hostingercom-vps-kvm1-usd-1m', 'kvm2': 'hostingercom-vps-kvm2-usd-1m' };
+    const locationMap = { 'us-east': 1, 'us-west': 2, 'europe': 3, 'asia': 4 };
+
+    const response = await fetch('/api/hostinger', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        apiKey: state.hostinger.apiKey,
+        method: 'POST',
+        path: '/api/vps/v1/virtual-machines',
+        body: {
+          plan: planMap[state.hostinger.plan],
+          data_center_id: locationMap[state.hostinger.location],
+          template_id: 1002,
+          hostname: state.hostinger.hostname,
+          post_install_script: { content: script }
+        }
+      })
     });
-    html += `</div>`;
-  }
 
-  // Custom sections
-  if (step.custom === 'keys') html += renderKeysForm();
-  if (step.custom === 'bots') html += renderBotsForm();
-  if (step.custom === 'install') html += renderInstallCommand();
+    if (!response.ok) throw new Error('Failed to create server');
 
-  // Commands
-  if (step.cmd) html += cmdBox(step.cmd, 'cmd1');
-  if (step.body2) html += `<div class="step-body">${step.body2}</div>`;
-  if (step.cmd2) html += cmdBox(step.cmd2, 'cmd2');
-  if (step.body3) html += `<div class="step-body">${step.body3}</div>`;
-  if (step.note) html += `<div class="note">${step.note}</div>`;
+    const data = await response.json();
+    const vmId = data.id;
+    
+    status.innerHTML = '<p>⏳ Installing (2-3 min)...</p>';
+    
+    let attempts = 0;
+    while (attempts < 30) {
+      await sleep(10000);
+      
+      const statusResponse = await fetch('/api/hostinger', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          apiKey: state.hostinger.apiKey,
+          method: 'GET',
+          path: `/api/vps/v1/virtual-machines/${vmId}`
+        })
+      });
 
-  // Confirm
-  if (step.confirm && !step.isDone) {
-    html += `<div class="confirm-check" id="confirmBox" onclick="toggleConfirm()">
-      <div class="check-box"><span class="check-mark">✓</span></div>
-      <span class="check-label">${step.confirm}</span>
-    </div>`;
-  }
-
-  // Nav
-  if (!step.choices) {
-    html += `<div class="step-nav">`;
-    if (index > 0) html += `<button class="btn btn-secondary" onclick="goTo(${index - 1})">← Back</button>`;
-    if (!step.isDone) {
-      const nextLabel = step.nextLabel || 'Next →';
-      const disabled = step.confirm ? 'disabled id="nextBtn"' : 'id="nextBtn"';
-      html += `<button class="btn btn-primary" ${disabled} onclick="goTo(${step.next})">${nextLabel}</button>`;
-    } else {
-      html += `<a href="https://obsidianclaw.ai" class="btn btn-primary" style="text-decoration:none">Learn more about ObsidianClaw →</a>`;
+      const statusData = await statusResponse.json();
+      
+      if (statusData.status === 'active') {
+        state.serverInfo = {
+          url: `https://${state.hostinger.hostname}.tail[SUFFIX].ts.net`,
+          token: 'Run: cat ~/.openclaw/openclaw.json | grep token',
+          ip: statusData.ipv4_address || 'check dashboard'
+        };
+        status.innerHTML = '<p class="note green">✓ Done!</p>';
+        await sleep(1000);
+        return nextStep();
+      }
+      
+      attempts++;
+      status.innerHTML = `<p>⏳ ${attempts * 10}s elapsed...</p>`;
     }
-    html += `</div>`;
+    
+    throw new Error('Timeout. Check Hostinger dashboard.');
+    
+  } catch (err) {
+    status.innerHTML = `<p style="color:#cc0000">❌ ${err.message}</p>`;
   }
-
-  card.innerHTML = html;
-  container.appendChild(card);
-  if (step.custom === 'keys') bindKeyInputs();
-  if (step.custom === 'bots') bindBotInputs();
-  window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ─── API Keys form ─────────────────────────────────────────────────────────
-
-function renderKeysForm() {
-  return `
-    <div class="key-field">
-      <label>Claude OAuth Token <span class="key-sub">(required)</span></label>
-      <input type="password" id="key-claude1" placeholder="sk-ant-..." value="${esc(state.keys.claude1)}">
-      <div class="key-help">From <a href="https://console.anthropic.com/settings/keys" target="_blank">console.anthropic.com</a> — or a Claude Max subscription OAuth token</div>
-    </div>
-    <div class="key-field">
-      <label>Claude Token #2 <span class="key-sub">(optional — for parallel requests)</span></label>
-      <input type="password" id="key-claude2" placeholder="sk-ant-..." value="${esc(state.keys.claude2)}">
-    </div>
-    <div class="key-field">
-      <label>Google AI API Key <span class="key-sub">(optional — enables Gemini models)</span></label>
-      <input type="password" id="key-googleai" placeholder="AIza..." value="${esc(state.keys.googleai)}">
-      <div class="key-help">Free at <a href="https://aistudio.google.com/apikey" target="_blank">aistudio.google.com</a></div>
-    </div>
-    <div class="key-field">
-      <label>Brave Search API Key <span class="key-sub">(optional — web search)</span></label>
-      <input type="password" id="key-brave" placeholder="BSA..." value="${esc(state.keys.brave)}">
-      <div class="key-help">Free at <a href="https://brave.com/search/api/" target="_blank">brave.com/search/api</a></div>
-    </div>
-    <div class="key-field">
-      <label>ElevenLabs API Key <span class="key-sub">(optional — voice/TTS)</span></label>
-      <input type="password" id="key-elevenlabs" placeholder="sk_..." value="${esc(state.keys.elevenlabs)}">
-      <div class="key-help">Free at <a href="https://elevenlabs.io" target="_blank">elevenlabs.io</a></div>
-    </div>
-    <div class="note gold">🔒 Keys stay in your browser. Nothing is sent to any server. The install command runs entirely on your machine.</div>
-  `;
-}
-
-function bindKeyInputs() {
-  ['claude1','claude2','googleai','brave','elevenlabs'].forEach(k => {
-    const el = document.getElementById('key-' + k);
-    if (el) el.addEventListener('input', () => { state.keys[k] = el.value.trim(); });
-  });
-}
-
-// ─── Bot config form ───────────────────────────────────────────────────────
-
-function renderBotsForm() {
-  let html = '<div id="botList">';
-  state.bots.forEach((bot, i) => {
-    html += `
-      <div class="bot-card">
-        <div class="bot-card-header">
-          <input type="text" id="bot-name-${i}" placeholder="Bot name" value="${esc(bot.name)}">
-          <select id="bot-model-${i}">
-            ${models.map(m => `<option value="${m.id}" ${m.id === bot.model ? 'selected' : ''}>${m.label}</option>`).join('')}
-          </select>
-          ${state.bots.length > 1 ? `<span class="bot-remove" onclick="removeBot(${i})">×</span>` : ''}
-        </div>
-      </div>`;
-  });
-  html += '</div>';
-  html += `<button class="add-bot-btn" onclick="addBot()">+ Add another bot</button>`;
-  html += `<div class="note">Each bot gets a folder like <code>AGENT-YOURBOT/</code> in your Obsidian vault with its own personality and memory.</div>`;
-  return html;
-}
-
-function bindBotInputs() {
-  state.bots.forEach((bot, i) => {
-    const nameEl = document.getElementById('bot-name-' + i);
-    const modelEl = document.getElementById('bot-model-' + i);
-    if (nameEl) nameEl.addEventListener('input', () => { bot.name = nameEl.value; });
-    if (modelEl) modelEl.addEventListener('change', () => { bot.model = modelEl.value; });
-  });
-}
-
-function addBot() {
-  state.bots.push({ name: '', model: 'anthropic/claude-sonnet-4-6' });
-  render(current);
-}
-
-function removeBot(i) {
-  if (state.bots.length <= 1) return;
-  state.bots.splice(i, 1);
-  render(current);
-}
-
-// ─── Install command generator ─────────────────────────────────────────────
-
-function renderInstallCommand() {
+function generateInstallCommand() {
   const config = generateConfig();
-  const configB64 = btoa(unescape(encodeURIComponent(JSON.stringify(config, null, 2))));
-  const installCmd = `curl -fsSL https://openclaw.ai/install.sh | bash && echo '${configB64}' | base64 -d > ~/.openclaw/openclaw.json && openclaw gateway restart`;
-
-  return `
-    <div class="cmd-box" onclick="copyCmd(this, document.getElementById('installCmdText').textContent)">
-      <code id="installCmdText" style="font-size:12px">${escHtml(installCmd)}</code>
-      <span class="cmd-box-copy">copy</span>
-    </div>
-    <p style="font-size:13px;color:var(--dim);margin-top:8px">This installs OpenClaw, writes your config with all API keys, and starts the gateway.</p>
-    <details style="margin-top:16px">
-      <summary style="font-size:13px;color:var(--dim);cursor:pointer">Preview generated config</summary>
-      <div class="config-box"><pre>${escHtml(JSON.stringify(config, null, 2))}</pre></div>
-    </details>
-  `;
+  const b64 = btoa(JSON.stringify(config, null, 2));
+  return `curl -fsSL https://openclaw.ai/install.sh | bash && echo '${b64}' | base64 -d > ~/.openclaw/openclaw.json && openclaw gateway restart`;
 }
 
 function generateConfig() {
-  const config = {
-    auth: { profiles: {} },
+  return {
+    auth: {
+      profiles: {
+        'anthropic:default': { provider: 'anthropic', mode: 'token' }
+      }
+    },
     agents: {
       defaults: {
-        model: { primary: state.bots[0]?.model || 'anthropic/claude-sonnet-4-6' },
+        model: { primary: 'anthropic/claude-sonnet-4-6' }
       }
     },
     gateway: {
@@ -486,80 +504,22 @@ function generateConfig() {
       auth: { mode: 'token', allowTailscale: true }
     }
   };
-
-  // Claude tokens
-  if (state.keys.claude1) {
-    config.auth.profiles['anthropic:default'] = { provider: 'anthropic', mode: 'token' };
-  }
-  if (state.keys.claude2) {
-    config.auth.profiles['anthropic:secondary'] = { provider: 'anthropic', mode: 'token' };
-  }
-
-  // Google AI
-  if (state.keys.googleai) {
-    config.auth.profiles['google:default'] = { provider: 'google', mode: 'api_key' };
-  }
-
-  // Brave search
-  if (state.keys.brave) {
-    config.tools = config.tools || {};
-    config.tools.web = { search: { apiKey: state.keys.brave } };
-  }
-
-  // ElevenLabs
-  if (state.keys.elevenlabs) {
-    config.messages = { tts: { provider: 'elevenlabs', elevenlabs: { apiKey: state.keys.elevenlabs } } };
-  }
-
-  // Multi-agent
-  if (state.bots.length > 1) {
-    config.agents.list = state.bots.map((bot, i) => {
-      const id = i === 0 ? 'main' : bot.name.toLowerCase().replace(/[^a-z0-9]/g, '-') || `bot-${i}`;
-      const folderName = 'AGENT-' + (bot.name || 'BOT').toUpperCase().replace(/[^A-Z0-9]/g, '-');
-      return {
-        id,
-        name: bot.name || `Bot ${i + 1}`,
-        workspace: `~/.openclaw/workspace/${folderName}`,
-        model: bot.model !== config.agents.defaults.model.primary ? bot.model : undefined
-      };
-    }).map(a => { if (!a.model) delete a.model; return a; });
-  } else if (state.bots[0]?.name) {
-    const folderName = 'AGENT-' + state.bots[0].name.toUpperCase().replace(/[^A-Z0-9]/g, '-');
-    config.agents.defaults.workspace = `~/.openclaw/workspace/${folderName}`;
-  }
-
-  return config;
 }
 
-// ─── Utilities ─────────────────────────────────────────────────────────────
-
-function goTo(i) { if (i >= 0 && i < steps.length) render(i); }
-
-function toggleConfirm() {
-  const box = document.getElementById('confirmBox');
-  if (!box) return;
-  box.classList.toggle('checked');
-  const btn = document.getElementById('nextBtn');
-  if (btn) btn.disabled = !box.classList.contains('checked');
+function copyCode(btn, id) {
+  const code = document.getElementById(id).textContent;
+  navigator.clipboard.writeText(code);
+  btn.textContent = 'Copied!';
+  setTimeout(() => btn.textContent = 'Copy', 2000);
 }
 
-function copyCmd(el, text) {
-  navigator.clipboard.writeText(text.replace(/\\n/g, '\n'));
-  el.classList.add('copied');
-  const s = el.querySelector('.cmd-box-copy'); if (s) s.textContent = 'copied ✓';
-  setTimeout(() => { el.classList.remove('copied'); if (s) s.textContent = 'copy'; }, 1500);
+function sleep(ms) {
+  return new Promise(r => setTimeout(r, ms));
 }
 
-function cmdBox(cmd, id) {
-  return `<div class="cmd-box" id="${id}" onclick="copyCmd(this,'${escAttr(cmd)}')">
-    <code>${escHtml(cmd)}</code><span class="cmd-box-copy">copy</span></div>`;
-}
-
-function esc(s) { return (s||'').replace(/"/g, '&quot;'); }
-function escHtml(s) { return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-function escAttr(s) { return (s||'').replace(/'/g,"\\'").replace(/\n/g,'\\n'); }
-
-render(0);
+// Start
+render();
 </script>
+
 </body>
 </html>
