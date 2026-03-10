@@ -7,414 +7,550 @@
   <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='70' font-size='70'>🤖</text></svg>">
   <style>
     *{margin:0;padding:0;box-sizing:border-box}
-    body{font-family:Georgia,serif;background:#fff;color:#222;font-size:19px;line-height:1.9;-webkit-font-smoothing:antialiased}
-    header{padding:20px 24px;font-family:-apple-system,system-ui,sans-serif;font-size:14px;color:#999;letter-spacing:.3px;text-align:center}
-    header a{color:#999;text-decoration:none}
-    header a:hover{color:#222}
-    .w{max-width:800px;margin:0 auto;padding:40px 24px 60px}
-    h1{font-size:28px;font-weight:400;line-height:1.4;margin-bottom:32px}
-    h1 em{font-style:italic;font-weight:400}
-    h1 a{color:#222;text-decoration:none}
-    h2{font-size:22px;font-weight:400;margin:40px 0 16px}
-    .hint{color:#999;font-size:15px;line-height:1.6;margin:-8px 0 24px;font-family:-apple-system,system-ui,sans-serif}
-    .example{font-family:Menlo,monospace;font-size:12px;color:#bbb;background:#fafafa;padding:8px 12px;border-radius:4px;margin:-12px 0 20px;word-break:break-all}
-    .warn{color:#c44;font-size:15px;font-family:-apple-system,system-ui,sans-serif;margin:-12px 0 20px;display:none}
-    .warn.show{display:block}
-    p{margin-bottom:20px}
-    a{color:#222}
-    ol{margin:0 0 28px 28px}
-    ol li{margin-bottom:8px;font-family:-apple-system,system-ui,sans-serif;font-size:16px;line-height:1.6;color:#555}
-    code{font-family:Menlo,monospace;font-size:15px}
-    label{display:block;font-size:15px;color:#999;margin-bottom:4px;font-family:-apple-system,system-ui,sans-serif}
-    input,select{display:block;width:100%;padding:14px;font-size:16px;font-family:Menlo,monospace;border:1px solid #ddd;border-radius:4px;background:#fff;color:#222;margin:0 0 20px}
-    input:focus,select:focus{outline:none;border-color:#aaa}
+    body{font-family:-apple-system,system-ui,'Segoe UI',sans-serif;background:#fafafa;color:#1a1a1a;font-size:16px;line-height:1.7;-webkit-font-smoothing:antialiased}
+    header{padding:24px 32px 16px;text-align:left}
+    header a{color:#1a1a1a;text-decoration:none;font-size:15px;font-weight:600;letter-spacing:-.2px}
+    header a:hover{color:#555}
+    .w{max-width:720px;margin:0 auto;padding:32px 24px 80px}
+    h1{font-size:24px;font-weight:600;line-height:1.4;margin-bottom:8px;letter-spacing:-.3px}
+    h2{font-size:19px;font-weight:600;margin:36px 0 12px;letter-spacing:-.2px}
+    .subtitle{color:#777;font-size:15px;margin-bottom:32px;line-height:1.6}
+    .hint{color:#888;font-size:14px;line-height:1.6;margin:4px 0 16px}
+    p{margin-bottom:16px;color:#444}
+    a{color:#1a1a1a}
+    code{font-family:Menlo,monospace;font-size:14px;background:#f0f0f0;padding:2px 5px;border-radius:3px}
+
+    /* Badges */
+    .badge{display:inline-flex;align-items:center;gap:5px;font-size:12px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.2px;text-transform:uppercase}
+    .badge-easy{background:#dcfce7;color:#166534}
+    .badge-medium{background:#fef9c3;color:#854d0e}
+    .badge-technical{background:#fee2e2;color:#991b1b}
+    .badge-free{background:#f0f9ff;color:#0369a1;font-weight:500;text-transform:none}
+    .badge-paid{background:#faf5ff;color:#7c3aed;font-weight:500;text-transform:none}
+    .time-est{font-size:12px;color:#999;margin-left:4px}
+
+    /* Reassurance banners */
+    .reassure{background:#f0fdf4;border-left:3px solid #86efac;padding:12px 16px;border-radius:0 8px 8px 0;margin:16px 0 24px;font-size:14px;color:#166534;line-height:1.6}
+    .reassure-calm{background:#eff6ff;border-left-color:#93c5fd;color:#1e40af}
+    .reassure-warn{background:#fffbeb;border-left-color:#fcd34d;color:#92400e}
+
+    /* Prerequisite cards */
+    .prereq{background:#fff;border:1px solid #e8e8e8;border-radius:12px;margin:16px 0;overflow:hidden;transition:border-color .2s}
+    .prereq.done{border-color:#86efac}
+    .prereq-header{display:flex;align-items:center;justify-content:space-between;padding:20px 24px;cursor:pointer;user-select:none}
+    .prereq-header:hover{background:#fafafa}
+    .prereq-left{display:flex;align-items:center;gap:12px;flex:1;min-width:0}
+    .prereq-icon{font-size:24px;flex-shrink:0}
+    .prereq-info{flex:1;min-width:0}
+    .prereq-title{font-size:16px;font-weight:600;margin-bottom:2px}
+    .prereq-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+    .prereq-check{width:28px;height:28px;border-radius:50%;border:2px solid #ddd;display:flex;align-items:center;justify-content:center;font-size:16px;flex-shrink:0;transition:all .2s}
+    .prereq.done .prereq-check{border-color:#22c55e;background:#22c55e;color:#fff}
+    .prereq-body{display:none;padding:0 24px 24px;border-top:1px solid #f0f0f0}
+    .prereq-body.open{display:block}
+    .prereq-body p{font-size:14px;color:#555;line-height:1.7;margin-bottom:12px}
+    .prereq-body ol{margin:0 0 16px 20px}
+    .prereq-body ol li{font-size:14px;color:#555;margin-bottom:8px;line-height:1.6}
+    .prereq-body ol li strong{color:#1a1a1a}
+
+    /* Inputs */
+    label{display:block;font-size:13px;color:#888;margin-bottom:4px;text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+    input,select{display:block;width:100%;padding:12px 14px;font-size:15px;font-family:Menlo,monospace;border:1px solid #e0e0e0;border-radius:8px;background:#fff;color:#1a1a1a;margin:0 0 8px;transition:border-color .15s}
+    input:focus,select:focus{outline:none;border-color:#999;box-shadow:0 0 0 3px rgba(0,0,0,.04)}
     input::placeholder{color:#ccc}
-    .input-text{font-family:Georgia,serif}
-    .pick{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin:0 0 28px}
-    .pick-card{padding:28px 20px;cursor:pointer;border:1px solid #ddd;border-radius:4px;transition:border-color .15s}
-    .pick-card:hover{border-color:#aaa}
-    .pick-card.on{border-color:#222}
-    .pick .icon{font-size:28px;margin-bottom:12px}
-    .pick .title{font-size:17px;font-weight:600;margin-bottom:4px;font-family:-apple-system,system-ui,sans-serif}
-    .pick .desc{font-size:14px;color:#666;line-height:1.5;font-family:-apple-system,system-ui,sans-serif}
-    .pick .pros{color:#555;font-size:13px;margin-top:10px;font-family:-apple-system,system-ui,sans-serif;line-height:1.5}
-    .pick .cons{color:#999;font-size:13px;margin-top:4px;font-family:-apple-system,system-ui,sans-serif;line-height:1.5}
-    .cmd{font-family:Menlo,monospace;font-size:13px;background:#f7f7f7;border-radius:4px;padding:14px;margin:12px 0 20px;white-space:pre-wrap;word-break:break-all;line-height:1.6;cursor:pointer;color:#333;position:relative}
-    .cmd:hover{background:#f0f0f0}
-    .cmd::after{content:'click to copy';position:absolute;right:12px;top:12px;font-size:11px;color:#ccc;font-family:-apple-system,system-ui,sans-serif}
-    .cmd:hover::after{color:#999}
-    .step-list{margin:0 0 28px;padding:0;list-style:none;font-family:-apple-system,system-ui,sans-serif;font-size:15px;line-height:1.7;color:#666}
-    .step-list li{padding:8px 0;border-bottom:1px solid #f5f5f5}
-    .step-list li:last-child{border-bottom:none}
-    .step-list .num{color:#222;font-weight:600;margin-right:8px}
-    button{display:block;width:100%;padding:16px;font-size:16px;font-weight:600;font-family:-apple-system,system-ui,sans-serif;background:#222;color:#fff;border:none;border-radius:4px;cursor:pointer;margin-top:40px}
-    button:hover{background:#444}
-    button:disabled{background:#ccc;cursor:not-allowed}
-    .back{font-size:14px;color:#ccc;margin-top:12px;cursor:pointer;text-decoration:none;display:inline-block;font-family:-apple-system,system-ui,sans-serif}
-    .back:hover{color:#999}
-    .spinner{width:24px;height:24px;border:2px solid #ddd;border-top-color:#222;border-radius:50%;animation:s .7s linear infinite;margin:40px auto 16px}
+    .input-text{font-family:-apple-system,system-ui,sans-serif}
+    .example{font-family:Menlo,monospace;font-size:12px;color:#aaa;background:#f5f5f5;padding:8px 12px;border-radius:6px;margin:0 0 8px;word-break:break-all}
+    .warn{color:#dc3545;font-size:14px;margin:4px 0 12px;display:none}
+    .warn.show{display:block}
+
+    /* OS toggle */
+    .os-toggle{display:inline-flex;border:1px solid #e0e0e0;border-radius:8px;overflow:hidden;margin:8px 0 16px}
+    .os-btn{padding:8px 20px;font-size:13px;font-weight:600;cursor:pointer;background:#fff;border:none;color:#888;transition:all .15s}
+    .os-btn.active{background:#1a1a1a;color:#fff}
+    .os-btn:not(:last-child){border-right:1px solid #e0e0e0}
+
+    /* Command boxes */
+    .cmd{font-family:Menlo,monospace;font-size:13px;background:#1a1a1a;color:#e0e0e0;border-radius:8px;padding:14px 16px;margin:12px 0 16px;white-space:pre-wrap;word-break:break-all;line-height:1.6;cursor:pointer;position:relative;transition:opacity .15s}
+    .cmd:hover{opacity:.9}
+    .cmd::after{content:'click to copy';position:absolute;right:12px;top:12px;font-size:10px;color:#666;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+    .cmd:hover::after{color:#888}
+
+    /* Buttons */
+    button{display:block;width:100%;padding:16px;font-size:16px;font-weight:600;background:#1a1a1a;color:#fff;border:none;border-radius:10px;cursor:pointer;margin-top:24px;transition:all .15s}
+    button:hover{background:#333}
+    button:disabled{background:#e0e0e0;color:#999;cursor:not-allowed}
+    .back{font-size:13px;color:#bbb;margin-top:12px;cursor:pointer;text-decoration:none;display:inline-block}
+    .back:hover{color:#888}
+
+    /* Pick cards */
+    .pick{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin:0 0 24px}
+    .pick-card{padding:24px 20px;cursor:pointer;border:1px solid #e8e8e8;border-radius:12px;transition:all .15s;background:#fff}
+    .pick-card:hover{border-color:#ccc;box-shadow:0 2px 8px rgba(0,0,0,.04)}
+    .pick-card.on{border-color:#1a1a1a;box-shadow:0 2px 8px rgba(0,0,0,.08)}
+    .pick .icon{font-size:24px;margin-bottom:10px}
+    .pick .title{font-size:15px;font-weight:600;margin-bottom:4px;color:#1a1a1a}
+    .pick .desc{font-size:13px;color:#777;line-height:1.5}
+
+    /* Progress tracker */
+    .progress-bar{display:flex;align-items:center;gap:8px;margin-bottom:32px}
+    .progress-dot{width:10px;height:10px;border-radius:50%;background:#e0e0e0;transition:background .2s}
+    .progress-dot.active{background:#1a1a1a}
+    .progress-dot.done{background:#22c55e}
+    .progress-line{flex:1;height:2px;background:#e0e0e0}
+
+    /* Spinner */
+    .spinner{width:24px;height:24px;border:2px solid #e0e0e0;border-top-color:#1a1a1a;border-radius:50%;animation:s .7s linear infinite;margin:40px auto 16px}
     @keyframes s{to{transform:rotate(360deg)}}
-    .st{text-align:center;color:#999;font-size:16px;font-family:-apple-system,system-ui,sans-serif}
-    hr{border:none;border-top:1px solid #eee;margin:36px 0}
-    .extra{display:none}.extra.show{display:block}
-    .optional-section{margin-top:32px;padding-top:24px;border-top:1px solid #eee}
-    .error-box{background:#fef2f2;border:1px solid #fecaca;border-radius:8px;padding:24px;margin:32px 0;display:none}
+    .st{text-align:center;color:#999;font-size:15px}
+
+    /* Error box */
+    .error-box{background:#fef2f2;border:1px solid #fecaca;border-radius:12px;padding:24px;margin:32px 0;display:none}
     .error-box.show{display:block}
-    .error-box h3{font-size:17px;color:#991b1b;margin-bottom:8px;font-family:-apple-system,system-ui,sans-serif;font-weight:600}
-    .error-box p{font-size:15px;color:#7f1d1d;margin-bottom:12px;font-family:-apple-system,system-ui,sans-serif;line-height:1.6}
+    .error-box h3{font-size:16px;color:#991b1b;margin-bottom:8px;font-weight:600}
+    .error-box p{font-size:14px;color:#7f1d1d;margin-bottom:12px;line-height:1.6}
     .error-box a{color:#991b1b}
     .error-box button{background:#991b1b;margin-top:16px}
     .error-box button:hover{background:#7f1d1d}
-    .section-card{background:#fafafa;border-radius:8px;padding:24px;margin:20px 0}
-    .section-card h3{font-size:17px;font-weight:600;margin-bottom:8px;font-family:-apple-system,system-ui,sans-serif}
-    .section-card p{font-size:15px;color:#666;font-family:-apple-system,system-ui,sans-serif;line-height:1.6;margin-bottom:12px}
-    .section-card .cmd{margin:8px 0 12px}
-    .section-card ol{margin:8px 0 16px 20px}
-    .section-card ol li{font-size:14px;color:#666;margin-bottom:6px}
-    .existing-link{font-size:15px;color:#999;font-family:-apple-system,system-ui,sans-serif;margin-top:32px;text-align:center}
-    .existing-link a{color:#999;text-decoration:underline}
-    .existing-link a:hover{color:#222}
-    .success-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:8px;padding:24px;margin:20px 0;text-align:center}
+
+    /* Success box */
+    .success-box{background:#f0fdf4;border:1px solid #bbf7d0;border-radius:12px;padding:32px;margin:20px 0;text-align:center}
     .success-box .icon{font-size:48px;margin-bottom:12px}
-    .success-box h3{font-size:20px;font-weight:600;margin-bottom:8px;font-family:-apple-system,system-ui,sans-serif}
-    .success-box p{font-size:15px;color:#666;font-family:-apple-system,system-ui,sans-serif;line-height:1.6;margin-bottom:0}
-    .upgrade-cta{background:#fafafa;border:1px solid #eee;border-radius:8px;padding:24px;margin:32px 0;text-align:center}
-    .upgrade-cta h3{font-size:17px;font-weight:600;margin-bottom:8px;font-family:-apple-system,system-ui,sans-serif}
-    .upgrade-cta p{font-size:15px;color:#666;font-family:-apple-system,system-ui,sans-serif;line-height:1.6;margin-bottom:0}
-    .upgrade-cta a{color:#222;font-weight:600}
-    footer{text-align:center;color:#ccc;font-size:12px;padding:0 24px 40px;font-family:-apple-system,system-ui,sans-serif}
-    footer a{color:#ccc;text-decoration:none}
-    @media(max-width:520px){.pick{grid-template-columns:1fr}h1{font-size:24px}}
+    .success-box h3{font-size:18px;font-weight:600;margin-bottom:8px}
+    .success-box p{font-size:14px;color:#666;line-height:1.6;margin-bottom:0}
+
+    /* Section cards */
+    .section-card{background:#fff;border:1px solid #e8e8e8;border-radius:12px;padding:24px;margin:20px 0}
+    .section-card h3{font-size:16px;font-weight:600;margin-bottom:8px}
+    .section-card p{font-size:14px;color:#666;line-height:1.6;margin-bottom:12px}
+    .section-card ol{margin:8px 0 16px 20px}
+    .section-card ol li{font-size:13px;color:#666;margin-bottom:6px}
+
+    /* Cover */
+    .cover{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;text-align:center;padding:0 24px}
+    .cover-brand{font-size:32px;font-weight:700;letter-spacing:-.5px;margin-bottom:40px;color:#1a1a1a}
+    .cover-tagline{font-size:18px;color:#777;margin-bottom:16px;line-height:1.5;font-weight:400}
+    .cover-tagline a{color:#777;text-decoration:underline;text-decoration-color:#ccc;text-underline-offset:2px}
+    .cover-tagline a:hover{color:#444;text-decoration-color:#999}
+    .cover-time{font-size:14px;color:#aaa;margin-bottom:48px}
+    .cover-start{display:inline-block;padding:16px 56px;font-size:16px;font-weight:600;background:#1a1a1a;color:#fff;border:none;border-radius:10px;cursor:pointer;text-decoration:none;width:auto;transition:background .15s}
+    .cover-start:hover{background:#333}
+    .existing-link{font-size:14px;color:#999;margin-top:28px;text-align:center}
+    .existing-link a{color:#999;text-decoration:underline}
+    .existing-link a:hover{color:#1a1a1a}
+    .cover-powered{position:fixed;bottom:28px;right:32px}
+
+    /* Step list */
+    .step-list{margin:0 0 24px;padding:0;list-style:none;font-size:14px;line-height:1.7;color:#666}
+    .step-list li{padding:8px 0;border-bottom:1px solid #f0f0f0}
+    .step-list li:last-child{border-bottom:none}
+    .step-list .num{color:#1a1a1a;font-weight:600;margin-right:8px}
+
+    /* Footer */
+    footer{text-align:right;padding:0 32px 28px;position:relative}
+    footer a{text-decoration:none}
+    .footer-brand{display:inline-flex;align-items:center;gap:5px;opacity:.4;transition:opacity .2s}
+    .footer-brand:hover{opacity:.7}
+    .footer-brand img{height:14px;width:auto}
+    .footer-brand span{color:#999;font-size:11px;text-transform:uppercase;letter-spacing:.5px;font-weight:500}
+
+    hr{border:none;border-top:1px solid #eee;margin:32px 0}
+    @media(max-width:520px){.pick{grid-template-columns:1fr}h1{font-size:21px}.cover-brand{font-size:26px}footer{padding:0 20px 20px}.prereq-header{padding:16px}.prereq-meta{gap:4px}}
   </style>
 </head>
 <body>
 <header><a href="/" onclick="goHome();return false">BotSetupGuide.com</a></header>
 <div class="w" id="app"></div>
-<footer><a href="https://www.botsetupguide.com">botsetupguide.com</a> · by <a href="https://humanitylabs.org">humanitylabs.org</a></footer>
+<footer>
+  <a class="footer-brand" href="https://humanitylabs.org" target="_blank">
+    <span>powered by</span>
+    <img src="/humanity-labs-logo.png" alt="Humanity Labs">
+  </a>
+</footer>
 <script>
-const S={v:'s1',path:null,mode:null,claude:'',brave:'',hkey:'',tgtoken:'',agents:['','','']};
+const S={v:'s0',path:null,mode:null,os:'mac',claude:'',brave:'',hkey:'',tgtoken:'',agents:['','',''],openPrereqs:{}};
 
-function totalSteps(){return S.mode==='quick'?6:6}
-const stepNum={s1:1,s2:2,s3:3,s4:4,s5:5,creating:6,local:6,quicklocal:6,quicktelegram:6,connect:6};
-function btnLabel(text){const n=stepNum[S.v]||1;const t=totalSteps();return n<t?`${text} (${n} of ${t})`:`${text}`}
-function render(){document.getElementById('app').innerHTML=V[S.v]();window.scrollTo({top:0,behavior:'smooth'})}
-function goHome(){S.v='s1';history.pushState(null,'','/');render()}
+function render(){
+  document.getElementById('app').innerHTML=V[S.v]();
+  document.querySelector('header').style.display=S.v==='s0'?'none':'';
+  document.querySelector('footer').style.display=S.v==='s0'?'none':'';
+  window.scrollTo({top:0,behavior:'smooth'});
+  updateGoButton();
+}
+function goHome(){S.v='s0';history.pushState(null,'','/');render()}
+
+function togglePrereq(id){
+  S.openPrereqs[id]=!S.openPrereqs[id];
+  const body=document.getElementById('body-'+id);
+  if(body)body.classList.toggle('open',S.openPrereqs[id]);
+}
+
+function updateGoButton(){
+  const btn=document.getElementById('go-btn');
+  if(!btn)return;
+  const filled=checkAllFilled();
+  btn.disabled=!filled;
+  btn.textContent=filled?'Set up my bot':'Fill in all fields above to continue';
+}
+
+function checkAllFilled(){
+  const b=S.brave.length>=15;
+  const t=S.tgtoken.length>=30&&S.tgtoken.includes(':');
+  const c=S.claude.length>=20;
+  if(S.path==='cloud'){
+    const h=S.hkey.length>=10;
+    return b&&t&&h&&c;
+  }
+  return b&&t&&c;
+}
+
+function saveField(field,inputId){
+  const el=document.getElementById(inputId);
+  if(el)S[field]=el.value.trim();
+  // Update check marks
+  updateChecks();
+  updateGoButton();
+}
+
+function updateChecks(){
+  setCheck('check-brave',S.brave.length>=15);
+  setCheck('check-telegram',S.tgtoken.length>=30&&S.tgtoken.includes(':'));
+  if(S.path==='cloud')setCheck('check-hostinger',S.hkey.length>=10);
+  setCheck('check-claude',S.claude.length>=20);
+}
+
+function setCheck(id,done){
+  const el=document.getElementById(id);
+  if(!el)return;
+  const card=el.closest('.prereq');
+  if(done){
+    el.innerHTML='✓';
+    if(card)card.classList.add('done');
+  }else{
+    el.innerHTML='';
+    if(card)card.classList.remove('done');
+  }
+}
 
 const V={
-s1:()=>`
-<h1>Set up your <a href="https://openclaw.ai" target="_blank"><em>OpenClaw</em></a> bot</h1>
 
-<p>Where will your bot run?</p>
-<p class="hint">It needs a dedicated machine that stays on. Not the computer you use day-to-day.</p>
+s0:()=>`
+<div class="cover">
+<div class="cover-brand">BotSetupGuide.com</div>
+<p class="cover-tagline">Set up your own <a href="https://openclaw.ai" target="_blank">OpenClaw</a> AI bot</p>
+<p class="cover-time">Takes about 15-20 minutes. No coding required.</p>
+<button class="cover-start" onclick="S.v='s1';render()">Let's go</button>
+<p class="existing-link" style="margin-top:20px">Already have a bot? <a href="/upgrade" onclick="goUpgrade();return false">Add remote access &amp; sync</a></p>
+</div>
+<div class="cover-powered">
+  <a class="footer-brand" href="https://humanitylabs.org" target="_blank">
+    <span>powered by</span>
+    <img src="/humanity-labs-logo.png" alt="Humanity Labs">
+  </a>
+</div>
+`,
+
+s1:()=>`
+<h1>Where will your bot live?</h1>
+<p class="subtitle">Your bot needs a computer that stays on 24/7. Pick one:</p>
 
 <div class="pick">
-<div class="pick-card${S.path==='cloud'?' on':''}" onclick="pk('cloud',this)">
+<div class="pick-card${S.path==='cloud'?' on':''}" onclick="S.path='cloud';render()">
 <div class="icon">☁️</div>
 <div class="title">Rent a cloud server</div>
-<div class="desc">We rent a virtual computer for you from Hostinger and set it up automatically.</div>
-<div class="pros">✓ Always on, we handle the setup</div>
-<div class="cons">⊘ Monthly cost, relies on Hostinger</div>
+<div class="desc">We'll set up a virtual computer for you on Hostinger. About $11/mo.</div>
 </div>
-<div class="pick-card${S.path==='local'?' on':''}" onclick="pk('local',this)">
+<div class="pick-card${S.path==='local'?' on':''}" onclick="S.path='local';render()">
 <div class="icon">🖥</div>
-<div class="title">Use a dedicated computer</div>
-<div class="desc">A Mac mini, old laptop, or any spare machine you're not using. Wipe it clean and use it only for this.</div>
-<div class="pros">✓ You own it, no monthly fee</div>
-<div class="cons">⊘ Must stay powered on and connected</div>
+<div class="title">Use my own computer</div>
+<div class="desc">A Mac mini, old laptop, or spare machine that can stay on.</div>
 </div>
 </div>
 
-<div class="extra${S.path==='cloud'?' show':''}" id="ce">
-<ol>
-<li>Go to <a href="https://www.hostinger.com/vps-hosting?REFERRALCODE=XLSMIGUELN7E" target="_blank">Hostinger VPS Hosting</a> and find the <strong>KVM 2</strong> plan ("Most Popular"). Click <strong>"Choose plan"</strong>.</li>
-<li>Change the period dropdown from "24 months" to <strong>"1 month"</strong>. You should see <strong>$11.19/mo</strong> (renews at $24.99/mo). Skip the daily backup upsell.</li>
-<li>Pick the server location closest to you, create your account, and complete the purchase.</li>
-<li>In the dashboard: profile icon (top right), then <strong>Account</strong>, then <strong>API</strong> (left sidebar), then <strong>"Create API token"</strong>. Copy it.</li>
-</ol>
-<p>Paste your API key here:</p>
-<input type="password" id="in3" placeholder="Paste your Hostinger API key" autocomplete="off">
-<div class="example">Looks like: hstgr_a1b2c3d4e5...about 40 characters long</div>
-<div class="warn" id="w3"></div>
-</div>
-
-<button onclick="s1n()">${btnLabel('Next')}</button>
-<p class="existing-link">Already have a bot running? <a href="/upgrade" onclick="goUpgrade();return false">Add remote access &amp; note sync</a></p>
+<button onclick="s1n()" ${!S.path?'disabled':''}>Next</button>
 `,
 
 s2:()=>`
-<h1>Install Claude Code</h1>
+<h1>Gather your ingredients</h1>
+<p class="subtitle">You need ${S.path==='cloud'?'4':'3'} things before we can set up your bot. Get each one, paste it below, and you'll see a green checkmark. Once they're all green, press the button at the bottom.</p>
 
-<p>Download and install <a href="https://claude.ai/download" target="_blank">Claude Code</a>. It will walk you through creating a Claude account and choosing a plan.</p>
-<p class="hint">We recommend the $200/mo Max plan. You can start at $20/mo and upgrade anytime. No commitment needed.</p>
+<div class="reassure reassure-calm">
+  🧑‍🍳 Think of this like a recipe. We're just gathering ingredients first, then we cook. None of these steps change anything on your computer.
+</div>
 
-<p>Once installed, open a terminal and run this command:</p>
-<p class="hint"><strong>Mac:</strong> press Cmd+Space, type Terminal, hit Enter. <strong>Windows:</strong> press Win+X, select Terminal.</p>
+<!-- 1. BRAVE SEARCH -->
+<div class="prereq" id="card-brave">
+<div class="prereq-header" onclick="togglePrereq('brave')">
+  <div class="prereq-left">
+    <div class="prereq-icon">🔍</div>
+    <div class="prereq-info">
+      <div class="prereq-title">Brave Search API key</div>
+      <div class="prereq-meta">
+        <span class="badge badge-easy">Easy</span>
+        <span class="badge badge-free">Free</span>
+        <span class="time-est">~2 min</span>
+      </div>
+    </div>
+  </div>
+  <div class="prereq-check" id="check-brave"></div>
+</div>
+<div class="prereq-body${S.openPrereqs.brave?' open':''}" id="body-brave">
+  <p>This lets your bot search the internet. Completely free, no credit card.</p>
+  <ol>
+    <li>Go to <a href="https://brave.com/search/api" target="_blank"><strong>brave.com/search/api</strong></a></li>
+    <li>Click <strong>"Get started for free"</strong> and create an account</li>
+    <li>On the dashboard, you'll see your API key. Copy it.</li>
+  </ol>
+  <input type="password" id="in-brave" placeholder="Paste your Brave Search API key" value="${esc(S.brave)}" oninput="saveField('brave','in-brave')" autocomplete="off">
+  <div class="example">Looks like: BSAQx9p5B-69...about 30 characters</div>
+</div>
+</div>
 
-<div class="cmd" onclick="cp(this)">claude setup-token</div>
+<!-- 2. TELEGRAM BOT -->
+<div class="prereq" id="card-telegram">
+<div class="prereq-header" onclick="togglePrereq('telegram')">
+  <div class="prereq-left">
+    <div class="prereq-icon">💬</div>
+    <div class="prereq-info">
+      <div class="prereq-title">Telegram bot token</div>
+      <div class="prereq-meta">
+        <span class="badge badge-easy">Easy</span>
+        <span class="badge badge-free">Free</span>
+        <span class="time-est">~3 min</span>
+      </div>
+    </div>
+  </div>
+  <div class="prereq-check" id="check-telegram"></div>
+</div>
+<div class="prereq-body${S.openPrereqs.telegram?' open':''}" id="body-telegram">
+  <p>This is how you'll talk to your bot from your phone.</p>
+  <ol>
+    <li>Open <a href="https://telegram.org" target="_blank"><strong>Telegram</strong></a> on your phone or computer (install it if you don't have it)</li>
+    <li>Search for <a href="https://t.me/botfather" target="_blank"><strong>@BotFather</strong></a> and open a chat with it</li>
+    <li>Send the message <code>/newbot</code></li>
+    <li>BotFather will ask for a <strong>display name</strong>. Type anything you like (e.g. "My Assistant")</li>
+    <li>Then it asks for a <strong>username</strong>. This must end in "bot" (e.g. "myassistant_bot")</li>
+    <li>BotFather will reply with a long token. <strong>Copy the entire token.</strong></li>
+  </ol>
+  <div class="reassure">
+    ✅ This just creates an empty bot on Telegram. It can't do anything yet. We'll connect it to your AI later.
+  </div>
+  <input type="password" id="in-telegram" placeholder="Paste your Telegram bot token" value="${esc(S.tgtoken)}" oninput="saveField('tgtoken','in-telegram')" autocomplete="off">
+  <div class="example">Looks like: 7123456789:AAH...about 46 characters, with a colon in the middle</div>
+</div>
+</div>
 
-<p>It will print a long token. Copy the whole thing and paste it here:</p>
+${S.path==='cloud'?`
+<!-- 3. HOSTINGER (cloud only) -->
+<div class="prereq" id="card-hostinger">
+<div class="prereq-header" onclick="togglePrereq('hostinger')">
+  <div class="prereq-left">
+    <div class="prereq-icon">🖥️</div>
+    <div class="prereq-info">
+      <div class="prereq-title">Hostinger API key</div>
+      <div class="prereq-meta">
+        <span class="badge badge-medium">Medium</span>
+        <span class="badge badge-paid">~$11/mo</span>
+        <span class="time-est">~5 min</span>
+      </div>
+    </div>
+  </div>
+  <div class="prereq-check" id="check-hostinger"></div>
+</div>
+<div class="prereq-body${S.openPrereqs.hostinger?' open':''}" id="body-hostinger">
+  <p>This is the cloud computer your bot will run on. You'll need to create an account and rent a server.</p>
 
-<input type="password" id="in1" placeholder="Paste your Claude token" autocomplete="off">
-<div class="example">Looks like: sk-ant-cc01-a1b2c3d4e5f6...about 200 characters long</div>
-<div class="warn" id="w1"></div>
+  <div class="reassure reassure-warn">
+    💰 This costs about $11.19 for the first month (renews at $24.99/mo). You can cancel anytime.
+  </div>
 
-<button onclick="s2n()">${btnLabel('Next')}</button>
+  <ol>
+    <li>Go to <a href="https://www.hostinger.com/vps-hosting?REFERRALCODE=XLSMIGUELN7E" target="_blank"><strong>Hostinger VPS Hosting</strong></a></li>
+    <li>Find the <strong>KVM 2</strong> plan (it says "Most Popular"). Click <strong>"Choose plan"</strong>.</li>
+    <li>Change the period dropdown to <strong>"1 month"</strong>. The price should show <strong>$11.19/mo</strong>. Skip the daily backup upsell.</li>
+    <li><strong>Create your account and complete the purchase.</strong> Pick the server location closest to you when asked.</li>
+    <li>Once you're in the dashboard, click your <strong>profile icon</strong> (top right)</li>
+    <li>Click <strong>Account</strong>, then click <strong>API</strong> in the left sidebar</li>
+    <li>Click <strong>"Create API token"</strong> and copy the token</li>
+  </ol>
+
+  <div class="reassure reassure-calm">
+    🔑 The API key is what lets our setup script talk to Hostinger on your behalf. It will not be stored anywhere.
+  </div>
+
+  <input type="password" id="in-hostinger" placeholder="Paste your Hostinger API key" value="${esc(S.hkey)}" oninput="saveField('hkey','in-hostinger')" autocomplete="off">
+  <div class="example">Looks like: hstgr_a1b2c3d4e5...about 40 characters</div>
+</div>
+</div>
+`:''}
+
+<!-- ${S.path==='cloud'?'4':'3'}. CLAUDE TOKEN -->
+<div class="prereq" id="card-claude">
+<div class="prereq-header" onclick="togglePrereq('claude')">
+  <div class="prereq-left">
+    <div class="prereq-icon">🧠</div>
+    <div class="prereq-info">
+      <div class="prereq-title">Claude AI token</div>
+      <div class="prereq-meta">
+        <span class="badge badge-technical">Technical</span>
+        <span class="badge badge-paid">$20+/mo</span>
+        <span class="time-est">~10 min</span>
+      </div>
+    </div>
+  </div>
+  <div class="prereq-check" id="check-claude"></div>
+</div>
+<div class="prereq-body${S.openPrereqs.claude?' open':''}" id="body-claude">
+  <p>This is the brain of your bot. You'll install a small tool on <strong>your</strong> computer (not the server), use it to log in to Claude, and it will give you a token to paste here.</p>
+
+  <div class="reassure reassure-warn">
+    🔧 This is the most technical step. It involves opening your computer's Terminal and pasting commands. Don't worry, we'll walk you through every keystroke.
+  </div>
+
+  <p><strong>Step 1: Install Claude Code on your computer</strong></p>
+  <p class="hint">What kind of computer are you doing this from?</p>
+  <div class="os-toggle">
+    <button class="os-btn${S.os==='mac'?' active':''}" onclick="S.os='mac';render()">Mac / Linux</button>
+    <button class="os-btn${S.os==='win'?' active':''}" onclick="S.os='win';render()">Windows</button>
+  </div>
+
+  ${S.os==='mac'?`
+  <p class="hint">Open <strong>Terminal</strong>: press <strong>Cmd + Space</strong>, type <strong>Terminal</strong>, press <strong>Enter</strong>.</p>
+  <p class="hint">Then paste this command and press Enter:</p>
+  <div class="cmd" onclick="cp(this)">curl -fsSL https://claude.ai/install.sh | bash</div>
+  `:`
+  <p class="hint">Open <strong>PowerShell</strong>: press <strong>Win + X</strong>, click <strong>"Terminal"</strong> or <strong>"PowerShell"</strong>.</p>
+  <p class="hint">Then paste this command and press Enter:</p>
+  <div class="cmd" onclick="cp(this)">irm https://claude.ai/install.ps1 | iex</div>
+  <div class="reassure reassure-calm">
+    💡 Windows requires <a href="https://git-scm.com/downloads/win" target="_blank">Git for Windows</a>. Install it first if the command above fails.
+  </div>
+  `}
+
+  <p><strong>Step 2: Get your token</strong></p>
+  <p class="hint">In the same Terminal window, paste this command and press Enter:</p>
+  <div class="cmd" onclick="cp(this)">claude setup-token</div>
+  <p class="hint">A browser window will open. <strong>Log in to Claude</strong> (or create an account and pick a plan). The $20/mo Pro plan works. When you're done, go back to your Terminal. A long token will appear. <strong>Copy the entire thing.</strong></p>
+
+  <div class="reassure">
+    ✅ That's it for the hard part! You don't need to use Claude Code again. We just needed it to get the token.
+  </div>
+
+  <input type="password" id="in-claude" placeholder="Paste your Claude token" value="${esc(S.claude)}" oninput="saveField('claude','in-claude')" autocomplete="off">
+  <div class="example">Looks like: sk-ant-cc01-a1b2c3...about 200 characters</div>
+</div>
+</div>
+
+<hr>
+
+<button id="go-btn" onclick="goSetup()" disabled>Fill in all fields above to continue</button>
 <a class="back" onclick="S.v='s1';render()">← Back</a>
 `,
 
 s3:()=>`
-<h1>Web search</h1>
+<h1>Name your bot</h1>
+<p class="subtitle">This is who you'll be talking to every day. Pick a name you like.</p>
 
-<p>Create a free account at <a href="https://brave.com/search/api" target="_blank">Brave Search API</a>.</p>
-<p class="hint">This lets your bot search the internet. Free plan, no credit card needed.</p>
-
-<p>After signing up, copy your API key from the dashboard and paste it here:</p>
-
-<input type="password" id="in2" placeholder="Paste your Brave Search key" autocomplete="off">
-<div class="example">Looks like: BSAQx9p5B-69...about 30 characters long</div>
-<div class="warn" id="w2"></div>
-
-<button onclick="s3n()">${btnLabel('Next')}</button>
-<a class="back" onclick="S.v='s2';render()">← Back</a>
-`,
-
-s4:()=>`
-<h1>Name your bots</h1>
-
-<p>Give your first bot a name. This is who you'll be talking to every day.</p>
-
-<label>First bot (required)</label>
+<label>Bot name</label>
 <input type="text" id="ag1" class="input-text" placeholder="e.g. Jarvis, Nova, Atlas" value="${esc(S.agents[0])}" autocomplete="off">
 
-<div class="optional-section">
-<p>Want additional bots? You don't have to use them, but it's much easier to create them now than to add them later.</p>
-<p class="hint">Some people like having one for work, one for personal stuff, or one with a different personality.</p>
-
+<div style="margin-top:24px;padding-top:20px;border-top:1px solid #f0f0f0">
+<p class="hint">Want extra bots? It's easier to create them now. You can always ignore them.</p>
 <label>Second bot (optional)</label>
 <input type="text" id="ag2" class="input-text" placeholder="e.g. Friday, Echo" value="${esc(S.agents[1])}" autocomplete="off">
-
 <label>Third bot (optional)</label>
 <input type="text" id="ag3" class="input-text" placeholder="e.g. Sage, Pixel" value="${esc(S.agents[2])}" autocomplete="off">
 </div>
 
-<button onclick="s4n()">${btnLabel('Next')}</button>
-<a class="back" onclick="S.v='s3';render()">← Back</a>
-`,
-
-s5:()=>`
-<h1>Choose your setup</h1>
-
-<p>How much do you want to set up right now?</p>
-
-<div class="pick">
-<div class="pick-card${S.mode==='quick'?' on':''}" onclick="pkMode('quick',this)">
-<div class="icon">📱</div>
-<div class="title">Quick setup</div>
-<div class="desc">Get your bot running on Telegram. Chat from your phone in minutes. You can always add more later.</div>
-<div class="pros">✓ Fast, simple, no extra accounts needed</div>
-<div class="cons">⊘ Telegram only, no browser or note sync</div>
-</div>
-<div class="pick-card${S.mode==='full'?' on':''}" onclick="pkMode('full',this)">
-<div class="icon">🔧</div>
-<div class="title">Full setup</div>
-<div class="desc">Everything above, plus access your bot from any device via browser, and sync notes across all your devices with Obsidian.</div>
-<div class="pros">✓ Browser access, Obsidian notes, multi-device</div>
-<div class="cons">⊘ Takes longer, requires Tailscale + Obsidian accounts</div>
-</div>
-</div>
-
-<button onclick="s5n()">${btnLabel('Next')}</button>
-<a class="back" onclick="S.v='s4';render()">← Back</a>
-`,
-
-quicklocal:()=>`
-<h1>Install your bot</h1>
-
-<p>Open a terminal on your <strong>dedicated machine</strong> (not your everyday computer) and paste this command.</p>
-<p class="hint"><strong>Mac:</strong> press Cmd+Space, type Terminal, hit Enter. <strong>Windows:</strong> press Win+X, select Terminal.</p>
-
-<div class="cmd" onclick="cp(this)">${esc(quickLocalScript())}</div>
-
-<p>Here's what it does:</p>
-<ul class="step-list">
-<li><span class="num">1.</span> Installs <strong>OpenClaw</strong>, the software that runs your bot</li>
-<li><span class="num">2.</span> Saves your Brave Search key so your bot can search the web</li>
-<li><span class="num">3.</span> Connects your Claude account so your bot can think and respond</li>
-<li><span class="num">4.</span> Starts your bot</li>
-</ul>
-
-<button onclick="S.v='quicktelegram';render()">Done, it finished</button>
-<a class="back" onclick="S.v='s5';render()">← Back</a>
-`,
-
-quicktelegram:()=>`
-<h1>Connect Telegram</h1>
-
-<p>Now let's connect your bot to Telegram so you can chat from your phone.</p>
-
-<div class="section-card">
-<h3>Create your Telegram bot</h3>
-<ol>
-<li>Open Telegram and message <a href="https://t.me/botfather" target="_blank">@BotFather</a></li>
-<li>Send <code>/newbot</code></li>
-<li>Choose a name (e.g. "${esc(S.agents[0])}")</li>
-<li>Choose a username (must end in "bot", e.g. "${esc(S.agents[0].toLowerCase().replace(/\s+/g,''))}bot")</li>
-<li>BotFather will give you a token. Copy it.</li>
-</ol>
-</div>
-
-<p>Paste your Telegram bot token here:</p>
-<input type="password" id="tgtoken" placeholder="Paste your Telegram bot token" value="${esc(S.tgtoken)}" autocomplete="off">
-<div class="example">Looks like: 7123456789:AAH...about 46 characters long</div>
-<div class="warn" id="wtg"></div>
-
-<p>Run this command on your bot's machine:</p>
-<div class="cmd" onclick="cp(this)">${esc(tgCmd())}</div>
-<p class="hint">This connects your Telegram bot to OpenClaw and restarts the server.</p>
-
-<button onclick="tgNext()">Done, it's connected</button>
-<a class="back" onclick="S.v=${S.path==='cloud'?"'creating'":"'quicklocal'"};render()">← Back</a>
-`,
-
-quickdone:()=>`
-<div class="success-box">
-<div class="icon">🎉</div>
-<h3>Your bot is live!</h3>
-<p>Open Telegram and send a message to your bot. It should respond.</p>
-</div>
-
-<p>That's it. Your bot is running 24/7 and you can chat with it anytime from Telegram.</p>
-
-<div class="upgrade-cta">
-<h3>Want more?</h3>
-<p>You can add browser access from any device, a web dashboard, and Obsidian note sync across all your devices.</p>
-<p style="margin-top:12px"><a href="/upgrade" onclick="goUpgrade();return false">Add remote access &amp; note sync →</a></p>
-</div>
-
-<p style="text-align:center;margin-top:32px"><a class="back" onclick="goHome()">← Start over</a></p>
-`,
-
-local:()=>`
-<h1>Run the setup command</h1>
-
-<p>Open a terminal on your <strong>dedicated machine</strong> (not your everyday computer) and paste this command.</p>
-<p class="hint"><strong>Mac:</strong> press Cmd+Space, type Terminal, hit Enter. <strong>Windows:</strong> press Win+X, select Terminal.</p>
-
-<div class="cmd" onclick="cp(this)">${esc(fullLocalScript())}</div>
-
-<p>Here's what it does:</p>
-<ul class="step-list">
-<li><span class="num">1.</span> Installs <strong>OpenClaw</strong>, the software that runs your bot</li>
-<li><span class="num">2.</span> Saves your Brave Search key so your bot can search the web</li>
-<li><span class="num">3.</span> Configures secure networking so you can access your bot from any device</li>
-<li><span class="num">4.</span> Connects your Claude account so your bot can think and respond</li>
-<li><span class="num">5.</span> Installs <strong>Tailscale</strong>, a secure private network that connects all your devices</li>
-<li><span class="num">6.</span> Installs <strong>Obsidian Headless</strong>, which syncs your notes between your bot and all your devices</li>
-<li><span class="num">7.</span> Starts your bot</li>
-</ul>
-
-<p>During setup, it will ask you to log in to <strong>Tailscale</strong>. Follow the link it shows and sign in with any account (Google, Apple, etc). This creates a secure private network between your devices.</p>
-
-<button onclick="S.v='connect';render()">Done, it finished</button>
-<a class="back" onclick="S.v='s5';render()">← Back</a>
+<button onclick="s3n()">Next</button>
+<a class="back" onclick="S.v='s2';render()">← Back</a>
 `,
 
 creating:()=>`
-<h1>Creating your server</h1>
+<h1>${S.path==='cloud'?'Creating your server':'Setting up your bot'}</h1>
 <div id="spinwrap"><div class="spinner"></div></div>
-<p class="st" id="stxt">Connecting to Hostinger...</p>
+<p class="st" id="stxt">${S.path==='cloud'?'Connecting to Hostinger...':'Follow the instructions below...'}</p>
 <div class="error-box" id="ebox">
 <h3 id="etitle">Something went wrong</h3>
 <p id="edesc"></p>
 <button onclick="retryOrBack()">Try again</button>
-<a class="back" onclick="S.v='s1';render()" style="margin-top:16px;display:block">← Go back and check your keys</a>
+<a class="back" onclick="S.v='s2';render()" style="margin-top:16px;display:block">← Go back and check your keys</a>
 </div>
 `,
 
-connect:()=>`
-<h1>Connect your devices</h1>
-<p class="hint">Your bot is installed. Now let's connect everything.</p>
+localsetup:()=>`
+<h1>Run the setup command</h1>
+<p class="subtitle">Open a terminal on your <strong>dedicated machine</strong> (not the one you use every day) and paste this command.</p>
 
-<div class="section-card">
-<h3>💬 Talk to your bot via Telegram</h3>
-<p>The easiest way to chat with your bot from your phone.</p>
-<ol>
-<li>Open Telegram and message <a href="https://t.me/botfather" target="_blank">@BotFather</a></li>
-<li>Send <code>/newbot</code> and follow the steps to create a bot</li>
-<li>Copy the token BotFather gives you, then run:</li>
-</ol>
-<div class="cmd" onclick="cp(this)">openclaw channels add --channel telegram --token YOUR_BOT_TOKEN && openclaw gateway restart</div>
-<p class="hint">Replace YOUR_BOT_TOKEN with the token you copied from BotFather.</p>
+<div class="reassure reassure-calm">
+  🖥️ <strong>Mac:</strong> press Cmd+Space, type Terminal, press Enter.<br>
+  <strong>Windows:</strong> press Win+X, click Terminal or PowerShell.
 </div>
+
+<div class="cmd" onclick="cp(this)">${esc(localScript())}</div>
+
+<p><strong>What this does:</strong></p>
+<ul class="step-list">
+<li><span class="num">1.</span> Installs OpenClaw (the software that runs your bot)</li>
+<li><span class="num">2.</span> Saves your API keys so your bot can think and search</li>
+<li><span class="num">3.</span> Connects your Telegram bot</li>
+<li><span class="num">4.</span> Starts everything up</li>
+</ul>
+
+<div class="reassure reassure-warn">
+  ⏱️ This takes about 2-3 minutes. Wait until it says "Gateway started" before continuing.
+</div>
+
+<button onclick="S.v='done';render()">Done, it finished!</button>
+<a class="back" onclick="S.v='s3';render()">← Back</a>
+`,
+
+done:()=>`
+<div class="success-box">
+<div class="icon">🎉</div>
+<h3>Your bot is live!</h3>
+<p>Open Telegram and send a message to your bot. It should reply.</p>
+</div>
+
+<p>That's it. Your bot is running 24/7 and you can chat with it from Telegram anytime.</p>
 
 <hr>
 
-<div class="section-card">
-<h3>📝 Set up Obsidian Sync</h3>
-<p>Your bot uses <a href="https://obsidian.md" target="_blank">Obsidian</a> to sync notes across all your devices. This is how your bot's memory stays in sync with you.</p>
-<p>You'll need an <a href="https://obsidian.md/sync" target="_blank">Obsidian Sync</a> subscription ($4/mo). Once you have one, run these commands on your bot's machine:</p>
-<div class="cmd" onclick="cp(this)">ob login</div>
-<p>Enter your Obsidian account email and password when prompted. Then set up your vault:</p>
-<div class="cmd" onclick="cp(this)">mkdir -p ~/vault && cd ~/vault && ob sync-setup --vault "My Vault"</div>
-<p>Finally, start continuous sync so changes show up everywhere:</p>
-<div class="cmd" onclick="cp(this)">ob sync --continuous &</div>
-<p class="hint" style="margin-top:8px">This runs in the background and keeps your bot's notes in sync with Obsidian on your phone, tablet, and computer.</p>
-</div>
-
-<hr>
+<h2>What's next?</h2>
+<p>Your bot works great on Telegram. When you're ready, you can also:</p>
 
 <div class="section-card">
-<h3>📓 Talk to your bot via Obsidian</h3>
-<p>Chat with your bot right inside Obsidian using the OpenClaw plugin.</p>
-<ol>
-<li>Install <a href="https://obsidian.md" target="_blank">Obsidian</a> on your phone and computer</li>
-<li>Install the BRAT plugin (Settings → Community plugins → Browse → search "BRAT")</li>
-<li>In BRAT settings, click "Add Beta Plugin" and enter:</li>
-</ol>
-<div class="cmd" onclick="cp(this)">oscarhenrycollins/obsidianclaw</div>
-<p class="hint">The plugin will guide you through connecting to your bot.</p>
+<h3>🌐 Access from any browser</h3>
+<p>Install <a href="https://tailscale.com" target="_blank">Tailscale</a> on your bot's machine and your phone/laptop. This creates a secure private network so you can access your bot's dashboard from any device.</p>
 </div>
-
-<hr>
 
 <div class="section-card">
-<h3>🌐 Talk to your bot via browser</h3>
-<p>Open your Tailscale URL in any browser on any device connected to your Tailscale network.</p>
-<p class="hint">You can find your URL by running <code>tailscale status</code> on your bot's machine.</p>
+<h3>📝 Sync notes with Obsidian</h3>
+<p>Your bot can share notes with you across all your devices using <a href="https://obsidian.md" target="_blank">Obsidian</a>. You can even chat with your bot inside Obsidian.</p>
 </div>
 
-<hr>
+<p class="existing-link" style="margin-top:20px"><a href="/upgrade" onclick="goUpgrade();return false">Set up browser access &amp; note sync →</a></p>
 
-<p style="text-align:center;color:#999;margin-top:40px;font-family:-apple-system,system-ui,sans-serif">You're all set. Your bot is running 24/7. 🎉</p>
-
-<a class="back" onclick="goHome()">← Start over</a>
+<p style="text-align:center;margin-top:32px"><a class="back" onclick="goHome()">← Start over</a></p>
 `,
 
 // --- Upgrade flow ---
-
 upgrade1:()=>`
 <h1>Add remote access &amp; note sync</h1>
-
-<p>This guide adds <strong>Tailscale</strong> (access your bot from any device) and <strong>Obsidian</strong> (sync notes between your bot and all your devices) to an existing OpenClaw setup.</p>
-
-<p class="hint">You should already have OpenClaw installed and running. If not, <a href="/" onclick="goHome();return false">start from the beginning</a>.</p>
+<p class="subtitle">Add Tailscale (access your bot from any device) and Obsidian (sync notes) to your existing bot.</p>
 
 <div class="section-card">
-<h3>Verify your bot is running</h3>
+<h3>First, verify your bot is running</h3>
 <p>Open a terminal on your bot's machine and run:</p>
 <div class="cmd" onclick="cp(this)">openclaw status</div>
-<p>You should see your bot listed and the gateway running. If you get "command not found", you need to <a href="/" onclick="goHome();return false">install OpenClaw first</a>.</p>
+<p>You should see your bot listed and the gateway running. If you get "command not found", <a href="/" onclick="goHome();return false">install your bot first</a>.</p>
 </div>
 
-<button onclick="S.v='upgrade2';render()">My bot is running, let's go</button>
+<button onclick="S.v='upgrade2';render()">My bot is running</button>
 `,
 
 upgrade2:()=>`
 <h1>Install Tailscale</h1>
-
-<p><a href="https://tailscale.com" target="_blank">Tailscale</a> creates a secure private network between all your devices. This is how you'll access your bot from your phone, laptop, or any other device without exposing it to the internet.</p>
-
-<p>Run this on your bot's machine:</p>
+<p class="subtitle"><a href="https://tailscale.com" target="_blank">Tailscale</a> creates a secure private network between your devices. This is how you access your bot from anywhere.</p>
 
 <div class="cmd" onclick="cp(this)">openclaw config set gateway.bind loopback && \\
 openclaw config set gateway.tailscale.mode serve && \\
@@ -423,58 +559,39 @@ curl -fsSL https://tailscale.com/install.sh | sh && \\
 sudo tailscale up && \\
 openclaw gateway restart</div>
 
-<p>Here's what it does:</p>
-<ul class="step-list">
-<li><span class="num">1.</span> Configures your bot's networking for secure remote access</li>
-<li><span class="num">2.</span> Installs Tailscale</li>
-<li><span class="num">3.</span> Connects to your Tailscale network (you'll be asked to log in)</li>
-<li><span class="num">4.</span> Restarts your bot with the new settings</li>
-</ul>
+<p class="hint">During setup, it will show a link. Open that link in your browser and log in with any account (Google, Apple, etc).</p>
 
-<p>During setup, it will ask you to log in to <strong>Tailscale</strong>. Follow the link it shows and sign in with any account (Google, Apple, etc).</p>
-
-<div class="section-card">
-<h3>🌐 Browser access is now live</h3>
-<p>After this step, you can open your bot in any browser on any device connected to your Tailscale network.</p>
-<p>Find your URL by running: <code>tailscale status</code></p>
+<div class="reassure">
+  ✅ After this, you can open your bot in any browser. Run <code>tailscale status</code> to find the URL.
 </div>
 
-<button onclick="S.v='upgrade3';render()">Done, Tailscale is connected</button>
+<button onclick="S.v='upgrade3';render()">Done</button>
 <a class="back" onclick="S.v='upgrade1';render()">← Back</a>
 `,
 
 upgrade3:()=>`
 <h1>Set up Obsidian</h1>
-
-<p>Obsidian syncs your bot's notes, memory, and workspace across all your devices. Think of it as a shared brain between you and your bot.</p>
+<p class="subtitle">Obsidian syncs your bot's notes and memory across all your devices.</p>
 
 <div class="section-card">
-<h3>📝 Install Obsidian Sync on your bot's machine</h3>
+<h3>📝 On your bot's machine</h3>
 <p>You'll need an <a href="https://obsidian.md/sync" target="_blank">Obsidian Sync</a> subscription ($4/mo).</p>
-<p>Install Obsidian Headless and set up sync:</p>
-<div class="cmd" onclick="cp(this)">npm install -g obsidian-headless && \\
-ob login</div>
-<p>Enter your Obsidian account email and password when prompted. Then set up your vault:</p>
+<div class="cmd" onclick="cp(this)">npm install -g obsidian-headless && ob login</div>
+<p class="hint">Enter your Obsidian email and password when asked. Then:</p>
 <div class="cmd" onclick="cp(this)">mkdir -p ~/vault && cd ~/vault && ob sync-setup --vault "My Vault"</div>
-<p>Start continuous sync:</p>
 <div class="cmd" onclick="cp(this)">ob sync --continuous &</div>
 </div>
 
-<hr>
-
 <div class="section-card">
-<h3>📓 Chat with your bot inside Obsidian</h3>
-<p>Install the OpenClaw plugin to talk to your bot right inside Obsidian on your phone and computer.</p>
+<h3>📓 Chat with your bot in Obsidian</h3>
+<p>Install the OpenClaw plugin on your phone and computer:</p>
 <ol>
-<li>Install <a href="https://obsidian.md" target="_blank">Obsidian</a> on your phone and computer</li>
-<li>Install the BRAT plugin (Settings → Community plugins → Browse → search "BRAT")</li>
+<li>Install <a href="https://obsidian.md" target="_blank">Obsidian</a></li>
+<li>Install the BRAT plugin (Settings, then Community plugins, then Browse, then search "BRAT")</li>
 <li>In BRAT settings, click "Add Beta Plugin" and enter:</li>
 </ol>
 <div class="cmd" onclick="cp(this)">oscarhenrycollins/obsidianclaw</div>
-<p class="hint">The plugin will guide you through connecting to your bot.</p>
 </div>
-
-<hr>
 
 <div class="success-box">
 <div class="icon">🎉</div>
@@ -486,148 +603,87 @@ ob login</div>
 `
 };
 
-function pk(p,el){S.path=p;document.querySelectorAll('.pick-card').forEach(c=>c.classList.remove('on'));el.classList.add('on');const e=document.getElementById('ce');if(e)e.classList.toggle('show',p==='cloud')}
-function pkMode(m,el){S.mode=m;document.querySelectorAll('.pick-card').forEach(c=>c.classList.remove('on'));el.classList.add('on')}
-
-function warn(id,msg){const el=document.getElementById(id);if(el){el.textContent=msg;el.classList.toggle('show',!!msg)}}
-
-function validateClaude(v){
-  if(!v)return 'Paste your Claude token above.';
-  if(v.length<20)return 'This looks too short. The token is usually about 200 characters. Make sure you copied the whole thing.';
-  return '';
-}
-function validateBrave(v){
-  if(!v)return 'Paste your Brave Search API key above.';
-  if(v.length<15)return 'This looks too short. The key is about 30 characters. Check your Brave Search dashboard.';
-  return '';
-}
-function validateHostinger(v){
-  if(!v)return 'Paste your Hostinger API key above.';
-  if(v.length<10)return 'This looks too short. Go to your Hostinger dashboard → Account → API to find the right key.';
-  return '';
-}
-function validateTelegram(v){
-  if(!v)return 'Paste your Telegram bot token above.';
-  if(v.length<30)return 'This looks too short. The token from BotFather is about 46 characters.';
-  if(!v.includes(':'))return 'This doesn\'t look right. Telegram tokens have a colon in the middle, like 7123456789:AAH...';
-  return '';
-}
+// --- Navigation ---
 
 function s1n(){
-  if(!S.path)return alert('Pick where your bot will run.');
-  if(S.path==='cloud'){
-    const k=document.getElementById('in3').value.trim();
-    const err=validateHostinger(k);
-    if(err){warn('w3',err);return}
-    warn('w3','');
-    S.hkey=k;
-  }
+  if(!S.path)return;
   S.v='s2';render();
 }
-function s2n(){
-  const v=document.getElementById('in1').value.trim();
-  const err=validateClaude(v);
-  if(err){warn('w1',err);return}
-  warn('w1','');
-  S.claude=v;
+
+function goSetup(){
+  if(!checkAllFilled())return;
   S.v='s3';render();
 }
+
 function s3n(){
-  const v=document.getElementById('in2').value.trim();
-  const err=validateBrave(v);
-  if(err){warn('w2',err);return}
-  warn('w2','');
-  S.brave=v;
-  S.v='s4';render();
-}
-function s4n(){
   S.agents[0]=document.getElementById('ag1').value.trim();
   S.agents[1]=document.getElementById('ag2').value.trim();
   S.agents[2]=document.getElementById('ag3').value.trim();
-  if(!S.agents[0])return alert('Name your first bot.');
-  S.v='s5';render();
-}
-function s5n(){
-  if(!S.mode)return alert('Choose a setup type.');
-  if(S.mode==='quick'){
-    if(S.path==='local'){S.v='quicklocal';render();return}
+  if(!S.agents[0])return alert('Give your bot a name.');
+  if(S.path==='cloud'){
     S.v='creating';render();createServer();
   }else{
-    if(S.path==='local'){S.v='local';render();return}
-    S.v='creating';render();createServer();
+    S.v='localsetup';render();
   }
 }
 
-function tgCmd(){
-  const t=S.tgtoken||'YOUR_BOT_TOKEN';
-  return `openclaw channels add --channel telegram --token ${t} && openclaw gateway restart`;
-}
-function tgNext(){
-  const v=document.getElementById('tgtoken').value.trim();
-  const err=validateTelegram(v);
-  if(err){warn('wtg',err);return}
-  warn('wtg','');
-  S.tgtoken=v;
-  S.v='quickdone';render();
-}
+// --- Scripts ---
 
-// Update tgtoken live so the command updates
-document.addEventListener('input',e=>{
-  if(e.target.id==='tgtoken'){
-    S.tgtoken=e.target.value.trim();
-    const cmdEl=e.target.parentElement.querySelector('.cmd:last-of-type');
-    if(cmdEl)cmdEl.textContent=tgCmd();
-  }
-});
-
-function quickLocalScript(){return`curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard && \\
+function localScript(){
+  return`curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard && \\
+openclaw onboard --non-interactive \\
+  --mode local \\
+  --auth-choice setup-token \\
+  --token "${S.claude}" \\
+  --token-provider anthropic \\
+  --gateway-port 18789 \\
+  --gateway-bind loopback \\
+  --accept-risk \\
+  --install-daemon \\
+  --daemon-runtime node \\
+  --skip-skills \\
+  --skip-channels \\
+  --skip-ui && \\
 openclaw config set tools.web.search.apiKey "${S.brave}" && \\
-openclaw config set gateway.auth.mode token && \\
-echo "${S.claude}" | openclaw models auth paste-token --provider anthropic --yes && \\
-openclaw gateway start`}
+openclaw config set channels.telegram.botToken "${S.tgtoken}" && \\
+openclaw gateway restart`;
+}
 
-function fullLocalScript(){return`curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard && \\
-openclaw config set tools.web.search.apiKey "${S.brave}" && \\
-openclaw config set gateway.bind loopback && \\
-openclaw config set gateway.tailscale.mode serve && \\
-openclaw config set gateway.auth.mode token && \\
-openclaw config set gateway.auth.allowTailscale true && \\
-echo "${S.claude}" | openclaw models auth paste-token --provider anthropic --yes && \\
-curl -fsSL https://tailscale.com/install.sh | sh && \\
-sudo tailscale up && \\
-npm install -g obsidian-headless && \\
-openclaw gateway start`}
-
-function quickServerScript(){return`#!/bin/bash
+function serverScript(){
+  return`#!/bin/bash
 set -e
 export DEBIAN_FRONTEND=noninteractive
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt-get install -y nodejs
 curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard
+openclaw onboard --non-interactive \\
+  --mode local \\
+  --auth-choice setup-token \\
+  --token "${S.claude}" \\
+  --token-provider anthropic \\
+  --gateway-port 18789 \\
+  --gateway-bind loopback \\
+  --accept-risk \\
+  --install-daemon \\
+  --daemon-runtime node \\
+  --skip-skills \\
+  --skip-channels \\
+  --skip-ui
 openclaw config set tools.web.search.apiKey "${S.brave}"
-openclaw config set gateway.auth.mode token
-echo "${S.claude}" | openclaw models auth paste-token --provider anthropic --yes
-openclaw gateway start`}
+openclaw config set channels.telegram.botToken "${S.tgtoken}"
+openclaw gateway restart`;
+}
 
-function fullServerScript(){return`#!/bin/bash
-set -e
-export DEBIAN_FRONTEND=noninteractive
-curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-apt-get install -y nodejs
-curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard
-openclaw config set tools.web.search.apiKey "${S.brave}"
-openclaw config set gateway.bind loopback
-openclaw config set gateway.tailscale.mode serve
-openclaw config set gateway.auth.mode token
-openclaw config set gateway.auth.allowTailscale true
-echo "${S.claude}" | openclaw models auth paste-token --provider anthropic --yes
-curl -fsSL https://tailscale.com/install.sh | sh
-npm install -g obsidian-headless
-openclaw gateway start`}
+// --- Hostinger server creation ---
 
-function sscript(){return S.mode==='quick'?quickServerScript():fullServerScript()}
-
-async function api(m,p,b){const r=await fetch('/api/hostinger',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({apiKey:S.hkey,method:m,path:p,body:b})});return r.json()}
+async function api(m,p,b){
+  const r=await fetch('/api/hostinger',{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({apiKey:S.hkey,method:m,path:p,body:b})
+  });
+  return r.json();
+}
 
 function showError(title,desc){
   const sw=document.getElementById('spinwrap');if(sw)sw.style.display='none';
@@ -649,15 +705,15 @@ async function createServer(){
     st('Uploading setup script to Hostinger...');
     let s;
     try{
-      s=await api('POST','/api/vps/v1/post-install-scripts',{name:'OC-'+Date.now(),content:sscript()});
+      s=await api('POST','/api/vps/v1/post-install-scripts',{name:'OC-'+Date.now(),content:serverScript()});
     }catch(e){
       showError('Could not connect to Hostinger','Check your internet connection and try again.');return;
     }
     if(!s.id){
       if(s.message&&(s.message.includes('auth')||s.message.includes('token')||s.message.includes('401')||s.message.includes('403'))){
-        showError('Your Hostinger API key is invalid','The key you entered was not accepted by Hostinger. Go to your <a href="https://hpanel.hostinger.com/account/api" target="_blank">Hostinger dashboard → Account → API</a>, create a new token, and go back to paste the new one.');
+        showError('Your Hostinger API key is invalid','The key you entered was not accepted by Hostinger. Go to your <a href="https://hpanel.hostinger.com/account/api" target="_blank">Hostinger dashboard, then Account, then API</a>, create a new token, and go back to paste the new one.');
       }else{
-        showError('Hostinger rejected the request',`Error: "${s.message||'Unknown error'}". Double-check your API key at <a href="https://hpanel.hostinger.com/account/api" target="_blank">Hostinger → Account → API</a>.`);
+        showError('Hostinger rejected the request',`Error: "${s.message||'Unknown error'}". Double-check your API key at <a href="https://hpanel.hostinger.com/account/api" target="_blank">Hostinger, then Account, then API</a>.`);
       }
       return;
     }
@@ -673,9 +729,9 @@ async function createServer(){
       if(vm.message&&(vm.message.includes('payment')||vm.message.includes('billing')||vm.message.includes('balance'))){
         showError('Payment issue on Hostinger','Hostinger needs a valid payment method before it can create a server. Go to <a href="https://hpanel.hostinger.com" target="_blank">hpanel.hostinger.com</a>, make sure you have a credit card on file, then come back and try again.');
       }else if(vm.message&&vm.message.includes('limit')){
-        showError('Server limit reached','Your Hostinger account has reached its server limit. You may need to upgrade your Hostinger plan or delete an old server at <a href="https://hpanel.hostinger.com" target="_blank">hpanel.hostinger.com</a>.');
+        showError('Server limit reached','Your Hostinger account has reached its server limit. You may need to upgrade your plan or delete an old server at <a href="https://hpanel.hostinger.com" target="_blank">hpanel.hostinger.com</a>.');
       }else{
-        showError('Could not create the server',`Hostinger said: "${vm.message||'Unknown error'}". Try again, or check your <a href="https://hpanel.hostinger.com" target="_blank">Hostinger dashboard</a> for details.`);
+        showError('Could not create the server',`Hostinger said: "${vm.message||'Unknown error'}". Try again, or check your <a href="https://hpanel.hostinger.com" target="_blank">Hostinger dashboard</a>.`);
       }
       return;
     }
@@ -685,8 +741,7 @@ async function createServer(){
       try{
         const r=await api('GET',`/api/vps/v1/virtual-machines/${id}`);
         if((r.state||r.status)==='running'){
-          if(S.mode==='quick'){S.v='quicktelegram';render();return}
-          S.v='connect';render();return;
+          S.v='done';render();return;
         }
         st(`Still setting up... ${Math.floor(i*5/60)}m ${(i*5)%60}s`);
       }catch{}
@@ -696,12 +751,22 @@ async function createServer(){
     showError('Something unexpected happened',`Error: "${e.message}". Try again, or <a href="https://hpanel.hostinger.com" target="_blank">check your Hostinger dashboard</a>.`);
   }
 }
+
+// --- Utilities ---
+
 function st(h){const el=document.getElementById('stxt');if(el)el.innerHTML=h}
 function slp(ms){return new Promise(r=>setTimeout(r,ms))}
-function esc(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
-function cp(el){const t=el.textContent.replace('click to copy','').trim();navigator.clipboard.writeText(t);const o=el.style.background;el.style.background='#e8e8e8';setTimeout(()=>el.style.background=o,300)}
+function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
+function cp(el){const t=el.textContent.replace('click to copy','').trim();navigator.clipboard.writeText(t);const o=el.style.opacity;el.style.opacity='.5';setTimeout(()=>el.style.opacity=o,300)}
 
-document.addEventListener('paste',e=>{if(e.target.tagName==='INPUT'){e.preventDefault();const t=(e.clipboardData||window.clipboardData).getData('text').replace(/[\r\n]+/g,'').trim();e.target.value=t}});
+document.addEventListener('paste',e=>{
+  if(e.target.tagName==='INPUT'){
+    e.preventDefault();
+    const t=(e.clipboardData||window.clipboardData).getData('text').replace(/[\r\n]+/g,'').trim();
+    e.target.value=t;
+    e.target.dispatchEvent(new Event('input'));
+  }
+});
 
 // URL routing
 function goUpgrade(){S.v='upgrade1';history.pushState(null,'','/upgrade');render()}
@@ -710,7 +775,7 @@ function route(){
   if(p==='/upgrade'||p==='/upgrade/'){S.v='upgrade1';render();return true}
   return false;
 }
-window.addEventListener('popstate',()=>{if(!route()){S.v='s1';render()}});
+window.addEventListener('popstate',()=>{if(!route()){S.v='s0';render()}});
 if(!route())render();
 </script>
 </body>
