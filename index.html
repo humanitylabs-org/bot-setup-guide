@@ -75,6 +75,27 @@
     .cmd::after{content:'click to copy';position:absolute;right:12px;top:12px;font-size:10px;color:#666;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
     .cmd:hover::after{color:#888}
 
+    /* Message copy box */
+    .msg-box{background:#f8f9fa;border:1px solid #e0e0e0;border-radius:12px;padding:0;margin:16px 0;position:relative;overflow:hidden}
+    .msg-box-header{display:flex;justify-content:space-between;align-items:center;padding:12px 20px;border-bottom:1px solid #eee;background:#fff}
+    .msg-box-title{font-size:12px;color:#999;font-weight:500;text-transform:uppercase;letter-spacing:.5px}
+    .msg-box-copy{padding:6px 14px;font-size:12px;font-weight:600;background:#1a1a1a;color:#fff;border:none;border-radius:6px;cursor:pointer;width:auto;margin:0;transition:all .15s}
+    .msg-box-copy:hover{opacity:.8;background:#333}
+    .msg-box-body{padding:20px 24px;white-space:pre-wrap;word-break:break-word;font-family:-apple-system,system-ui,sans-serif;color:#333;font-size:13.5px;line-height:1.8}
+    .msg-box-body code{font-size:12px;background:#e8e8e8;padding:1px 5px;border-radius:3px}
+    .connect-cards{display:grid;gap:16px;margin:20px 0}
+    .connect-card{background:#fff;border:1px solid #e8e8e8;border-radius:12px;padding:24px;transition:border-color .15s}
+    .connect-card:hover{border-color:#ccc}
+    .connect-card h3{font-size:16px;font-weight:600;margin-bottom:6px;display:flex;align-items:center;gap:8px}
+    .connect-card p{font-size:13px;color:#777;line-height:1.6;margin-bottom:8px}
+    .connect-card .cmd{margin:8px 0 4px;font-size:12px;padding:10px 14px}
+    .connect-card ol{margin:8px 0 0 18px}
+    .connect-card ol li{font-size:13px;color:#666;margin-bottom:4px}
+    .dl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:10px;margin:16px 0}
+    .dl-card{display:flex;align-items:center;gap:10px;padding:14px 16px;background:#fff;border:1px solid #e8e8e8;border-radius:10px;text-decoration:none;color:#1a1a1a;font-size:14px;font-weight:500;transition:border-color .15s}
+    .dl-card:hover{border-color:#999}
+    .dl-card .dl-icon{font-size:20px}
+
     /* Buttons */
     button{display:block;width:100%;padding:16px;font-size:16px;font-weight:600;background:#1a1a1a;color:#fff;border:none;border-radius:10px;cursor:pointer;margin-top:24px;transition:all .15s}
     button:hover{background:#333}
@@ -239,7 +260,7 @@ s0:()=>`
 <p class="cover-tagline">Set up your own <a href="https://openclaw.ai" target="_blank">OpenClaw</a> AI bot</p>
 <p class="cover-time">Takes about 15-20 minutes. No coding required.</p>
 <button class="cover-start" onclick="S.v='s1';render()">Let's go</button>
-<p class="existing-link" style="margin-top:20px">Already have a bot? <a href="/upgrade" onclick="goUpgrade();return false">Add remote access &amp; sync</a></p>
+<p class="existing-link" style="margin-top:20px">Already have a bot? <a href="/upgrade" onclick="goUpgrade();return false">Add browser &amp; mobile access →</a></p>
 </div>
 <div class="cover-powered">
   <a class="footer-brand" href="https://humanitylabs.org" target="_blank">
@@ -528,78 +549,176 @@ done:()=>`
 <p>Your bot can share notes with you across all your devices using <a href="https://obsidian.md" target="_blank">Obsidian</a>. You can even chat with your bot inside Obsidian.</p>
 </div>
 
-<p class="existing-link" style="margin-top:20px"><a href="/upgrade" onclick="goUpgrade();return false">Set up browser access &amp; note sync →</a></p>
+<p class="existing-link" style="margin-top:20px"><a href="/upgrade" onclick="goUpgrade();return false">Add browser &amp; mobile access →</a></p>
 
 <p style="text-align:center;margin-top:32px"><a class="back" onclick="goHome()">← Start over</a></p>
 `,
 
 // --- Upgrade flow ---
 upgrade1:()=>`
-<h1>Add remote access &amp; note sync</h1>
-<p class="subtitle">Add Tailscale (access your bot from any device) and Obsidian (sync notes) to your existing bot.</p>
+<h1>Add remote access</h1>
+<p class="subtitle">Set up your existing bot so you can reach it from any browser, phone, or tablet.</p>
 
-<div class="section-card">
-<h3>First, verify your bot is running</h3>
-<p>Open a terminal on your bot's machine and run:</p>
-<div class="cmd" onclick="cp(this)">openclaw status</div>
-<p>You should see your bot listed and the gateway running. If you get "command not found", <a href="/" onclick="goHome();return false">install your bot first</a>.</p>
+<div class="reassure reassure-calm">
+  💡 <strong>Your bot will do most of the work.</strong> You just need to send it a message and follow a couple of prompts.
 </div>
 
-<button onclick="S.v='upgrade2';render()">My bot is running</button>
+<div class="section-card">
+<h3>What we're setting up</h3>
+<ul class="step-list">
+<li><span class="num">1.</span> <strong>Tailscale</strong> — a secure private network between your devices (free)</li>
+<li><span class="num">2.</span> <strong>HTTPS access</strong> — so you can reach your bot from anywhere</li>
+<li><span class="num">3.</span> <strong>File server</strong> — browse and edit your bot's workspace from a browser</li>
+</ul>
+</div>
+
+<div class="section-card">
+<h3>First, verify your bot is working</h3>
+<p>Open Telegram and send your bot a message. Anything at all. Did it reply?</p>
+</div>
+
+<button onclick="S.v='upgrade2';render()">Yes, my bot replied</button>
+<a class="back" onclick="goHome()">← I don't have a bot yet</a>
 `,
 
 upgrade2:()=>`
-<h1>Install Tailscale</h1>
-<p class="subtitle"><a href="https://tailscale.com" target="_blank">Tailscale</a> creates a secure private network between your devices. This is how you access your bot from anywhere.</p>
+<h1>Send this to your bot</h1>
+<p class="subtitle">Copy this message and send it to your bot on Telegram (or wherever you chat with it). Your bot will handle the rest.</p>
 
-<div class="cmd" onclick="cp(this)">openclaw config set gateway.bind loopback && \\
-openclaw config set gateway.tailscale.mode serve && \\
-openclaw config set gateway.auth.allowTailscale true && \\
-curl -fsSL https://tailscale.com/install.sh | sh && \\
-sudo tailscale up && \\
-openclaw gateway restart</div>
+<div class="msg-box">
+<div class="msg-box-header">
+<span class="msg-box-title">📋 Message to send</span>
+<button class="msg-box-copy" onclick="cpMsg(this)">Copy message</button>
+</div>
+<div class="msg-box-body">I need you to set up remote access so I can reach you from usemyclaw.com on any device. Follow these steps in order:
 
-<p class="hint">During setup, it will show a link. Open that link in your browser and log in with any account (Google, Apple, etc).</p>
+1. Check if Tailscale is installed (run: <code>which tailscale</code>). If not installed:
+   • Linux: <code>curl -fsSL https://tailscale.com/install.sh | sh</code>
+   • Mac: Tell me to install the Tailscale app from the Mac App Store
 
-<div class="reassure">
-  ✅ After this, you can open your bot in any browser. Run <code>tailscale status</code> to find the URL.
+2. Start Tailscale by running: <code>sudo tailscale up</code>
+   It will print a login URL. Send me that URL and STOP here. Wait for me to confirm I have logged in before continuing.
+
+3. After I confirm, run these commands:
+   <code>openclaw config set gateway.bind loopback</code>
+   <code>openclaw config set gateway.tailscale.mode serve</code>
+   <code>openclaw config set gateway.auth.allowTailscale true</code>
+
+4. Set up HTTPS proxy for the gateway:
+   <code>sudo tailscale serve --bg --https 443 http://127.0.0.1:18789</code>
+
+5. Set up the workspace file server:
+   Download it: <code>curl -fsSL -o /usr/local/bin/openclaw-fileserver.js https://usemyclaw.com/file-server.js</code>
+   Set it up as a persistent background service on port 18790 (use systemd on Linux or launchd on Mac).
+   Then expose it via Tailscale: <code>sudo tailscale serve --bg --https 18795 http://127.0.0.1:18790</code>
+
+6. Restart the gateway: <code>openclaw gateway restart</code>
+
+7. Send me my connection details:
+   • Gateway URL: https:// followed by this machine's Tailscale hostname (find it with: <code>tailscale status</code>)
+   • Auth token: from the config file at <code>~/.config/openclaw/config.yaml</code> under <code>gateway.auth.token</code>
+
+IMPORTANT: Stop after step 2 and wait for my confirmation before continuing.</div>
 </div>
 
-<button onclick="S.v='upgrade3';render()">Done</button>
+<div class="reassure">
+  ✅ Your bot will work through each step automatically. The only time it pauses is to ask you to log into Tailscale (step 2).
+</div>
+
+<button onclick="S.v='upgrade3';render()">I sent it</button>
 <a class="back" onclick="S.v='upgrade1';render()">← Back</a>
 `,
 
 upgrade3:()=>`
-<h1>Set up Obsidian</h1>
-<p class="subtitle">Obsidian syncs your bot's notes and memory across all your devices.</p>
+<h1>Follow your bot's lead</h1>
+<p class="subtitle">Your bot is now working through the setup. Here's what to expect:</p>
 
 <div class="section-card">
-<h3>📝 On your bot's machine</h3>
-<p>You'll need an <a href="https://obsidian.md/sync" target="_blank">Obsidian Sync</a> subscription ($4/mo).</p>
-<div class="cmd" onclick="cp(this)">npm install -g obsidian-headless && ob login</div>
-<p class="hint">Enter your Obsidian email and password when asked. Then:</p>
-<div class="cmd" onclick="cp(this)">mkdir -p ~/vault && cd ~/vault && ob sync-setup --vault "My Vault"</div>
-<div class="cmd" onclick="cp(this)">ob sync --continuous &</div>
+<h3>🔗 When your bot sends a Tailscale login URL</h3>
+<p>Your bot will send you a URL that looks like:<br><code>https://login.tailscale.com/a/abc123...</code></p>
+<p>Open it in your browser and sign in with <strong>Google, Apple, Microsoft</strong>, or any method you prefer. This creates your secure private network.</p>
 </div>
 
 <div class="section-card">
-<h3>📓 Chat with your bot in Obsidian</h3>
-<p>Install the OpenClaw plugin on your phone and computer:</p>
+<h3>💬 After you log in</h3>
+<p>Go back to your chat with your bot and tell it:</p>
+<div class="cmd" onclick="cp(this)">I've logged into Tailscale, continue with the setup</div>
+<p>Your bot will finish configuring the gateway, file server, and HTTPS access.</p>
+</div>
+
+<div class="section-card">
+<h3>📋 Save your connection details</h3>
+<p>When your bot finishes, it will send you two things. Save them both:</p>
+<ul class="step-list">
+<li><span class="num">•</span> <strong>Gateway URL</strong> — looks like <code>https://your-machine.tail1234.ts.net</code></li>
+<li><span class="num">•</span> <strong>Auth Token</strong> — a string of letters and numbers from the config</li>
+</ul>
+</div>
+
+<button onclick="S.v='upgrade4';render()">I have my connection details</button>
+<a class="back" onclick="S.v='upgrade2';render()">← Back</a>
+`,
+
+upgrade4:()=>`
+<h1>Connect your devices</h1>
+<p class="subtitle">Last step! Install Tailscale on your personal devices, then connect to your bot.</p>
+
+<h2>Install Tailscale on your devices</h2>
+<p>Your bot's machine already has Tailscale. Now install it on every phone, laptop, or tablet where you want to access your bot.</p>
+
+<div class="dl-grid">
+<a class="dl-card" href="https://apps.apple.com/app/tailscale/id1470499037" target="_blank"><span class="dl-icon">📱</span> iPhone / iPad</a>
+<a class="dl-card" href="https://play.google.com/store/apps/details?id=com.tailscale.ipn" target="_blank"><span class="dl-icon">🤖</span> Android</a>
+<a class="dl-card" href="https://apps.apple.com/app/tailscale/id1475387142" target="_blank"><span class="dl-icon">💻</span> Mac</a>
+<a class="dl-card" href="https://tailscale.com/download/windows" target="_blank"><span class="dl-icon">🪟</span> Windows</a>
+<a class="dl-card" href="https://tailscale.com/download/linux" target="_blank"><span class="dl-icon">🐧</span> Linux</a>
+</div>
+
+<div class="reassure reassure-calm">
+  🔑 Sign into Tailscale with the <strong>same account</strong> you used in the previous step. All your devices will automatically find each other.
+</div>
+
+<hr>
+
+<h2>Choose how to connect</h2>
+
+<div class="connect-cards">
+<div class="connect-card">
+<h3>🌐 usemyclaw.com</h3>
+<p>Chat, browse workspace files, and edit notes from any browser.</p>
 <ol>
-<li>Install <a href="https://obsidian.md" target="_blank">Obsidian</a></li>
-<li>Install the BRAT plugin (Settings, then Community plugins, then Browse, then search "BRAT")</li>
-<li>In BRAT settings, click "Add Beta Plugin" and enter:</li>
+<li>Open <a href="https://usemyclaw.com" target="_blank"><strong>usemyclaw.com</strong></a></li>
+<li>Paste your <strong>Gateway URL</strong> and <strong>Auth Token</strong></li>
+<li>Approve the device pairing when prompted</li>
+</ol>
+</div>
+
+<div class="connect-card">
+<h3>📝 Obsidian plugin</h3>
+<p>Chat with your bot inside Obsidian with synced notes across all devices.</p>
+<ol>
+<li>Install <a href="https://obsidian.md" target="_blank">Obsidian</a> if you don't have it</li>
+<li>Go to Settings → Community Plugins → Browse → search <strong>"BRAT"</strong> → Install</li>
+<li>In BRAT settings, click <strong>"Add Beta Plugin"</strong> and enter:</li>
 </ol>
 <div class="cmd" onclick="cp(this)">oscarhenrycollins/obsidianclaw</div>
+<p>Then enable the OpenClaw plugin and enter your Gateway URL and Auth Token in its settings.</p>
+</div>
+
+<div class="connect-card">
+<h3>🖥️ Built-in dashboard</h3>
+<p>OpenClaw has a built-in control panel — no extra apps needed.</p>
+<p>Just open your <strong>Gateway URL</strong> directly in any browser on your Tailscale network.</p>
+</div>
 </div>
 
 <div class="success-box">
 <div class="icon">🎉</div>
-<h3>Full setup complete!</h3>
-<p>Your bot is now accessible via Telegram, browser, and Obsidian across all your devices.</p>
+<h3>You're all set!</h3>
+<p>Your bot is now accessible from any device on your private network.</p>
 </div>
 
-<a class="back" onclick="goHome()">← Start over</a>
+<p style="text-align:center;margin-top:24px"><a class="back" onclick="goHome()">← Back to start</a></p>
 `
 };
 
@@ -758,6 +877,7 @@ function st(h){const el=document.getElementById('stxt');if(el)el.innerHTML=h}
 function slp(ms){return new Promise(r=>setTimeout(r,ms))}
 function esc(s){return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')}
 function cp(el){const t=el.textContent.replace('click to copy','').trim();navigator.clipboard.writeText(t);const o=el.style.opacity;el.style.opacity='.5';setTimeout(()=>el.style.opacity=o,300)}
+function cpMsg(btn){const body=btn.closest('.msg-box').querySelector('.msg-box-body');navigator.clipboard.writeText(body.innerText.trim());const o=btn.textContent;btn.textContent='\u2713 Copied!';setTimeout(()=>btn.textContent=o,2000)}
 
 document.addEventListener('paste',e=>{
   if(e.target.tagName==='INPUT'){
