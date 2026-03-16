@@ -266,11 +266,7 @@ s0:()=>`
 <p class="cover-tagline">Set up your own <a href="https://openclaw.ai" target="_blank">OpenClaw</a> AI bot</p>
 <p class="cover-time">Takes about 15-20 minutes. No coding required.</p>
 <button class="cover-start" onclick="S.v='s1';render()">Let's go</button>
-<p class="existing-link" style="margin-top:12px">
-  <strong style="color:#F2F2F2;font-weight:400">Already have OpenClaw?</strong> 
-  <a href="https://usemyclaw.com/install.sh" target="_blank">Run the one-liner →</a>
-</p>
-<p class="existing-link" style="margin-top:20px">Already have a bot? <a href="/upgrade" onclick="goUpgrade();return false">Add browser &amp; mobile access →</a></p>
+<p class="existing-link" style="margin-top:20px">Already talking to your bot on Telegram? <a href="/upgrade" onclick="goUpgrade();return false">Get the full experience →</a></p>
 </div>
 <div class="cover-powered">
   <a class="footer-brand" href="https://humanitylabs.org" target="_blank">
@@ -546,44 +542,40 @@ done:()=>`
 
 <hr>
 
-<h2>What's next?</h2>
-<p>Your bot works great on Telegram. When you're ready, you can also:</p>
+<h2>Go beyond Telegram</h2>
+<p>Telegram is a great start, but it only shows you one chat thread. There's a lot more your bot can do that you can't see from Telegram.</p>
 
 <div class="section-card">
-<h3>🌐 Access from any browser</h3>
-<p>Install <a href="https://tailscale.com" target="_blank">Tailscale</a> on your bot's machine and your phone/laptop. This creates a secure private network so you can access your bot's dashboard from any device.</p>
+<h3>🌐 Use the full app</h3>
+<p>Chat in multiple tabs, browse your bot's files and memory, and change its settings — all from your browser or phone. No extra software to install.</p>
+<p><strong>This is the recommended next step.</strong> It takes about 10 minutes.</p>
+<button onclick="goUpgrade()" style="margin-top:8px">Set this up →</button>
 </div>
-
-<div class="section-card">
-<h3>📝 Sync notes with Obsidian</h3>
-<p>Your bot can share notes with you across all your devices using <a href="https://obsidian.md" target="_blank">Obsidian</a>. You can even chat with your bot inside Obsidian.</p>
-</div>
-
-<p class="existing-link" style="margin-top:20px"><a href="/upgrade" onclick="goUpgrade();return false">Add browser &amp; mobile access →</a></p>
 
 <p style="text-align:center;margin-top:32px"><a class="back" onclick="goHome()">← Start over</a></p>
 `,
 
 // --- Upgrade flow ---
 upgrade1:()=>`
-<h1>Add remote access</h1>
-<p class="subtitle">Set up your existing bot so you can reach it from any browser, phone, or tablet.</p>
+<h1>Go beyond Telegram</h1>
+<p class="subtitle">Your OpenClaw bot works great on Telegram, but you're only seeing a fraction of what it can do. This sets up a full app where you can chat, see your bot's files, and change how it works — all from your browser or phone.</p>
 
 <div class="reassure reassure-calm">
-  💡 <strong>Your bot will do most of the work.</strong> You just need to send it a message and follow a couple of prompts.
+  💡 <strong>Your bot will do most of the work.</strong> You'll send it one message with instructions, and it handles the technical parts. You just follow along.
 </div>
 
 <div class="section-card">
-<h3>What we're setting up</h3>
+<h3>What you'll get</h3>
 <ul class="step-list">
-<li><span class="num">1.</span> <strong>Tailscale</strong> — a secure private network between your devices (free)</li>
-<li><span class="num">2.</span> <strong>HTTPS access</strong> — so you can reach your bot from anywhere</li>
-<li><span class="num">3.</span> <strong>File server</strong> — browse and edit your bot's workspace from a browser</li>
+<li><span class="num">•</span> Chat with your bot in <strong>multiple conversations at once</strong> (not one endless thread)</li>
+<li><span class="num">•</span> <strong>Browse your bot's files</strong> — its memory, notes, and everything it's working on</li>
+<li><span class="num">•</span> <strong>Change your bot's personality and settings</strong> without touching any code</li>
+<li><span class="num">•</span> <strong>Works on any device</strong> — phone, tablet, laptop, desktop</li>
 </ul>
 </div>
 
 <div class="section-card">
-<h3>First, verify your bot is working</h3>
+<h3>Before we start</h3>
 <p>Open Telegram and send your bot a message. Anything at all. Did it reply?</p>
 </div>
 
@@ -671,10 +663,10 @@ upgrade3:()=>`
 
 upgrade4:()=>`
 <h1>Connect your devices</h1>
-<p class="subtitle">Last step! Install Tailscale on your personal devices, then connect to your bot.</p>
+<p class="subtitle">Almost done! Install Tailscale on your personal devices, then open the app.</p>
 
 <h2>Install Tailscale on your devices</h2>
-<p>Your bot's machine already has Tailscale. Now install it on every phone, laptop, or tablet where you want to access your bot.</p>
+<p>Your bot's machine already has Tailscale. Now install it on every phone, laptop, or tablet where you want to talk to your bot.</p>
 
 <div class="dl-grid">
 <a class="dl-card" href="https://apps.apple.com/app/tailscale/id1470499037" target="_blank"><span class="dl-icon">📱</span> iPhone / iPad</a>
@@ -690,42 +682,34 @@ upgrade4:()=>`
 
 <hr>
 
-<h2>Choose how to connect</h2>
+<h2>Open the app</h2>
 
 <div class="connect-cards">
 <div class="connect-card">
-<h3>🌐 usemyclaw.com</h3>
-<p>Chat, browse workspace files, and edit notes from any browser.</p>
+<h3>🌐 usemyclaw.com — recommended</h3>
+<p>The best way to use your OpenClaw bot. Chat in multiple tabs, browse files, change settings — all from your browser.</p>
 <ol>
-<li>Open <a href="https://usemyclaw.com/chat" target="_blank"><strong>usemyclaw.com/chat</strong></a></li>
+<li>Go to <a href="https://usemyclaw.com" target="_blank"><strong>usemyclaw.com</strong></a></li>
 <li>Paste your <strong>Gateway URL</strong> and <strong>Auth Token</strong></li>
-<li>Approve the device pairing when prompted</li>
+<li>Approve the device when prompted</li>
+<li>Add it to your home screen to use it like a regular app</li>
 </ol>
 </div>
-
-<div class="connect-card">
-<h3>📝 Obsidian plugin</h3>
-<p>Chat with your bot inside Obsidian with synced notes across all devices.</p>
-<ol>
-<li>Install <a href="https://obsidian.md" target="_blank">Obsidian</a> if you don't have it</li>
-<li>Go to Settings → Community Plugins → Browse → search <strong>"BRAT"</strong> → Install</li>
-<li>In BRAT settings, click <strong>"Add Beta Plugin"</strong> and enter:</li>
-</ol>
-<div class="cmd" onclick="cp(this)">oscarhenrycollins/obsidianclaw</div>
-<p>Then enable the OpenClaw plugin and enter your Gateway URL and Auth Token in its settings.</p>
 </div>
 
-<div class="connect-card">
-<h3>🖥️ Built-in dashboard</h3>
-<p>OpenClaw has a built-in control panel — no extra apps needed.</p>
-<p>Just open your <strong>Gateway URL</strong> directly in any browser on your Tailscale network.</p>
-</div>
+<div class="section-card" style="margin-top:16px">
+<h3>Other ways to connect</h3>
+<p style="margin-bottom:8px">These are optional. usemyclaw.com is all you need to get started.</p>
+<ul class="step-list">
+<li><span class="num">•</span> <strong>Obsidian plugin</strong> — chat with your bot inside the Obsidian note-taking app. <a href="https://obsidianclaw.ai" target="_blank">Learn more</a></li>
+<li><span class="num">•</span> <strong>Built-in dashboard</strong> — open your Gateway URL directly in any browser for the developer view</li>
+</ul>
 </div>
 
 <div class="success-box">
 <div class="icon">🎉</div>
 <h3>You're all set!</h3>
-<p>Your bot is now accessible from any device on your private network.</p>
+<p>Your OpenClaw bot is now accessible from any device. Way better than Telegram.</p>
 </div>
 
 <p style="text-align:center;margin-top:24px"><a class="back" onclick="goHome()">← Back to start</a></p>
