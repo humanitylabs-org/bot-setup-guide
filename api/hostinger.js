@@ -14,7 +14,7 @@ export default async function handler(req, res) {
   }
 
   try {
-    const url = `https://api.hostinger.com${path}`;
+    const url = `https://developers.hostinger.com${path}`;
     
     const response = await fetch(url, {
       method,
@@ -25,10 +25,17 @@ export default async function handler(req, res) {
       body: body ? JSON.stringify(body) : undefined
     });
 
-    const data = await response.json();
+    const text = await response.text();
+    let data;
+    try { data = JSON.parse(text); } catch { data = { message: text }; }
     
-    // Pass through status and data
-    res.status(response.status).json(data);
+    // Pass through status and data, include HTTP status for debugging
+    // Wrap arrays to avoid losing structure with spread
+    if (Array.isArray(data)) {
+      res.status(response.status).json({ data: data, _httpStatus: response.status });
+    } else {
+      res.status(response.status).json({ ...data, _httpStatus: response.status });
+    }
     
   } catch (error) {
     res.status(500).json({ error: error.message });

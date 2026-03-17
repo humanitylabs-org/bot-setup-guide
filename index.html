@@ -373,35 +373,52 @@ ${S.path==='cloud'?`
   <div class="prereq-left">
     <div class="prereq-icon">🖥️</div>
     <div class="prereq-info">
-      <div class="prereq-title">Hostinger API key</div>
+      <div class="prereq-title">Hostinger server + API key</div>
       <div class="prereq-meta">
         <span class="badge badge-medium">Medium</span>
         <span class="badge badge-paid">~$11/mo</span>
-        <span class="time-est">~5 min</span>
+        <span class="time-est">~8 min</span>
       </div>
     </div>
   </div>
   <div class="prereq-check" id="check-hostinger"></div>
 </div>
 <div class="prereq-body${S.openPrereqs.hostinger?' open':''}" id="body-hostinger">
-  <p>This is the cloud computer your bot will run on. You'll need to create an account and rent a server.</p>
+  <p>Your bot needs a server to run on. You'll buy one on Hostinger, and then we'll configure it for you automatically.</p>
 
   <div class="reassure reassure-warn">
-    💰 This costs about $11.19 for the first month (renews at $24.99/mo). You can cancel anytime.
+    💰 This costs about $11.19 for the first month (renews at ~$25/mo). You can cancel anytime from your Hostinger dashboard.
   </div>
 
+  <p><strong>Part A: Buy the server</strong></p>
   <ol>
     <li>Go to <a href="https://www.hostinger.com/vps-hosting?REFERRALCODE=XLSMIGUELN7E" target="_blank"><strong>Hostinger VPS Hosting</strong></a></li>
     <li>Find the <strong>KVM 2</strong> plan (it says "Most Popular"). Click <strong>"Choose plan"</strong>.</li>
-    <li>Change the period dropdown to <strong>"1 month"</strong>. The price should show <strong>$11.19/mo</strong>. Skip the daily backup upsell.</li>
-    <li><strong>Create your account and complete the purchase.</strong> Pick the server location closest to you when asked.</li>
-    <li>Once you're in the dashboard, click your <strong>profile icon</strong> (top right)</li>
+    <li>Change the period to <strong>"1 month"</strong>. The price should show <strong>$11.19/mo</strong>. Skip any upsells.</li>
+    <li><strong>Create your account and complete the purchase.</strong></li>
+    <li>After payment, Hostinger will ask you to set up the server. Pick these options:
+      <ul style="margin:8px 0 8px 16px;list-style:disc">
+        <li><strong>Operating system:</strong> Ubuntu 22.04</li>
+        <li><strong>Server location:</strong> Whichever is closest to you</li>
+        <li><strong>Password:</strong> Pick anything (we'll reset it anyway)</li>
+      </ul>
+    </li>
+    <li>Wait for the server to show <strong>"Running"</strong> in your dashboard (usually 1-2 minutes).</li>
+  </ol>
+
+  <div class="reassure reassure-calm">
+    ✅ Don't worry about configuring the server yourself. Once it's running, we'll wipe it and install everything your bot needs automatically.
+  </div>
+
+  <p><strong>Part B: Get your API key</strong></p>
+  <ol>
+    <li>In the Hostinger dashboard, click your <strong>profile icon</strong> (top right)</li>
     <li>Click <strong>Account</strong>, then click <strong>API</strong> in the left sidebar</li>
     <li>Click <strong>"Create API token"</strong> and copy the token</li>
   </ol>
 
   <div class="reassure reassure-calm">
-    🔑 The API key is what lets our setup script talk to Hostinger on your behalf. It will not be stored anywhere.
+    🔑 This API key lets us configure your server for you. It will not be stored anywhere.
   </div>
 
   <input type="password" id="in-hostinger" placeholder="Paste your Hostinger API key" value="${esc(S.hkey)}" oninput="saveField('hkey','in-hostinger')" autocomplete="off">
@@ -495,7 +512,7 @@ s3:()=>`
 creating:()=>`
 <h1>${S.path==='cloud'?'Creating your server':'Setting up your bot'}</h1>
 <div id="spinwrap"><div class="spinner"></div></div>
-<p class="st" id="stxt">${S.path==='cloud'?'Connecting to Hostinger...':'Follow the instructions below...'}</p>
+<p class="st" id="stxt">${S.path==='cloud'?'Finding your server on Hostinger...':'Follow the instructions below...'}</p>
 <div class="error-box" id="ebox">
 <h3 id="etitle">Something went wrong</h3>
 <p id="edesc"></p>
@@ -759,11 +776,25 @@ openclaw gateway restart`;
 
 function serverScript(){
   return`#!/bin/bash
-set -e
+export HOME=/root
 export DEBIAN_FRONTEND=noninteractive
+exec > /var/log/openclaw-setup.log 2>&1
+
+echo "=== OpenClaw setup started ==="
+
+# Step 1: Node.js 22
+echo "Installing Node.js 22..."
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
-apt-get install -y nodejs
-curl -fsSL https://openclaw.ai/install.sh | bash -s -- --no-onboard
+apt-get install -y nodejs git curl
+echo "Node version: $(node --version)"
+
+# Step 2: OpenClaw
+echo "Installing OpenClaw..."
+npm install -g openclaw || { echo "ERROR: npm install openclaw failed"; exit 1; }
+echo "OpenClaw version: $(openclaw --version)"
+
+# Step 3: Onboard
+echo "Running onboard..."
 openclaw onboard --non-interactive \\
   --mode local \\
   --auth-choice setup-token \\
@@ -776,10 +807,20 @@ openclaw onboard --non-interactive \\
   --daemon-runtime node \\
   --skip-skills \\
   --skip-channels \\
-  --skip-ui
-openclaw config set tools.web.search.apiKey "${S.brave}"
-openclaw config set channels.telegram.botToken "${S.tgtoken}"
-openclaw gateway restart`;
+  --skip-ui || echo "WARNING: onboard exited with code $?"
+
+# Step 4: Configure
+echo "Configuring..."
+openclaw config set tools.web.search.apiKey "${S.brave}" || true
+openclaw config set channels.telegram.botToken "${S.tgtoken}" || true
+
+# Step 5: Start
+echo "Starting gateway..."
+openclaw gateway restart || echo "WARNING: gateway restart exited with code $?"
+
+echo "=== OpenClaw setup complete ==="
+echo "Status:"
+openclaw status || true`;
 }
 
 // --- Hostinger server creation ---
@@ -810,51 +851,75 @@ function retryOrBack(){
 
 async function createServer(){
   try{
-    st('Uploading setup script to Hostinger...');
+    // Step 1: Validate API key by finding their VPS
+    st('Finding your server on Hostinger...');
+    let vms;
+    try{
+      vms=await api('GET','/api/vps/v1/virtual-machines');
+    }catch(e){
+      showError('Could not connect to Hostinger','Check your internet connection and try again.');return;
+    }
+    const code=vms._httpStatus||'';
+    if(code===401||code===403){
+      showError('Your Hostinger API key is invalid','The key you entered was not accepted by Hostinger. Go to your <a href="https://hpanel.hostinger.com/account/api" target="_blank">Hostinger dashboard → Account → API</a>, create a new token, and paste the new one.');return;
+    }
+    console.log('Hostinger VMs response:',JSON.stringify(vms));
+    const vmList=Array.isArray(vms)?vms:(vms.data||vms.items||[]);
+    if(!vmList.length){
+      showError('No server found on your account','We couldn\'t find a VPS on your Hostinger account. Go back to <a href="https://www.hostinger.com/vps-hosting?REFERRALCODE=XLSMIGUELN7E" target="_blank">Hostinger VPS Hosting</a>, buy a <strong>KVM 2</strong> plan, wait for it to show "Running" in your dashboard, then come back and try again.');return;
+    }
+    // Pick the first running VM (or first VM if none running)
+    const vm=vmList.find(v=>(v.state||v.status)==='running')||vmList[0];
+    const vmId=vm.id||vm.virtual_machine_id;
+    if(!vmId){
+      showError('Could not identify your server',`Something unexpected happened. Try again, or check your <a href="https://hpanel.hostinger.com" target="_blank">Hostinger dashboard</a>.`);return;
+    }
+    st('Found your server! Uploading setup script...');
+
+    // Step 2: Upload post-install script
     let s;
     try{
       s=await api('POST','/api/vps/v1/post-install-scripts',{name:'OC-'+Date.now(),content:serverScript()});
     }catch(e){
-      showError('Could not connect to Hostinger','Check your internet connection and try again.');return;
+      showError('Could not upload setup script','The connection to Hostinger was lost. Check your internet and try again.');return;
     }
     if(!s.id){
-      if(s.message&&(s.message.includes('auth')||s.message.includes('token')||s.message.includes('401')||s.message.includes('403'))){
-        showError('Your Hostinger API key is invalid','The key you entered was not accepted by Hostinger. Go to your <a href="https://hpanel.hostinger.com/account/api" target="_blank">Hostinger dashboard, then Account, then API</a>, create a new token, and go back to paste the new one.');
-      }else{
-        showError('Hostinger rejected the request',`Error: "${s.message||'Unknown error'}". Double-check your API key at <a href="https://hpanel.hostinger.com/account/api" target="_blank">Hostinger, then Account, then API</a>.`);
-      }
-      return;
+      const msg=s.message||s.error||JSON.stringify(s);
+      showError('Could not upload setup script',`Hostinger said: "${msg}". Try again, or check your <a href="https://hpanel.hostinger.com/account/api" target="_blank">API key</a>.`);return;
     }
-    st('Creating your server (this takes 1-2 minutes)...');
-    let vm;
+
+    // Step 3: Recreate the VM with Ubuntu 22.04 + our script
+    st('Configuring your server with Ubuntu + OpenClaw (this takes 2-4 minutes)...');
+    let rc;
     try{
-      vm=await api('POST','/api/vps/v1/virtual-machines',{plan:'hostingercom-vps-kvm2-usd-1m',template_id:1002,hostname:'openclaw-ai',post_install_script_id:s.id});
+      rc=await api('POST',`/api/vps/v1/virtual-machines/${vmId}/recreate`,{template_id:1002,post_install_script_id:s.id});
     }catch(e){
-      showError('Could not create server','The connection to Hostinger was lost. Check your internet and try again.');return;
+      showError('Could not configure server','The connection to Hostinger was lost. Check your internet and try again.');return;
     }
-    const id=vm.id||vm.virtual_machine_id;
-    if(!id){
-      if(vm.message&&(vm.message.includes('payment')||vm.message.includes('billing')||vm.message.includes('balance'))){
-        showError('Payment issue on Hostinger','Hostinger needs a valid payment method before it can create a server. Go to <a href="https://hpanel.hostinger.com" target="_blank">hpanel.hostinger.com</a>, make sure you have a credit card on file, then come back and try again.');
-      }else if(vm.message&&vm.message.includes('limit')){
-        showError('Server limit reached','Your Hostinger account has reached its server limit. You may need to upgrade your plan or delete an old server at <a href="https://hpanel.hostinger.com" target="_blank">hpanel.hostinger.com</a>.');
-      }else{
-        showError('Could not create the server',`Hostinger said: "${vm.message||'Unknown error'}". Try again, or check your <a href="https://hpanel.hostinger.com" target="_blank">Hostinger dashboard</a>.`);
-      }
-      return;
+    const rcCode=rc._httpStatus||'';
+    if(rcCode>=400){
+      const rcMsg=rc.message||rc.error||JSON.stringify(rc);
+      showError('Could not configure your server',`Hostinger said (HTTP ${rcCode}): "${rcMsg}". Make sure your server shows "Running" in your <a href="https://hpanel.hostinger.com" target="_blank">Hostinger dashboard</a>, then try again.`);return;
     }
-    st('Server created! Waiting for it to come online...');
-    for(let i=0;i<60;i++){
+
+    // Step 4: Poll until the VM is back online
+    st('Server is reinstalling... this takes 2-4 minutes.');
+    for(let i=0;i<90;i++){
       await slp(5000);
       try{
-        const r=await api('GET',`/api/vps/v1/virtual-machines/${id}`);
+        const r=await api('GET',`/api/vps/v1/virtual-machines/${vmId}`);
         if((r.state||r.status)==='running'){
+          // VM is booted but post-install script may still be running
+          st('Server is online! Waiting for setup script to finish...');
+          await slp(60000);
           S.v='done';render();return;
         }
-        st(`Still setting up... ${Math.floor(i*5/60)}m ${(i*5)%60}s`);
+        const elapsed=Math.floor(i*5/60);
+        const secs=(i*5)%60;
+        st(`Still setting up... ${elapsed}m ${secs}s`);
       }catch{}
     }
-    showError('Server is taking too long','Your server was created but hasn\'t come online after 5 minutes. Check your <a href="https://hpanel.hostinger.com" target="_blank">Hostinger dashboard</a> to see its status.');
+    showError('Server is taking too long','Your server was recreated but hasn\'t come online after 7 minutes. Check your <a href="https://hpanel.hostinger.com" target="_blank">Hostinger dashboard</a> to see its status. It might just need a bit more time.');
   }catch(e){
     showError('Something unexpected happened',`Error: "${e.message}". Try again, or <a href="https://hpanel.hostinger.com" target="_blank">check your Hostinger dashboard</a>.`);
   }
