@@ -783,18 +783,31 @@ exec > /var/log/openclaw-setup.log 2>&1
 echo "=== OpenClaw setup started ==="
 
 # Step 1: Node.js 22
-echo "Installing Node.js 22..."
+echo "Step 1/6: Installing Node.js 22..."
 curl -fsSL https://deb.nodesource.com/setup_22.x | bash -
 apt-get install -y nodejs git curl
 echo "Node version: $(node --version)"
 
-# Step 2: OpenClaw
-echo "Installing OpenClaw..."
+# Step 2: Swap (prevents OOM on small VPS)
+echo "Step 2/6: Setting up swap..."
+if [ ! -f /swapfile ]; then
+  fallocate -l 2G /swapfile
+  chmod 600 /swapfile
+  mkswap /swapfile
+  swapon /swapfile
+  echo '/swapfile none swap sw 0 0' >> /etc/fstab
+  echo "Swap created and enabled"
+else
+  echo "Swap already exists"
+fi
+
+# Step 3: OpenClaw
+echo "Step 3/6: Installing OpenClaw..."
 npm install -g openclaw || { echo "ERROR: npm install openclaw failed"; exit 1; }
 echo "OpenClaw version: $(openclaw --version)"
 
-# Step 3: Onboard
-echo "Running onboard..."
+# Step 4: Onboard (skip daemon - we'll create systemd unit manually)
+echo "Step 4/6: Running onboard..."
 openclaw onboard --non-interactive \\
   --mode local \\
   --auth-choice setup-token \\
@@ -803,22 +816,44 @@ openclaw onboard --non-interactive \\
   --gateway-port 18789 \\
   --gateway-bind loopback \\
   --accept-risk \\
-  --install-daemon \\
-  --daemon-runtime node \\
   --skip-skills \\
   --skip-channels \\
   --skip-ui || echo "WARNING: onboard exited with code $?"
 
-# Step 4: Configure
-echo "Configuring..."
+# Step 5: Configure
+echo "Step 5/6: Configuring..."
 openclaw config set tools.web.search.apiKey "${S.brave}" || true
 openclaw config set channels.telegram.botToken "${S.tgtoken}" || true
 
-# Step 5: Start
-echo "Starting gateway..."
-openclaw gateway restart || echo "WARNING: gateway restart exited with code $?"
+# Step 6: systemd service (system-level, runs as root)
+echo "Step 6/6: Installing systemd service..."
+cat > /etc/systemd/system/openclaw-gateway.service << 'UNIT'
+[Unit]
+Description=OpenClaw Gateway
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+ExecStart=/usr/bin/env openclaw gateway --port 18789
+Restart=always
+RestartSec=5
+Environment=HOME=/root
+
+[Install]
+WantedBy=multi-user.target
+UNIT
+
+systemctl daemon-reload
+systemctl enable openclaw-gateway.service
+systemctl start openclaw-gateway.service
+
+# Wait a moment for gateway to start
+sleep 3
 
 echo "=== OpenClaw setup complete ==="
+echo "Gateway service status:"
+systemctl is-active openclaw-gateway.service
 echo "Status:"
 openclaw status || true`;
 }
