@@ -1,23 +1,27 @@
-# Cloudflare hosting — preview only
+# Bot Setup Guide on Cloudflare
 
-Preview: https://bot-setup-guide.ai-wizards-previews.workers.dev
+Production target: https://www.botsetupguide.com/ in **Miguel Personal** Cloudflare account `89b0e4ee68c1b33f1f5fc3c8db11c9f5`, Worker `bot-setup-guide`. The apex redirects to www. Domain registration stays at Porkbun; assigned nameservers are `janet.ns.cloudflare.com` and `otto.ns.cloudflare.com`. The older Humanity Labs workers.dev deployment is a preview only, not the production target.
 
-The public domain is NOT migrated. `botsetupguide.com` uses Porkbun authoritative DNS and is not an active Humanity Labs Cloudflare zone. Before production cutover, obtain authorization/access to move DNS, export the complete registrar DNS zone (including email records), check DNSSEC, onboard that unchanged zone to Humanity Labs Cloudflare, then attach exact apex/www Worker routes or Custom Domains. Do not infer the full zone from public DNS lookups. Keep the domain registration at Porkbun. `oscarhenrycollins.com` is a separate Vercel alias and is not included in this cutover.
+## Deployment
 
-## Contents and deployment
+Use Node 22+, `npm --prefix cloudflare ci`, `npm --prefix cloudflare test`, then `npm --prefix cloudflare run deploy`. Supply the approved personal-account token through `CLOUDFLARE_API_TOKEN` and set `CLOUDFLARE_ACCOUNT_ID` to the account above. Never commit credentials. GitHub runs tests; Worker deployments are manual.
 
-Only the unchanged root `index.html` and `humanity-labs-logo.png` enter `cloudflare/dist`. The frontend and old Vercel function/config remain untouched. The Worker serves the home page, explicit index.html and exact /upgrade rewrite; unknown paths remain 404. Apex redirects to www with 307 and preserves the query.
+Only unchanged root `index.html` and `humanity-labs-logo.png` enter `cloudflare/dist`. Root dependencies, frontend, legacy Vercel function and configuration remain untouched. The Worker preserves home, explicit index.html, exact /upgrade rewrite, missing-path 404s, and apex 307 redirects including query strings.
 
-Use Node 22+, `npm --prefix cloudflare ci`, `npm --prefix cloudflare test`, then `npm --prefix cloudflare run deploy`. Supply the approved Humanity Labs token through CLOUDFLARE_API_TOKEN and set CLOUDFLARE_ACCOUNT_ID to the Humanity Labs account in wrangler.json; never commit credentials. Do not use the personal account. Deployments are manual, not GitHub-triggered.
+The same-origin Hostinger relay handles caller credentials transiently, forwards only to developers.hostinger.com, disables caching/logging, and rejects redirects without forwarding credentials elsewhere. No operator Hostinger keys are deployed. Arrays, objects and upstream error statuses retain the existing response contract; malformed JSON and invalid destinations are rejected safely.
 
-The same-origin Hostinger relay accepts user-supplied credentials transiently, forwards them only to developers.hostinger.com, disables response caching and does not log/persist them. Redirects are handled manually and rejected without forwarding keys elsewhere. Successful/error/array response wrapping matches the existing relay. Missing inputs, malformed JSON and wrong methods are rejected. No company provider key is installed.
+## DNS cutover and rollback
 
-## Verification and limits
+The complete Porkbun zone was exported before delegation. Four records were copied DNS-only with existing values (A, CNAME and two TXT records); only the four old provider-owned apex NS rows were excluded. There were no MX or registry DNSSEC DS records. Registrar nameservers were changed only after the imported records matched and authoritative Cloudflare queries returned the old Vercel targets.
 
-Unit tests compare legacy and Worker behavior using synthetic upstream responses, including provisioning request shapes. Live preview checks compare asset hashes and routes, reject sensitive file paths, and exercise real Hostinger GET with an intentionally invalid key (401). No server is created/recreated and authenticated provisioning has NOT been tested.
+Hosting cutover requires an active zone, active TLS for apex/www and both exact-host Worker routes verified with failure-open disabled. Then change only the apex and www web records to proxied A `192.0.2.1`; the Worker responds without contacting an origin. Leave TXT records unchanged. **Never remove these Worker routes while placeholder DNS remains.**
 
-Desktop/mobile UI was checked through cloud/local selection and upgrade navigation. The existing HTML references a logo and app on retired usemyclaw.com; the logo is already broken on Vercel. This pre-existing issue was intentionally not mixed into the hosting change.
+To roll back hosting, restore `botsetupguide.com` to DNS-only A `216.150.1.1` and `www.botsetupguide.com` to DNS-only CNAME `bd036b68464acfa9.vercel-dns-016.com`, TTL 600. Keep Vercel project/domains active. To roll back delegation separately, the original registrar NS set is `maceio.ns.porkbun.com`, `salvador.ns.porkbun.com`, `fortaleza.ns.porkbun.com`, `curitiba.ns.porkbun.com`; Porkbun DNS records were retained. Registry and recursive caches can delay either rollback.
 
-## Rollback
+## Verification and boundaries
 
-Vercel remains live and unchanged. No DNS/registrar modifications or plan changes were made. Source baseline: 8a749492c99bf615f8aa9de7a013336e9f7221bf. Before any future cutover, record exact DNS rows and a record-specific restoration procedure. Do not cancel Vercel until both primary and legacy alias domains have an explicit disposition.
+Unit tests compare legacy and Worker behavior with synthetic upstream responses and provisioning inputs. Production checks must verify both domains, asset SHA-256 equality, redirects, /upgrade, missing paths, non-public files and live Hostinger GET using an intentionally invalid key (401). Authenticated server creation/recreation is NOT tested: that would be a separate destructive operation.
+
+Desktop/mobile navigation is tested without entering real credentials or provisioning servers. The unchanged HTML still references the retired usemyclaw.com logo and app; this pre-existing broken dependency is separate from the hosting migration.
+
+`oscarhenrycollins.com` is a separate Vercel alias and is NOT included in this migration. No subscriptions are cancelled or upgraded. Original source baseline: `8a749492c99bf615f8aa9de7a013336e9f7221bf`.
