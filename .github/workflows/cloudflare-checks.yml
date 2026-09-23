@@ -1,0 +1,23 @@
+name: Cloudflare hosting checks
+on:
+  push:
+    branches: [main, migration/cloudflare-hosting]
+    paths: ['cloudflare/**', 'api/hostinger.js', 'index.html', 'humanity-labs-logo.png', '.github/workflows/cloudflare-checks.yml']
+  pull_request:
+    paths: ['cloudflare/**', 'api/hostinger.js', 'index.html', 'humanity-labs-logo.png', '.github/workflows/cloudflare-checks.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/package-lock.json
+      - run: npm --prefix cloudflare ci
+      - run: npm --prefix cloudflare test
+      - run: npm --prefix cloudflare run build
+      - run: cmp index.html cloudflare/dist/index.html && cmp humanity-labs-logo.png cloudflare/dist/humanity-labs-logo.png
